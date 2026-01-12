@@ -1,0 +1,164 @@
+<nav class="navbar site-main-nav">
+    <ng-container>
+        <div class="toggle-menu-container">
+
+            <span class="toggle-icon admin-only" (click)="toggleMenu()">
+                <img *ngIf="opennav" src="../../../../../../assets/images/open.svg" alt="" srcset="">
+                <img *ngIf="!opennav" src="../../../../../../assets/images/close.svg" alt="" srcset=""
+                    [ngClass]="{'toggle-icon-close': !opennav}">
+
+            </span>
+        </div>
+        <div class="logout" *ngIf="!opennav">
+            <div class="detail">
+
+                <div class="logoutlogo " style="cursor: pointer;" (click)="onOpenProfile()" >
+                    <img src="../../../../../../assets/icons/icon_profile.svg" alt="">
+                </div>
+                <div class="username mt-2">
+                    {{loginUser}}
+                </div>
+                <div class="action mt-2" *ngIf="!opennav">
+
+                    <div class="user-action" (click)="onOpenChangePassword()">
+                        <i class="fa fa-key" tooltip="Change Password" aria-hidden="true"></i>
+                    </div>
+
+                    <div class="user-action" (click)="onOpenEditProfile()">
+                        <i class="fa fa-user" tooltip="Edit Profile" aria-hidden="true"></i>
+                    </div>
+
+                    <div class="user-action" (click)="logout()">
+                        <i class="fa fa-sign-out" tooltip="Logout" aria-hidden="true"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="account-infoo" *ngIf="opennav">
+            <div></div>
+            <div class="logouticon">
+                <button *ngIf="opennav" class="change-account-btn">
+                    <img src="../../../../../../assets/icons/icon_profile.svg" alt="">
+                </button>
+            </div>
+
+
+        </div>
+    </ng-container>
+    <ul class="navbar-nav mr-auto">
+
+        <li class="nav-item ">
+            <div class="nav-link-container">
+                <div class="icon-nav-link">
+                    <span class="menu-icon" *ngIf="logo != ''">
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                            <g id="Group_5283" data-name="Group 5283" transform="translate(-31 -189)">
+                                <circle id="Ellipse_138" data-name="Ellipse 138" cx="16" cy="16" r="16"
+                                    transform="translate(31 189)" fill="#e8e8e8" />
+                                <text id="IS" transform="translate(47 210)" fill="#383838" font-size="16"
+                                    font-family="ProximaNova-Bold, Proxima Nova" font-weight="700" text-anchor="middle"
+                                    dy="0.35em">
+                                    <tspan x="0" y="0" dx="-1" dy="-0.5">{{ logo }}</tspan>
+                                </text>
+                            </g>
+                        </svg> -->
+                        <img src="../../../../../../assets/images/open.svg" alt="" srcset="">
+                    </span>
+                    <span class="nav-link">
+                        <!-- <strong>{{ accountName }}</strong> -->
+                        <strong>GPS Software</strong>
+
+                    </span>
+                </div>
+
+            </div>
+        </li>
+
+        <li class="nav-item level1-li" [ngClass]="'nav-item-index-' + i1"
+            *ngFor="let level1 of menuConfig; let i1 = index" clickOutside
+            (onClickOutside)="onClickedOutsideOfMenu('nav-item-index-', i1)">
+            <ng-container>
+                <div class="nav-link-container">
+                    <div class="icon-nav-link">
+
+                        <span (mouseenter)="showTooltip = true" (mouseleave)="showTooltip = false" placement="right"
+                            containerClass="tooltip-primary" class="skylabs-icon menu-icon"
+                            (click)="onShowMenu($event, level1.name)"> 
+                            <img [src]="level1.iconClass" alt="" style="width: 25px; font-weight: 600;" >
+                        </span>
+                        <span class="tooltiptext" [hidden]="!showTooltip">{{
+                            level1.name
+                            }}</span>
+                        <a href="javascript:void(0)" (click)="
+                  level1.path
+                    ? navigateToRoute(level1.path, $event, level1.isExternal,false, false)
+                    : collapse.toggle();
+                  handleCollapse('level1', i1); changeMenuCss()"
+                 class="nav-link">{{ level1.name }}</a>
+
+                    </div>
+
+                    <span *ngIf="level1.subNav" class="skylabs-icon angle-thin-right-icon nav-arrow"
+                        [id]="'level1-btn-' + i1" (click)="collapse.toggle(); handleCollapse('level1', i1); changeMenuCss()"></span>
+                </div>
+            </ng-container>
+            <ngx-navbar-collapse class="sub-menu mx-ngx-sub-menu" [id]="'level1-collapse-' + i1"
+                #collapse="ngxNavbarCollapse">
+                <div class="hover-header">
+                    <a href="javascript:void(0)" (click)="
+                level1.path
+                  ? navigateToRoute(level1.path, $event, level1.isExternal,false,false)
+                  : ''
+              " class="nav-link">{{ level1.name }}</a>
+                </div>
+                <ng-container *ngIf="level1.subNav">
+                    <ul class="level2-nav">
+                        <li class="nav-item" *ngFor="let level2 of level1.subNav; let i2 = index">
+                            <div class="nav-link-container">
+                                <div class="icon-nav-link">
+                                    <a href="javascript:void(0)" (click)="
+                        level2.path
+                          ? navigateToRoute(
+                              level2.path,
+                              $event,
+                              level2.isExternal,
+                              level1,
+                              true
+                            )
+                          : collapse.toggle();
+                        handleCollapse('level2', i2)
+                      " class="nav-link">{{ level2.name }}</a>
+                                </div>
+                                <span *ngIf="level2.subNav" [id]="'level2-btn-' + i2"
+                                    class="skylabs-icon angle-thin-right-icon nav-arrow"
+                                    (click)="collapse.toggle(); handleCollapse('level2', i2)"></span>
+                            </div>
+                            <ngx-navbar-collapse id="main-nav" [id]="'level2-collapse-' + i2"
+                                #collapse="ngxNavbarCollapse">
+                                <ul class="level3-nav" *ngIf="level2.subNav">
+                                    <li class="nav-item" *ngFor="let level3 of level2.subNav">
+                                        <a class="nav-link" (click)="
+                          navigateToRoute(
+                            level3.path,
+                            $event,
+                            level2.isExternal,
+                            level1,
+                            false
+                          )
+                        ">{{ level3.name }}</a>
+                                    </li>
+                                </ul>
+                            </ngx-navbar-collapse>
+                        </li>
+                        <li></li>
+                    </ul>
+                </ng-container>
+            </ngx-navbar-collapse>
+
+        </li>
+
+
+    </ul>
+
+</nav>

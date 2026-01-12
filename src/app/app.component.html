@@ -1,0 +1,43 @@
+<router-outlet></router-outlet>
+<ng-template #beforeExpired>
+    <div class="text-center">
+      <div class="modal-header">
+        <h4 class="modal-title">Your Session Is About To Expire</h4>
+      </div>
+      <div class="modal-body">Would you like to extend your session?</div>
+      <span
+        ><h2 class="seconds">{{ seconds }}<sub>Sec.</sub></h2></span
+      >
+      <div class="row mt-4 mb-4 col-md-12 full-btns p-50">
+        <div class="col-md-2"></div>
+        <div class="col-md-4">
+          <button class="btn btn-success mb-2" (click)="continueSession()">
+            Yes
+          </button>
+        </div>
+        <div class="col-md-4 btn-grid">
+          <button class="btn btn-danger mb-2" (click)="endSession()">
+            No
+          </button>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #expired>
+    <div class="text-center">
+      <div class="modal-header">
+        <h4 class="modal-title w-100">Session Expired</h4>
+      </div>
+      <div class="modal-body">Your session has expired please sign in again.</div>
+  
+      <div class="row mt-4 mb-4 col-md-12 full-btns p-50">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+          <button class="btn btn-primary mb-2" (click)="signIn()">Sign In</button>
+        </div>
+        <div class="col-md-4"></div>
+      </div>
+    </div>
+  </ng-template>
+  

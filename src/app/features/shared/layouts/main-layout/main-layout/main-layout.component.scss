@@ -1,0 +1,213 @@
+@import "src/styles/mixins/breakpoints";
+@import "src/styles/colors";
+
+// .w-100{
+//   background: #656565;
+// }
+.layout-side-bar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  // overflow-y: auto;
+
+  @include breakpoint-range($max: sm) {
+    .overflow-x-axis {
+      overflow-y: auto;
+    }
+  }
+
+  @include breakpoint-range($max: lg) {
+    padding-top: 0;
+  }
+}
+
+.layout-side-bar-scorller {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  ::-webkit-scrollbar {
+    width: 10px !important;
+  }
+
+}
+
+.main-side-bar-container {
+  width: 100%;
+  height: auto;
+  // min-height: 140vh;
+  @include breakpoint-range($max: sm) {
+    // height: calc(100% - 102px);
+  }
+}
+
+.main {
+  width: 100%;
+  // height: 130%;
+  // max-height: 100%;
+  // overflow-y: hidden;
+}
+/*.main-side-bar-container{
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 132px);
+    } */
+.customer-messages-header {
+  margin: 0px 5px 5px;
+  z-index: -1;
+  .hide-all {
+    text-align: right;
+    color: $color-red;
+    cursor: pointer;
+  }
+}
+
+.customer-messages-carousel {
+  margin: 0px 15px;
+  z-index: -1;
+  .alert-content {
+    display: flex;
+    align-items: center;
+    .alert-img {
+      background-color: #eaeaeb;
+      padding: 10px;
+      align-items: center;
+      display: flex;
+      border-radius: 10px;
+      margin: 0px 12px;
+      width: 60px;
+      height: 60px;
+      max-height: 60px;
+
+      img {
+        width: 40px;
+        height: 40px;
+        max-height: 40px;
+      }
+    }
+    .alert-msg {
+      width: 85%;
+      padding-right: 22px;
+    }
+  }
+  ::ng-deep {
+    .owl-item {
+      font-size: 14px;
+      height: auto;
+      .alert {
+        padding-left: 0px;
+        padding-right: 0px;
+        height: 90px;
+        background: $color-white;
+        box-shadow: rgba(100, 100, 111, 0.2) 4px 7px 8px 4px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+      }
+      .alert-dismissible .btn-close {
+        right: 8px;
+        top: 8px;
+        padding: 0;
+        font-size: 10px;
+      }
+    }
+
+    .owl-dots {
+      height: 100%;
+      position: relative;
+      transform: none;
+      left: 0px;
+      bottom: 0px;
+      margin-top: 0px !important;
+      // bottom: -35px;
+      .owl-dot {
+        &.active {
+          span {
+            background: #ce0e2d;
+          }
+        }
+        span {
+          background: grey;
+        }
+      }
+    }
+  }
+}
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+.custom-scrollbar {
+  overflow-y: auto; 
+  overflow-x: hidden;
+
+}
+ 
+.custom-scrollbar::-webkit-scrollbar {
+  @include breakpoint-range($max: sm){
+    width: 5px; 
+  }
+  width: 10px; 
+ 
+}
+ 
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color:#727272;; 
+  border-radius: 6px; 
+}
+ 
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #eee;  
+  border-radius: 6px;     
+}
+
+.w-100{
+  background-color: #727272;;
+  border-radius: 10px;
+  width: 100% !important;
+  /* Styles for the tabset */
+.tabset {
+  border-bottom: 1px solid #ddd; /* Add a bottom border */
+}
+
+/* Styles for the tab heading */
+.tabset .nav-tabs .nav-item .nav-link {
+  color: #333; /* Tab text color */
+  background-color: #f8f9fa; /* Tab background color */
+  border: 1px solid transparent; /* Tab border */
+  border-radius: 0; /* Remove border radius */
+}
+
+/* Styles for the active tab heading */
+.tabset .nav-tabs .nav-item .nav-link.active {
+  background-color: #fff; /* Active tab background color */
+  border-color: #ddd; /* Active tab border color */
+}
+
+/* Styles for the tab content */
+.tab-content {
+  padding: 20px; /* Add padding to the tab content */
+  border: 1px solid #ddd; /* Add a border around the tab content */
+}
+
+}
+  .mainPage{
+    background-color:#727272;;
+ 
+  }
+
+  .main {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden !important;
+}

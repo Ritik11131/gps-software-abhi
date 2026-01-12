@@ -1,0 +1,71 @@
+<div class="sim-part mt-3">
+    <div class="card">
+        <div class="card-header">
+            Sim Operator List
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="row">
+                    <div class="col-md-12">
+                            <div class="search-form mb-2">
+                              <input placeholder="Search for..." [(ngModel)]="searchKeyword" type="text"
+                                class="form-control search-input"><button type="button" class="btn-search"><i class="fa fa-search"
+                                  aria-hidden="true"></i></button>
+                            </div>
+                   
+                        <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                            <div class="dataTables_scroll">
+                                <div class="dataTables_scrollBody">
+                                    <table id="datatable"
+                                        class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                                        aria-describedby="datatable_info" style="width: 100%" width="100%">
+                                        <thead>
+                                            <tr role="row">
+                                                <th *ngFor="let vehicleHeading of columns">
+                                                    <strong>{{vehicleHeading?.title}}</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr *ngFor="let item of simOperatorList | searchFilter: searchKeyword |  paginate : {
+                                                  itemsPerPage: tableSize,
+                                                  currentPage: page,
+                                                  totalItems: count} let i= index">
+                                                  <td>{{item?.firstName + ' ' + item?.lastName}}</td>
+                                                  <td>{{item?.mobileNo}}</td>
+                                                  <!-- <td>{{item?.emailId}}</td> -->
+                                                  <td>{{item?.basketId}}</td>
+                                                  <td>{{item?.basketName}}</td>
+                                                  <td>{{item?.parentBasketId}}</td>
+                                                  <td>{{item?.creationDate}}</td>
+                                                  <td>{{item?.totalSims}}</td>
+                                                  <td>{{item?.activeSims}}</td>
+                                                  <td>{{item?.availableSims}}</td>
+                                                  <td>{{item?.testModeSims}}</td>
+                                                  <td>{{item?.safeCustodySims}}</td>
+                                                  <td>{{item?.inActiveSims}}</td>
+                                                  <td>{{item?.inProgressSims}}</td>
+                                                  <td>{{item?.suspendedSims}}</td>
+                                                 
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center"
+                                        *ngIf="simOperatorList && simOperatorList.length == 0 || simOperatorList == null "
+                                        style="width: 100%;">No Data Available</div>
+                                </div>
+                                <div class="pagination-data" *ngIf="simOperatorList && simOperatorList?.length > 0">
+                                    <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                        (pageChange)="onTableDataChange($event)">
+                                    </pagination-controls>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

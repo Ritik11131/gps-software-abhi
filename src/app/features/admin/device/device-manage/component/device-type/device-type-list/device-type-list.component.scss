@@ -1,0 +1,24 @@
+
+.search-form {
+    float: left;
+  }
+  
+  .search-input {
+    border-color:#2f387c !important;
+  }
+  
+  .search-form .btn-search {
+    color: #fff;
+  }
+
+  .maker-search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // padding: 0 10px;
+    gap: 15px;
+}
+
+.search-form {
+     margin-left: 0px !important;
+}

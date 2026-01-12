@@ -1,0 +1,88 @@
+<div class="card">
+    <div class="card-header">
+        {{label}} Device Maker
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="deviceMakerForm" (ngSubmit)="submit(deviceMakerForm.value)">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Name" formControlName="name"
+                            aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="deviceMakerForm.get('name')?.invalid && !deviceMakerForm.get('name')?.errors?.['pattern'] && (deviceMakerForm.get('name')?.dirty || deviceMakerForm.get('name')?.touched)"
+                        class="text-danger">
+                        Name is required
+                    </div>
+                    <div *ngIf="deviceMakerForm.get('name')?.errors?.['pattern']" class="text-danger">
+                        Dash Is Not Valid
+                      </div>
+                      
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Ip Address</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Ip Address"
+                            formControlName="ipaddress" aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="deviceMakerForm.get('ipaddress')?.invalid && (deviceMakerForm.get('ipaddress')?.dirty || deviceMakerForm.get('ipaddress')?.touched)"
+                        class="text-danger">
+                        Ip Address is required
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Port No.</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" placeholder="Enter Port No."
+                            formControlName="portNo" aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="deviceMakerForm.get('portNo')?.invalid && (deviceMakerForm.get('portNo')?.dirty || deviceMakerForm.get('portNo')?.touched)"
+                        class="text-danger">
+                        Port No. is required
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">GPS Walk</label>
+                    <ng-select placeholder="Select GPS Walk" formControlName="gpsWalk">
+                        <ng-option *ngFor="let item of makerData" [value]="item?.id">{{ item?.staus }}</ng-option>
+                    </ng-select>
+                    <div *ngIf="deviceMakerForm.get('gpsWalk')?.invalid && (deviceMakerForm.get('gpsWalk')?.dirty || deviceMakerForm.get('gpsWalk')?.touched)"
+                        class="text-danger">
+                        GPS Walk is required
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">BLE Support</label>
+                    <ng-select placeholder="Select BLE Support" formControlName="bleSupport">
+                        <ng-option *ngFor="let item of makerData" [value]="item?.id">{{ item?.staus }}</ng-option>
+                    </ng-select>
+                        <div *ngIf="deviceMakerForm.get('bleSupport')?.invalid && (deviceMakerForm.get('bleSupport')?.dirty || deviceMakerForm.get('bleSupport')?.touched)"
+                        class="text-danger">
+                        BLE Support is required
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-success" type="submit" >
+                        {{button}}
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-danger" (click)="cancel($event)">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

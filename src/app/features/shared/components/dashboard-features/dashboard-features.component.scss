@@ -1,0 +1,173 @@
+@import 'src/styles/colors';
+@import 'src/styles/mixins/breakpoints';
+
+.product-features-section {
+    width: 100%;
+}
+
+// Product Features List
+.product-features-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    // font-family: "Montserrat", sans-serif;
+
+    .features-list {
+        width: 100%;
+        margin-bottom: 15px;
+        display: block;
+        cursor: pointer;
+        border-radius: 8px;
+        border: solid 0.5px $color-gray;
+        min-height: 170px;
+        background: $color-white;
+        padding: 10px;
+
+        .status-name {
+            font-weight: 500;
+            font-size: 21px;
+        }
+
+        .fleet-data {
+            display: flex;
+            justify-content: center;
+        }
+
+        // @include breakpoint-range($max : sm) {
+        //     width: calc(49.5% - 7.5px);
+        // }
+
+        .icon {
+            margin-bottom: 8px;
+
+            img {
+                max-width: 34px;
+            }
+        }
+
+        .name {
+            font-size: 24px;
+            font-weight: 500;
+            letter-spacing: -0.12px;
+            text-align: right;
+            color: $color-dark-gray;
+            width: 100%;
+            margin: 0;
+
+            @include breakpoint-range($max : sm) {
+                font-size: 18px;
+            }
+        }
+
+        .class-red {
+            color: red;
+        }
+       
+    }
+}
+
+.status-data {
+    width: 100%;
+    clear: both;
+    margin: 0px;
+    padding: 0px;
+
+    ul li {
+        padding: 4px 0;
+        width: 100%;
+    }
+}
+
+.status-data {
+    // font-family: "Montserrat", sans-serif;
+    ul li {
+        .status {
+            text-decoration: none;
+            .status-key {
+                width: 94%;
+                display: block;
+                float: left;
+                color: $color-teal;
+                
+            }
+            .status-value {
+                display: block;
+              }
+
+             
+        }
+    }
+      
+} 
+@import 'src/styles/colors';
+@import 'src/styles/mixins/breakpoints';
+
+.product-features-section {
+    width: 100%;
+}
+
+// Product Features List
+.product-features-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    &>li {
+        width: calc(33.33% - 7.5px);
+        margin-bottom: 15px;
+        display: block;
+        cursor: pointer;
+        border-radius: 8px;
+        border: solid 0.5px $color-gray;
+        text-align: center;
+        min-height: 170px;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
+        // flex-wrap: wrap;
+        // flex-direction: column;
+        background: $color-white;
+       @include breakpoint-range($max : sm)
+       {
+            width: 100%;
+       }
+       
+        .icon {
+            margin-bottom: 8px;
+        }
+        .status-key {
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: -0.12px;
+            text-align: right;
+            color: $color-dark-gray;
+            width: 100%;
+            margin: 0;
+    
+            @include breakpoint-range($max : sm) {
+                font-size: 18px;
+            }
+        }
+        .key{
+            color: $color-teal;
+        }
+    }
+    .status-value {
+        font-size: 18px;
+        font-weight: 500;
+        letter-spacing: -0.12px;
+        text-align: right;
+        color: $color-dark-gray;
+        width: 100%;
+        margin: 0;
+
+        @include breakpoint-range($max : sm) {
+            font-size: 18px;
+        }
+    }
+
+    .value{
+        color: red;
+    }
+   
+}

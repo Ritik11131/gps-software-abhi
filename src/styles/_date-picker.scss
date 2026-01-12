@@ -1,0 +1,40 @@
+@import './colors';
+
+.theme-red .bs-datepicker-head {
+  background-color: $color-red;
+}
+.theme-red .btn-today-wrapper .btn-success, .theme-red .btn-clear-wrapper .btn-success {
+  background-color: $color-red;
+  border-color: $color-red;
+}
+.theme-red .btn-today-wrapper .btn-success:not(:disabled):not(.disabled):active:focus, .theme-red .btn-clear-wrapper .btn-success:not(:disabled):not(.disabled):active:focus {
+  box-shadow: none;
+}
+.theme-red .btn-today-wrapper .btn-success:focus, .theme-red .btn-clear-wrapper .btn-success:focus {
+  box-shadow: none;
+}
+.theme-red .btn-today-wrapper .btn-success:not(:disabled):not(.disabled):active, .theme-red .btn-clear-wrapper .btn-success:not(:disabled):not(.disabled):active {
+  background-color: #D23531;
+  border-color: #D23531;
+}
+.theme-red .btn-today-wrapper .btn-success:hover, .theme-red .btn-clear-wrapper .btn-success:hover {
+  background-color: #E33732;
+  border-color: #E33732;
+}
+.theme-red .bs-datepicker-predefined-btns button.selected {
+  background-color: $color-red;
+}
+.theme-red .bs-datepicker-body table td span.selected, .theme-red .bs-datepicker-body table td.selected span,
+.theme-red .bs-datepicker-body table td span[class*=select-]:after, .theme-red .bs-datepicker-body table td[class*=select-] span:after {
+  background-color: $color-red;
+}
+.theme-red .bs-datepicker-body table td.week span {
+  color: $color-red;
+}
+.theme-red .bs-datepicker-body table td.active-week span:hover {
+  cursor: pointer;
+  background-color: $color-red;
+  color: #fff;
+  opacity: 0.5;
+  transition: 0s;
+}

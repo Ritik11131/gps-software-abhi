@@ -1,0 +1,140 @@
+@import "src/styles/mixins/box-shadow.mixin";
+@import "src/styles/mixins/breakpoints";
+.map-container {
+  position: relative;
+  height: 100vh;
+  overflow: auto; 
+}
+
+.scrollable-container {
+  position: relative;
+}
+
+#map {
+  height: 100vh; 
+}
+
+.middle-part {
+  position: absolute;
+  top: 10px;
+  width: 30%;
+  left: 10px;
+
+}
+::ng-deep{
+  .map-label { 
+    width: 108px !important;
+    background-color: white !important;
+    // font-family: "Lucida Grande", "Arial", sans-serif;
+    font-size: 10px;
+    text-align: center;
+    width: 10px;     
+    white-space: nowrap;
+    border: 1px solid black;
+    margin-top: 40px !important;
+  }
+}
+
+::ng-deep {
+  .gm-style-iw.gm-style-iw-c {
+    width: 358px !important;
+    background-color: #727272;
+    border-radius: 10px;
+
+    .live-data {
+      a {
+        text-decoration: none;
+      }
+
+      li:last-child {
+        border-left: none !important;
+      }
+    }
+  }
+
+  .gm-style .gm-style-iw-tc::after {
+    background-color: #727272;
+  }
+
+  .live-data {
+    padding: 4px;
+
+    span {
+      font-size: 13px;
+      color: #fff;
+      font-weight: 500;
+    }
+  }
+
+  .icon-part {
+    border-top: 1px solid;
+    padding: 4px;
+    background: #fff;
+    border-radius: 4px;
+  }
+
+  ul.icon {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(3px, 1fr));
+    gap: 7px;
+    align-items: center;
+    text-align: center;
+
+    li {
+      // border-right: 1px solid black;
+
+      a {
+        color: black;
+        font-size: 17px;
+      }
+    }
+  }
+ 
+}
+.details {
+
+
+  @include breakpoint-range($min :sm) {
+    display: flex;
+    gap: 7px;
+  }
+}
+
+::ng-deep {
+
+  .gm-style-iw-d {
+    overflow: hidden !important;
+    max-height: none !important;
+  }
+
+  .gm-style-iw.gm-style-iw-c {
+    // width: 326px !important;
+    position: absolute !important;
+    top: 0px;
+    padding: 4px !important;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .gm-style .gm-style-iw-tc::after {
+    -webkit-clip-path: polygon(0 0, 50% 100%, 100% 0);
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
+    content: "";
+    height: 12px;
+    left: 0;
+    position: absolute;
+    width: 25px;
+  }
+
+  .label {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0em;
+    text-align: left;
+
+  }
+
+
+}

@@ -1,0 +1,48 @@
+@use "sass:map";
+@use "sass:string";
+
+$break-points: (
+    xs: 480px,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1300px,
+    xxxl: 1400px
+);
+
+/** Helper to build @media query. Use named arguments only! */
+@mixin breakpoint-range($min: false, $max: false, $mode: screen, $extra: ()) {
+
+    /** Checking break points available or not*/
+    @each $key in ($min, $max) {
+        @if $key and not map.has-key($break-points, $key) {
+            @error "Available values for ($from, $to) args are: #{map.keys($break-points)}";
+        }
+    }
+
+    $conditions: $mode;
+
+    /** Combining breakpoints dependencies */
+    @each $key,
+    $value in (min-width: $min,
+        max-width: $max,
+    ) {
+        @if $value {
+            $modifier: if($key =='max-width', -1px, 0px);
+            $condition: " and (#{$key}: #{map.get($break-points, $value) - $modifier})";
+            $conditions: string.insert($conditions, $condition, -1);
+        }
+    }
+
+    /** Combining rest dependencies */
+    @each $key,
+    $value in $extra {
+        $condition: " and (#{$key}: #{$value})"
+    }
+
+    /** Building final media query */
+    @media #{$conditions} {
+        @content;
+    }
+}

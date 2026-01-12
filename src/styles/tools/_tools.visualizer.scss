@@ -1,0 +1,30 @@
+@mixin flex($justify, $align, $dir, $wrap) {
+	display: flex;
+	flex-direction: $dir;
+	justify-content: $justify;
+	align-items: $align;
+	flex-wrap: $wrap;
+}
+
+@mixin pos($pos, $top, $right, $bottom, $left) {
+	position: $pos;
+	top: $top;
+	right: $right;
+	bottom: $bottom;
+	left: $left;
+}
+
+$margin-sm: 0.75rem;
+$select-dropdown-width: 19rem;
+$visualizer-container-width: 52.5rem;
+$margin: 2.5rem;
+$container-width: 42.5rem; // 680px
+$border-radius-sm: 0.375rem; // 6px
+$border-radius-lg: 0.75rem; // 12px
+$container-width: 57.625rem; // 922px
+$content-width: 41.625rem; // 666px
+$screen-md-min: 650px; // Overwrite
+$page-margin-auto: 5rem auto;
+$container-width: 42.5rem; // 680px
+$arrow-width: 1.875rem; // 30px
+$border-radius-sm: 0.375rem; // 6px

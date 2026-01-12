@@ -1,0 +1,137 @@
+<div class="card">
+    <div class="card-header">
+        Add Employee
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="employeeForm" (ngSubmit)="submit(employeeForm.value)">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Reseller Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Name" formControlName="name"
+                            aria-describedby="button-addon2" readonly  />
+                    </div>
+                    <div *ngIf="employeeForm.get('name')?.invalid && (employeeForm.get('name')?.dirty || employeeForm.get('name')?.touched)"
+                        class="text-danger">
+                        Name is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Organization Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Organization Name"
+                            formControlName="orgName" aria-describedby="button-addon2" readonly  />
+                    </div>
+                    <div *ngIf="employeeForm.get('orgName')?.invalid && (employeeForm.get('orgName')?.dirty || employeeForm.get('orgName')?.touched)"
+                        class="text-danger">
+                        Organization Name is required
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Employee Type</label>
+                    <ng-select placeholder="Select Employee Type"  formControlName="empType">
+                        <ng-option *ngFor="let item of employetypeData" [value]="item?.id">{{ item?.text }}</ng-option>
+                      </ng-select>
+                    <div *ngIf="employeeForm.get('empType')?.invalid && (employeeForm.get('empType')?.dirty || employeeForm.get('empType')?.touched)"
+                        class="text-danger">
+                        Employee Type is required
+                    </div>
+                </div>
+
+
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Employee Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Employee Name"
+                            formControlName="empName" aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="employeeForm.get('empName')?.invalid && (employeeForm.get('empName')?.dirty || employeeForm.get('empName')?.touched)"
+                        class="text-danger">
+                        Employee Name is required
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Mobile No.</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Mobile No."
+                            formControlName="phn" aria-describedby="button-addon2" />
+                    </div>
+                    <div
+                        *ngIf="employeeForm.get('phn')?.invalid && (employeeForm.get('phn')?.dirty || employeeForm.get('phn')?.touched)">
+                        <div  class="text-danger" *ngIf="employeeForm.get('phn')?.errors?.['required']">Mobile no is required</div>
+                        <div class="text-danger" *ngIf="employeeForm.get('phn')?.errors?.['pattern']">Invalid phone
+                            number format.</div>
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Login Id</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Login Id" formControlName="loginId"
+                            aria-describedby="button-addon2" autocomplete="new-Login"/>
+                    </div>
+                    <div *ngIf="employeeForm.get('loginId')?.invalid && (employeeForm.get('loginId')?.dirty || employeeForm.get('loginId')?.touched)"
+                        class="text-danger">
+                        Login Id is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="Enter Email" formControlName="email"
+                        aria-describedby="button-addon2" autocomplete="new-Email"/>
+                        <div *ngIf="employeeForm.get('email')?.invalid && (employeeForm.get('email')?.dirty || employeeForm.get('email')?.touched)" class="text-danger">
+                            <div *ngIf="employeeForm.get('email')?.errors?.['required']">Email is required</div>
+                            <div *ngIf="employeeForm.get('email')?.errors?.['email']">Invalid email format</div>
+                        </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group ">
+                        <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control"
+                            formControlName="pwd" placeholder="Enter Password" aria-describedby="button-addon2" autocomplete="new-Password"/>
+                        <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+                            <i class="fa" [ngClass]="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="employeeForm.get('pwd')?.invalid && (employeeForm.get('pwd')?.dirty || employeeForm.get('pwd')?.touched)"
+                        class="text-danger">
+                        Password is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Status</label>
+                    <ng-select placeholder="Select Status"  formControlName="status">
+                        <ng-option *ngFor="let item of statusData" [value]="item?.id">{{ item?.text }}</ng-option>
+                      </ng-select>
+                    <div *ngIf="employeeForm.get('status')?.invalid && (employeeForm.get('status')?.dirty || employeeForm.get('status')?.touched)"
+                        class="text-danger">
+                        Status is required
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Address</label>
+                    <div class="input-group ">
+                        <textarea class="form-control" placeholder="Enter Address" formControlName="Address"
+                            id="exampleFormControlTextarea1" rows="4"></textarea>
+                    </div>
+                </div>               
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-success" type="submit" >
+                        Submit
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-danger" (click)="cancel($event)">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

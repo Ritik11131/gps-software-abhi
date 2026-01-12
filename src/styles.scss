@@ -1,0 +1,395 @@
+// Variable overrides first
+$primary: #ce0e2d;
+$enable-shadows: true;
+$prefix: "mx-";
+@import '../node_modules/swiper/swiper-bundle.css';
+@import 'ngx-toastr/toastr';
+/* You can add global styles to this file, and also import other style files */
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/ngx-easy-table/style.scss";
+@import "../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css";
+@import "./styles/colors";
+@import "./styles/fonts";
+@import "./styles/buttons";
+@import "./styles/form.control";
+// @import "./styles/tabs";
+@import "./styles/alerts";
+@import "./styles/typeface";
+@import "./styles/ngx-easy-table";
+@import "ngx-owl-carousel-o/lib/styles/scss/owl.carousel";
+@import "ngx-owl-carousel-o/lib/styles/scss/owl.theme.default";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import "./styles/ng-select";
+@import "../src/styles/docs";
+@import "./styles/core";
+@import "./styles/card";
+@import "./styles/side-nav";
+// @import "./styles/pagination";
+@import "./styles/date-picker";
+@import "/src/styles/mixins/breakpoints";
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+
+*{
+  font-family: Outfit;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  // font-family: "Montserrat", sans-serif;
+  // min-height: ;
+  position: relative;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: none;
+
+  // background: $color-light-gray;
+  // overflow: hidden;
+  // ::-webkit-scrollbar {
+  //   display: none;
+  font-size: 15px;
+  // }
+}
+
+
+/* Target the scrollbar itself */
+::-webkit-scrollbar {
+  height: 10px;
+  width: 6px;
+}
+
+/* Target the draggable part of the scrollbar */
+::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  border-radius: 10px;
+}
+
+/* Target the part of the track (part of the scrollbar) that is not covered by the handle. */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+
+// modal-container {
+//   background-image: linear-gradient(to right,
+//       rgba(167, 35, 35, 0.4),
+//       rgba(255, 255, 255, 0.4),
+//       rgb(167, 35, 35, 0.4));
+//   backdrop-filter: blur(10px);
+// }
+
+.modal-content {
+  border-radius: 24px;
+  box-shadow: rgb(0 0 0 / 25%) 0px 25px 50px 29px;
+
+  .modal-header {
+    background: linear-gradient(#6c75f3, #3a45bb);  
+      border-radius: 22px 22px 0px 0px;
+    // margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+
+    .btn-close {
+      filter: brightness(0) invert(1);
+      opacity: 1;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      color: #fff;
+      font-weight: bolder;
+    }
+  }
+}
+
+.nav-justified>.nav-link,
+.nav-justified .nav-item {
+  flex-basis: 1 !important;
+}
+
+.invalid-feedback {
+  color: #ce0e2d;
+  font-weight: normal;
+}
+
+.modal-xl.modal-dialog,
+.modal-lg.modal-dialog {
+  @include breakpoint-range($min: md, $max: lg) {
+    max-width: 90%;
+  }
+}
+
+.main-content {
+  padding: 0px 13px 0px 13px;
+  background-color: white;
+  overflow: auto;
+  border-radius: 15px;
+  margin-right: 12px;
+
+  @include breakpoint-range($max: sm) {
+    margin-right: unset;
+  }
+
+
+}
+
+.admin-content {
+  padding: 10px;
+  // background-color: #EEF5F9;
+  // overflow: auto;
+
+  @include breakpoint-range($max: sm) {
+    margin-right: unset;
+  }
+}
+
+.btn.btn-primary {
+  height: 35px;
+  width: 100% !important;
+}
+
+.btn.btn-success {
+  width: 100%;
+  height: 35px;
+}
+
+button.btn.btn-danger {
+  width: 100%;
+  height: 35px;
+}
+
+/* =============   Table   ============= */
+.table>tbody>tr>td {
+  padding: 15px;
+}
+
+.table>tbody>tr:nth-of-type(odd) {
+  background: #f2f4f8;
+}
+
+.table>tbody>tr>td,
+.table>tbody>tr>th {
+  border: 1px solid #e9ecef;
+  vertical-align: inherit;
+}
+
+.table>tfoot>tr>td,
+.table>tfoot>tr>th {
+  border: 1px solid #e9ecef;
+  vertical-align: inherit;
+}
+
+.table>thead>tr>td,
+.table>thead>tr>th {
+  border: 1px solid #e9ecef;
+  vertical-align: inherit;
+}
+
+.table>caption+thead>tr:first-child>td,
+.table>caption+thead>tr:first-child>th {
+  border-top: 1px solid #e9ecef;
+  padding: 15px;
+}
+
+.table>colgroup+thead>tr:first-child>td,
+.table>colgroup+thead>tr:first-child>th {
+  border-top: 1px solid #e9ecef;
+  padding: 15px;
+}
+
+.table>thead:first-child>tr:first-child>td,
+.table>thead:first-child>tr:first-child>th {
+  border-top: 1px solid #e9ecef;
+  padding: 15px;
+}
+
+.table>thead>tr>th {
+  border: 1px solid #e9ecef;
+  vertical-align: bottom;
+}
+
+/* =============  Date Table  ============= */
+div.dataTables_filter input {
+  margin-left: 0.5em;
+  display: inline-block;
+  box-shadow: none;
+  border: 1px solid #e9ecef;
+  height: 39px;
+}
+
+div.dataTables_length select {
+  box-shadow: none;
+  border: 1px solid #ddd;
+  height: 39px;
+  text-align: center;
+}
+
+div.dataTables_paginate a {
+  box-sizing: border-box;
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0.5em 1em;
+  margin-left: 2px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  color: #54667a;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+
+div.dataTables_paginate a.disabled {
+  cursor: not-allowed;
+}
+
+div.dataTables_paginate a:hover,
+div.dataTables_paginate a.current {
+  background: #2f387c;
+  color: #fff;
+}
+
+@media (min-width: 768px) {
+
+  .dataTables_length,
+  .dataTables_info {
+    float: left;
+    width: 50%;
+  }
+}
+
+.search-form {
+  display: block;
+  float: left;
+  position: relative;
+  margin-left: 30px;
+  margin-top: 13px;
+}
+
+.search-form .form-control {
+  // width: 240px;
+  border: 0px;
+  // background: rgba(255, 255, 255, 0.1);
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -ms-box-shadow: none;
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  height: 34px;
+  border-radius: 30px;
+   font-size: 15px;
+}
+
+.search-form .form-control::-webkit-input-placeholder,
+.search-form .form-control:-moz-placeholder,
+.search-form .form-control::-moz-placeholder,
+.search-form .form-control:-ms-input-placeholder {
+  color: #fff;
+}
+
+.search-form .btn-search {
+  position: absolute;
+  right: 15px;
+  top: 5px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  padding: 0;
+}
+
+.dataTables_scrollHead {
+  overflow: hidden;
+  position: relative;
+  border: 0px none;
+  width: 100%;
+
+  .dataTables_scrollHeadInner {
+    box-sizing: content-box;
+    width: 986px;
+    padding-right: 17px;
+  }
+}
+
+.dataTables_scrollBody {
+  position: relative;
+  overflow: auto;
+  width: 100%;
+  height: auto;
+  scrollbar-width: thin;
+
+  tr.active {
+    td {
+      color: #ff9934;    
+    }
+  }
+}
+
+.admin-section {
+  padding: 20px;
+}
+
+.pagination>li>a,
+.pagination>li>span {
+  color: #2f387c !important;
+}
+
+.pagination>.active>a {
+  z-index: 3 !important;
+  color: #fff !important;
+  cursor: default !important;
+  background-color: #2f387c !important;
+  border-color: #2f387c !important;
+}
+
+.pagination>.active>a:focus,
+.pagination>.active>a:hover {
+  z-index: 3 !important;
+  color: #fff !important;
+  cursor: default !important;
+  background-color: #2f387c !important;
+  border-color: #2f387c !important;
+}
+
+.pagination>.active>span {
+  z-index: 3  !important;
+  color: #fff !important;
+  cursor: default !important;
+  background-color: #2f387c !important;
+  border-color: #2f387c !important;
+}
+
+.pagination>.active>span:focus,
+.pagination>.active>span:hover {
+  z-index: 3 !important;
+  color: #fff !important;
+  cursor: default !important;
+  background-color: #2f387c !important;
+  border-color: #2f387c !important;
+}
+
+.ngx-pagination .current {
+  padding: .1875rem .625rem !important;
+  background: #2e367a !important;
+  color: #fefefe !important;
+  cursor: default !important;
+}
+
+.ngx-pagination a, .ngx-pagination button {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.card-header {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.text-danger{
+  font-size: 13px;
+}

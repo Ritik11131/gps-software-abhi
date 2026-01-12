@@ -1,0 +1,76 @@
+<div class="row">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                <div class="dataTables_scroll">
+                    <div class="dataTables_scrollBody"
+                        [ngStyle]="{'height': deviceData && deviceData?.length > 5 ? '344px': 'auto'}">
+                        <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline"
+                            role="grid" aria-describedby="datatable_info" style="width: 100%" width="100%">
+                            <thead>
+                                <tr role="row">
+                                    <th *ngFor="let vehicleHeading of columns">
+                                        <strong style="font-size: 10px;">{{vehicleHeading?.title}}</strong>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let row of deviceData |  paginate : {
+                                          itemsPerPage: tableSize,
+                                          currentPage: page,
+                                          totalItems: count} let i= index"
+                                    [ngClass]="{'active': selectColor?.Id === row?.Id}">
+                                    <td>
+                                        <a>{{ row?.VehicleNo }}</a>
+                                    </td>
+                                    <td>
+                                        <!-- <a (mouseenter)="showCopyIcon = i" style="cursor: pointer;">{{ row?.DeviceId }}
+                                      </a> &nbsp;
+                                      <i *ngIf="showCopyIcon === i" (click)="copyContent(row?.DeviceId,i)" class="fa-regular fa-copy cursor-pointer"  [title]="copy == true && showCopyIcon === index? 'Copied' : 'Copy'"></i> 
+                                      </td> -->
+
+                                        <a (mouseenter)="showCopyIcon = i" style="cursor: pointer;"
+                                            [ngStyle]="{'color': (showCopyIcon === i) ? 'red' : 'blue','display': (showCopyIcon === i) ? 'inline-flex' : '', 'gap': (showCopyIcon === i) ? '8px' : ''}"
+                                            (mouseleave)="showCopyIcon = null">
+                                            {{ row?.DeviceId }}
+                                            <i *ngIf="showCopyIcon === i" (click)="copyContent(row?.DeviceId,i)"
+                                                class="fa-regular fa-copy cursor-pointer"
+                                                [title]="copy == true && showCopyIcon === index ? 'Copied' : 'Copy'"></i>
+                                        </a>
+
+                                    <td>
+                                        <a>{{ row?.SimPhoneNumber}}</a>
+
+                                    </td>
+                                    <td>
+                                        <a>{{ row?.DeviceType?.Name }}</a>
+                                    </td>
+                                    <td>
+                                        <a>{{ row?.InstallationOn | date : "yyyy-MM-dd" }}</a>
+                                    </td>
+                                    <td>
+                                        <a>{{ row?.PointValidity?.NextRechargeDue | date :
+                                            "yyyy-MM-dd"}}</a>
+                                    </td>
+                                    <td>
+                                        <a>{{ row?.PointValidity?.CustomerRechargeDue | date :
+                                            "yyyy-MM-dd"}}</a>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center" *ngIf="deviceData && deviceData.length == 0 || deviceData == null "
+                            style="width: 100%;">No Data Available</div>
+                    </div>
+                    <div class="pagination-data" *ngIf="deviceData && deviceData?.length > 0">
+                        <pagination-controls previousLabel="Prev" nextLabel="Next"
+                            (pageChange)="onTableDataChange($event)">
+                        </pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<form [formGroup]="filterForm">
+    <div class="filter-value">
+        <div class="filter-name">
+            <ng-select placeholder="Filter By" (change)="onItemSelect($event)" formControlName="filtername">
+                <ng-option *ngFor="let item of bulk" [value]=" item?.title">{{
+                    item?.title
+                    }}</ng-option>
+            </ng-select>
+            <div *ngIf="filterForm.get('filtername')?.invalid && (filterForm.get('filtername')?.dirty || filterForm.get('filtername')?.touched)"
+                class="text-danger">
+                Report is required
+            </div>
+        </div>
+        <div class="vehicle-list" *ngIf="isAlertType">
+            <ng-select placeholder="Select Alert Type" formControlName="alertId">
+                <ng-option *ngFor="let vehicle of alertType" [value]="vehicle?.id">{{
+                    vehicle?.alert_type
+                    }}</ng-option>
+            </ng-select>
+            <div *ngIf="filterForm.get('alertId')?.invalid && (filterForm.get('alertId')?.dirty || filterForm.get('alertId')?.touched)"
+            class="text-danger">
+            Alert is required
+        </div>
+        </div>
+
+        <div class="vehicle-list" *ngIf="movementcontrol">
+            <ng-select placeholder="Select Vehicle" formControlName="vehicledata" (change)="onVehicleSelect($event)">
+                <ng-option *ngFor="let item of vehicleData" [value]="item?.value">{{ item?.text
+                    }}</ng-option>
+            </ng-select>
+            <div *ngIf="filterForm.get('vehicledata')?.invalid && (filterForm.get('vehicledata')?.dirty || filterForm.get('vehicledata')?.touched)"
+                class="text-danger">
+                Vehicle is required
+            </div>
+        </div>
+        <div class="vehicle-list" *ngIf="movementcontrol">
+            <div>
+                <input type="text" placeholder="Movement Duration" class="form-control" formControlName="movement">
+                <div *ngIf="filterForm.get('movement')?.invalid && (filterForm.get('movement')?.dirty || filterForm.get('movement')?.touched)"
+                    class="text-danger">
+                    <span *ngIf="filterForm.get('movement')?.hasError('required')">Movement is required</span>
+                    <span *ngIf="filterForm.get('movement')?.hasError('min')">Movement must be greater than 0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="vehicle-list" *ngIf="!movementcontrol">
+            <ng-select [items]="vehicleData" [clearSearchOnAdd]="true" [closeOnSelect]="false" labelForId="state"
+                [multiple]="true" placeholder="Select Vehicle" clearAllText="Clear" formControlName="vehicle"
+                [bindLabel]="'text'">
+                <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                    <div class=" ">
+                        <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                            [ngModelOptions]="{standalone: true}" />
+                        {{item['text']}}
+                    </div>
+                </ng-template>
+                <ng-template ng-multi-label-tmp let-items="items">
+
+                </ng-template>
+            </ng-select>
+            <div *ngIf="filterForm.get('vehicle')?.invalid && (filterForm.get('vehicle')?.dirty || filterForm.get('vehicle')?.touched)"
+                class="text-danger">
+                Vehicle is required
+            </div>
+
+        </div>
+        <div class="default">
+            <ng-select placeholder="Select default days" formControlName="timeformat" (change)="timecheck($event)">
+                <ng-option *ngFor="let item of selectDate" [value]="item?.dateValue">
+                    {{item?.dateValue}}
+                </ng-option>
+            </ng-select>
+        </div>
+        <ng-container *ngIf="customDate">
+            <div class="from-time">
+                <div>
+                    <mat-form-field>
+                        <input matInput [ngxMatDatetimePicker]="picker1" formControlName="fromDate">
+                        <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker [showSeconds]="true" [enableMeridian]="true" #picker1>
+                        </ngx-mat-datetime-picker>
+                    </mat-form-field>
+                    <div *ngIf="filterForm.get('fromDate')?.invalid && (filterForm.get('fromDate')?.dirty || filterForm.get('fromDate')?.touched)"
+                        class="text-danger">
+                        From Date is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="to-time">
+                <div>
+                    <mat-form-field>
+                        <input matInput [ngxMatDatetimePicker]="picker2" formControlName="toDate">
+                        <mat-datepicker-toggle matSuffix [for]="$any(picker2)"></mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker [showSeconds]="true" [enableMeridian]="true" #picker2>
+                        </ngx-mat-datetime-picker>
+                    </mat-form-field>
+                    <div *ngIf="filterForm.get('toDate')?.invalid && (filterForm.get('toDate')?.dirty || filterForm.get('toDate')?.touched)"
+                        class="text-danger">
+                        To Date is required
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <div class="duration" *ngIf="durationcontrol">
+            <div>
+                <input type="text" placeholder="Speed Limit" class="form-control" formControlName="speed">
+                <div *ngIf="filterForm.get('speed')?.invalid && (filterForm.get('speed')?.dirty || filterForm.get('speed')?.touched)"
+                    class="text-danger">
+                    <span *ngIf="filterForm.get('speed')?.hasError('required')">Speed Limit is required</span>
+                    <span *ngIf="filterForm.get('speed')?.hasError('min')">Speed must be greater than 0</span>
+                </div>
+            </div>
+        </div>
+        <div class="default" *ngIf="isLocation">
+            <ng-select placeholder="Select Location" formControlName="locationType">
+                <ng-option *ngFor="let item of selectLocation" [value]="item?.id">
+                    {{item?.value}}
+                </ng-option>
+            </ng-select>
+        </div>
+        <div class="submit">
+            <button class="btn btn-primary" (click)="submit(filterForm.value, 'Report')">
+                Submit
+            </button>
+        </div>
+    </div>
+    <div class="chips-container">
+        <div class="chip" *ngFor="let vehicle of selectedVehicles">
+            {{ vehicle?.text }}
+            <span class="close-btn" (click)="removeVehicle(vehicle)">×</span>
+        </div>
+    </div>
+    <app-alert [alertData]="alertData" [alertType]="messageAlert" *ngIf="alertTrigger "></app-alert>
+</form>
+<div class="mt-1">
+    <reports-details #ReportsDetails (filterPagination)="Confirm($event)"></reports-details>
+</div>

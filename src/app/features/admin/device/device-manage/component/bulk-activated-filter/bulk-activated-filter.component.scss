@@ -1,0 +1,16 @@
+.filter-part {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-left: 30%;
+  }
+
+  .modified{
+    margin-left: 20%;
+  }
+  
+  .middle-part, .customer-part, .button-part, .date-part {
+    flex: 1; 
+    min-width: 100px;
+  }

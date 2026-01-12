@@ -1,0 +1,31 @@
+<div class="card">
+    <div class="card-header">
+        Shift Customer
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Dealer/Reseller</label>
+                        <ng-select placeholder="Select Dealer/Reseller" [(ngModel)]="selectedDelear">
+                            <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                        </ng-select>
+                        <div *ngIf="!selectedDelear" class="text-danger">
+                            Dealer/Reseller is required
+                        </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-success" type="submit" (click)="submit()">
+                    Shift
+                </button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-danger" (click)="cancel($event)">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

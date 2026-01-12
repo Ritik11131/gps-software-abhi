@@ -1,0 +1,143 @@
+<section class="vh-100">
+  <div class="sliders">
+    <!-- <ng-container *ngFor="let img of img_list; let i = index">
+      <div class="slider" [class.active]="i === current" @fade>
+        <img class="img" [src]="img">
+      </div>
+    </ng-container> -->
+    <video class="video" id="background-video" src="assets/images/gps.mp4" autoplay muted loop></video>
+
+  </div>
+  <div class="login-header">
+    <div class="company-name">
+      <h3>GPS Software</h3>
+    </div>
+    <div class="store-button">
+      <div class="app-store">
+        <i class="fa-brands fa-apple"></i>
+        <div>
+          <span>Get It On</span>
+          <h5>App Store</h5>
+        </div>
+        <!-- <span class="barcode">
+          <img src="assets/images/apple-qr.png" alt="Not Available Barcode">
+        </span> -->
+      </div>
+      <div class="app-store">
+        <img src="assets/images/google-play-store.png" alt="Not Available Barcode">
+        <div>
+          <span>Get It On</span>
+          <h5>Google Play</h5>
+        </div>
+        <!-- <span class="barcode">
+          <img src="assets/images/apple&android.png" alt="Not Available Barcode">
+        </span> -->
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="container py-5 h-100">
+    <div class="login-container">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5 login-section">
+          <div class="card shadow-2-strong transparent-card">
+            <form [formGroup]="registerForm">
+              <div class="card-body text-center">
+                <!-- <div class="logo-container">
+                  <img alt="" src="assets/images/logo.png" style="height: 50px; width: 100px;" class="logo-icon margin-r-10">
+                </div> -->
+                <div class="logo-container">
+                  <img alt="" src="assets/images/logo_user.png" style="height: 70px; width: 70px;"
+                    class="logo-icon margin-r-10">
+                </div>
+                <!-- <h3>Sign in</h3> -->
+                <!-- <div class=" mb-2">
+                  <ng-select placeholder="Enter Customer/Dealer" formControlName="filterBy">
+                    <ng-option *ngFor="let item of bulk" [value]="item?.title">{{item?.title}}</ng-option>
+                  </ng-select>
+                </div> -->
+                <div class="selection-part mb-2">
+                  <span><input type="radio" value="Customer" id="customer" formControlName="filterBy"> Customer</span>
+                  <span><input type="radio" value="Dealer/Reseller" id="dealer" formControlName="filterBy">
+                    Reseller</span>
+                </div>
+                <div class="mb-2">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fa fa-user"></i>
+                      </span>
+                    </div>
+                    <!-- <label class="form-label" for="typeEmailX-2">User Name</label> -->
+                    <input type="text" id="typeEmailX-2" formControlName="username" placeholder="Username"
+                      class="form-control" [ngClass]="{ 'is-invalid': submitted && f['username'].errors }" />
+                    <!-- <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
+                      <div *ngIf="f['username'].errors['required']">Username is required!</div>
+                    </div> -->
+                  </div>
+                  <div
+                    *ngIf="submitted && f['username'].errors || f['username'].invalid && (f['username'].dirty || f['username'].touched)"
+                    class="text-danger">
+                    <div *ngIf="f['username'].errors">Username is required!</div>
+                  </div>
+                </div>
+                <div class="">
+                  <!-- <label class="form-label" for="typePasswordX-2">Password</label> -->
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fa fa-lock"></i>
+                      </span>
+                    </div>
+                    <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control password"
+                      placeholder="Password" formControlName="password"
+                      [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+                      aria-describedby="button-addon2" />
+                    <i class="fa" id="visiblePassword" (click)="showPassword = !showPassword"
+                      style="background-color: white;"
+                      [ngClass]="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}" style="cursor: pointer;"></i>
+                    <!-- <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+                      <div *ngIf="f['password'].errors['required']">Password is required!</div>
+                      <div *ngIf="f['password'].errors['minlength']">Password should be at least 6 characters long!
+                      </div>
+                    </div> -->
+                  </div>
+
+                  <div *ngIf="(submitted && f['password'].errors) || 
+                  (f['password'].invalid && (f['password'].dirty || f['password'].touched))" class="text-danger">
+                    <div *ngIf="f['password'].errors">Password is required!</div>
+                  </div>
+                  <!-- <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+                    <div *ngIf="f['password'].errors['required']">Password is required!</div>
+                    <div *ngIf="f['password'].errors['minlength']">Password should be at least 6 characters long!</div>
+                  </div> -->
+                </div>
+
+                <div class="forgot-password mb-3 mt-3">
+                  <div class="remember">
+                    <input type="checkbox"> <span> Remember me</span>
+                  </div>
+                  <div class="pasword">
+                    <span (click)="forgotPassword()">Forgot Password ?</span>
+                  </div>
+                </div>
+                <button class="btn button-part btn-lg btn-block" type="submit"
+                  [disabled]="isLoading || tokenService.getloginstatus()" 
+                  (click)="onSubmit(registerForm.value)">
+                  <span *ngIf="!isLoading">Login</span>
+                  <span *ngIf="isLoading" class="d-flex align-items-center justify-content-center">
+                    <i class="fa fa-spinner fa-spin me-2"></i>
+                    Loading...
+                  </span>
+                </button>
+                <!-- <hr class="my-4"> -->
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

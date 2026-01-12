@@ -1,0 +1,38 @@
+
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="geofance-part">
+    <div class="list-part">
+        <goefance-list #geofanceDetails (onConfirm)="confirm($event)"></goefance-list>
+    </div>
+    <div class="map-part">
+        <div class="card">
+            <div class="card-header">
+                <div class="place-search">
+                    <div class="search-box">
+                        <input type="text"  class="form-control" [(ngModel)]="latlngvalue" placeholder="Search Lat Lng" (change)="changeLatLng($event)"/>                    
+                        <span class="fa fa-search search-icon"></span>
+                    </div>
+                </div>  
+                <div class="place-search">
+                    <div class="search-box">
+                        <input type="text" class="pl-2" class="form-control"  id="geo-input" (input)="change($event)" #geoInput placeholder="Search Place" />                    
+                        <span class="fa fa-search search-icon"></span>
+                    </div>
+                </div>
+                <div class="remove">
+                 <button class="btn btn-primary" (click)="removeCornerMarkers()">Remove Marker</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="map-container">
+                    <div id="geomap"></div>  
+                    <div class="mt-2">
+                        <button (click)="decreaseRadius()"><i class="fa fa-minus"></i></button>
+                        <input type="range" min="100" max="1000" step="100" [(ngModel)]="circleRadius" (input)="updateCircleRadius()">
+                        <button (click)="increaseRadius()"><i class="fa fa-plus"></i></button> {{circleRadius}}
+                      </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

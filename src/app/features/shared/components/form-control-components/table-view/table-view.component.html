@@ -1,0 +1,109 @@
+<ng-container>
+    <div class="table-data" [ngClass]="{ minimal: minimal }">
+      <table>
+        <thead>
+          <tr>
+            <th *ngIf="checkboxes">
+              <label [for]="'selectAllCheckboxescustom' + id">
+                <input
+                  type="checkbox"
+                  [id]="'selectAllCheckboxescustom' + id"
+                  (change)="tableEvent('onSelectAll', $event.target)"
+                  [checked]="setSelectAll()"
+                />
+                <div class="checkbox"></div>
+              </label>
+            </th>
+            <th *ngFor="let item of columns" (click)="sortData(item.key)">
+              {{ item?.title || "" }}
+              <img
+                [class.active]="previousKey.active == item.key"
+                [ngClass]="{
+                  rotate:
+                    previousKey.active == item.key &&
+                    previousKey.direction == 'desc'
+                }"
+                src="/assets/images/dropdown.svg"
+                alt=""
+              />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let item of tableData
+                
+                | paginate
+                  : {
+                      itemsPerPage: tableItemsSize,
+                      currentPage: pageIndex
+                    };
+              let i = index
+            "
+          >
+            <td *ngIf="checkboxes">
+              <label [for]="'checkboxcustom-' + id + i">
+                <input
+                  type="checkbox"
+                  [id]="'checkboxcustom-' + id + i"
+                  [checked]="item.checked"
+                  (change)="tableEvent('onCheckboxSelect', $event.target, i)"
+                />
+                <div class="checkbox"></div>
+              </label>
+            </td>
+            <td *ngFor="let col of columns; let k = index" [ngClass]="col.key">
+              <a
+                href="javascript:void(0)"
+                *ngIf="columns[k]?.key === redirectionObj[0]?.key"
+                (click)="
+                  goTo(
+                    redirectionObj[0].redirectionLink,
+                    item[columns[k].key],
+                    item
+                  )
+                "
+              >
+                {{ item[columns[k].key] || "NA" }}
+              </a>
+              <span *ngIf="columns[k]?.key != redirectionObj[0]?.key">{{
+                item[columns[k]?.key] || "NA"
+              }}</span>
+            </td>
+          </tr> 
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+  <div
+    class="d-flex justify-content-center mt-3"
+    *ngIf="!tableData || tableData.length == 0"
+  >
+    No Data
+  </div>
+  
+  <div class="row mb-4 margin-bottom" *ngIf="pagination">
+    <div class="d-flex justify-content-center">
+      <pagination-controls
+        [maxSize]="5"
+        [responsive]="true"
+        [nextLabel]="''"
+        [previousLabel]="''"
+        (pageChange)="onTableDataChange($event)"
+      >
+      </pagination-controls>
+    </div>
+    <div class="col-md-12" *ngIf="showOutput">
+      <p class="text-center mb-4">
+        {{ startValue }} -
+        {{ lastValue > tableData.length ? tableData.length : lastValue }} OF
+        {{ tableData.length }} INVOICES
+      </p>
+    </div>
+    <!-- <div class="col-md-12 text-center">
+                <button class="btn btn-primary mr-10">Continue</button>
+                <button class="btn btn-outline-secondary">Cancel</button>
+            </div> -->
+  </div>
+  

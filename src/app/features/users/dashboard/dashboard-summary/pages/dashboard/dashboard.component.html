@@ -1,0 +1,43 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+
+<section class="dashboard-page">
+   <div class="map-container">
+      <div id="map"></div>
+      <div class="live">
+
+         <div id="over_map" class="live-details" *ngIf="liveTime">
+            <div fxflex="33" fxlayoutalign="start center"
+               style="margin-right: 1px; flex: 1 1 33%; box-sizing: border-box; place-content: center flex-start; align-items: center; flex-direction: row; display: flex; max-width: 33%;">
+               <b>Refresh In: </b> {{counter}}s
+            </div>
+            <div fxflex="33" fxlayoutalign="center end"
+               style="margin-right: 1px; flex: 1 1 33%; box-sizing: border-box; place-content: flex-end center; align-items: flex-end; flex-direction: row; display: flex; max-width: 33%;">
+               <b>{{liveData?.Device?.VehicleNo}}</b>
+            </div>
+            <div fxflex="33" fxlayoutalign="end end"
+               style="flex: 1 1 33%; box-sizing: border-box; place-content: flex-end; align-items: flex-end; flex-direction: row; display: flex; max-width: 33%;">
+               <a (click)="closeTab()" style="cursor: pointer;"><i class="fa fa-close"></i></a>
+            </div>
+         </div>
+      </div>
+      <!-- <vehicle-details *ngIf="popupService.isOpened()" [data]="popupService.getData()"></vehicle-details> -->
+      <div class="main-content">
+         <div class="vehicle-list" *ngIf="vehicleListshow">
+            <vehicle-list [isPageSize]="isPageSize" [vehicleData]="vehicleData" [vehicleDatacount]="vehicleDatacount"
+               (showlabels)="labelshow($event)" (onAdress)="addressValue($event)"
+               (onConfirm)="confirm($event)" (selectVehicleConfirm)="selectVehiclesPlot($event)"></vehicle-list>
+         </div>
+         <!-- <div class="vehcle-location">
+               <vehicle-status></vehicle-status>
+            </div> -->
+         <div class="chat-icon" (click)="toggleChat()">
+            <img src="assets/images/notification.png" alt="Chat Icon">
+         </div>
+         <alert-report [ngClass]="{'alert-report-transition': true, 'active': showChatBox}" (onAlert)="getAlert($event)"
+            [showChatBox]="showChatBox">
+         </alert-report>
+      </div>
+   </div>
+</section>
+<site-footer class="mt-2" #footerData (sliderValueevent)="setZoom($event)" (changeMap)="changeMapType($event)"
+   (trafficeValue)="toggleTrafficMap($event)" (addressValue)="getAddressData($event)"></site-footer>

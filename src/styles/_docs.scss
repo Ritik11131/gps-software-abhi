@@ -1,0 +1,23 @@
+@import "./colors";
+
+.doc-side-menu {
+    width: 240px;
+    background: $color-red;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 20px 30px;
+}
+
+.doc-side-nav {
+    width: 100%;
+
+    &>li {
+        color: #fff;
+        cursor: pointer;
+        text-align: center;
+        padding: 5px 0;
+        border-bottom: 1px dotted #8c0000;
+        text-transform: uppercase;
+    }
+}

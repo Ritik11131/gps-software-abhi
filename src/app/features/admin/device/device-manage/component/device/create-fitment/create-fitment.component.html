@@ -1,0 +1,468 @@
+<div class="card">
+    <div class="card-header">
+        Fitment
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="fitmentForm">
+            <mat-stepper orientation="vertical" [linear]="!isLinear" #stepper>
+                <mat-step [stepControl]="fitmentForm.get('invoiceFormGroup')">
+                    <div formGroupName="invoiceFormGroup">
+                        <ng-template matStepLabel>Invoice Details</ng-template>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Invoice Date</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" formControlName="invoiceDate"
+                                        placeholder="dd/MM/yyyy" #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"/>
+                                </div>
+                                <div *ngIf="fitmentForm.get('invoiceFormGroup.invoiceDate').invalid && 
+                            (fitmentForm.get('invoiceFormGroup.invoiceDate').dirty || 
+                            fitmentForm.get('invoiceFormGroup.invoiceDate').touched)" class="text-danger">
+                                    Invoice Date is required
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Invoice No.</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Invoice No."
+                                        formControlName="invoiceNo" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('invoiceFormGroup.invoiceNo').invalid && 
+                            (fitmentForm.get('invoiceFormGroup.invoiceNo').dirty || 
+                            fitmentForm.get('invoiceFormGroup.invoiceNo').touched)" class="text-danger">
+                                    Invoice No is required
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button mat-button color="primary" matStepperNext
+                                [disabled]="!fitmentForm.get('invoiceFormGroup').valid">Next</button>
+                        </div>
+                    </div>
+                </mat-step>
+                <mat-step [stepControl]="fitmentForm.get('ownerFormGroup')">
+                    <div formGroupName="ownerFormGroup">
+                        <ng-template matStepLabel>Owner Details</ng-template>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Owner Name</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Owner Name"
+                                        formControlName="ownerName" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('ownerFormGroup.ownerName').invalid && 
+                                (fitmentForm.get('ownerFormGroup.ownerName').dirty || 
+                                fitmentForm.get('ownerFormGroup.ownerName').touched)" class="text-danger">
+                                    Owner Name is required
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Address</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Address"
+                                        formControlName="address" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('ownerFormGroup.address').invalid && 
+                                (fitmentForm.get('ownerFormGroup.address').dirty || 
+                                fitmentForm.get('ownerFormGroup.address').touched)" class="text-danger">
+                                    Address is required
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label class="form-label">Mobile No.</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Enter Mobile No."
+                                            formControlName="mobileNo" aria-describedby="button-addon2" />
+                                    </div>
+                                    <div *ngIf="fitmentForm.get('ownerFormGroup.mobileNo').invalid && 
+                                    (fitmentForm.get('ownerFormGroup.mobileNo').dirty || 
+                                    fitmentForm.get('ownerFormGroup.mobileNo').touched)" class="text-danger">
+                                        Mobile No. is required
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button mat-button matStepperPrevious color="primary">Back</button>
+                            <button mat-button matStepperNext color="primary"
+                                [disabled]="!fitmentForm.get('ownerFormGroup').valid">Next</button>
+                        </div>
+                    </div>
+                </mat-step>
+
+                <mat-step [stepControl]="fitmentForm.get('rtoFormGroup')">
+                    <div formGroupName="rtoFormGroup">
+                        <ng-template matStepLabel>RTO details</ng-template>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">State</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter State"
+                                        formControlName="state" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('rtoFormGroup.state').invalid && 
+                                    (fitmentForm.get('rtoFormGroup.state').dirty || 
+                                    fitmentForm.get('rtoFormGroup.state').touched)" class="text-danger">
+                                    State is required
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">RTO</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter RTO"
+                                        formControlName="rto" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('rtoFormGroup.rto').invalid && 
+                                (fitmentForm.get('rtoFormGroup.rto').dirty || 
+                                fitmentForm.get('rtoFormGroup.rto').touched)" class="text-danger">
+                                    RTO is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Callibration Date</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" formControlName="callibrationDate"
+                                        placeholder="dd/MM/yyyy" #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"/>
+                                </div>
+                                <div *ngIf="fitmentForm.get('rtoFormGroup.callibrationDate').invalid && 
+                                (fitmentForm.get('rtoFormGroup.callibrationDate').dirty || 
+                                fitmentForm.get('rtoFormGroup.callibrationDate').touched)" class="text-danger">
+                                    Callibration Date is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Callibration Valid Till</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" formControlName="callibrationValid"
+                                        placeholder="dd/MM/yyyy" #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"/>
+                                </div>
+                                <div *ngIf="fitmentForm.get('rtoFormGroup.callibrationValid').invalid && 
+                                (fitmentForm.get('rtoFormGroup.callibrationValid').dirty || 
+                                fitmentForm.get('rtoFormGroup.callibrationValid').touched)" class="text-danger">
+                                    Callibration Valid Till is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button mat-button matStepperPrevious color="primary">Back</button>
+                            <button mat-button matStepperNext color="primary"
+                                [disabled]="!fitmentForm.get('rtoFormGroup').valid">Next</button>
+                        </div>
+                    </div>
+                </mat-step>
+
+                <mat-step [stepControl]="fitmentForm.get('vehiclesFormGroup')">
+                    <div formGroupName="vehiclesFormGroup">
+                        <ng-template matStepLabel>Vehicle details</ng-template>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Mfg Year</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Mfg Year"
+                                        formControlName="mfgyear" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('vehiclesFormGroup.mfgyear').invalid && 
+                                (fitmentForm.get('vehiclesFormGroup.mfgyear').dirty || 
+                                fitmentForm.get('vehiclesFormGroup.mfgyear').touched)" class="text-danger">
+                                    Mfg Year is required
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Vehicle No.</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Vehicle No."
+                                        formControlName="vehicleNo" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('vehiclesFormGroup.vehicleNo').invalid && 
+                                (fitmentForm.get('vehiclesFormGroup.vehicleNo').dirty || 
+                                fitmentForm.get('vehiclesFormGroup.vehicleNo').touched)" class="text-danger">
+                                    Vehicle No. is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Vehicle (Make)</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Vehicle Make"
+                                        formControlName="vehicleMake" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('vehiclesFormGroup.vehicleMake').invalid && 
+                                (fitmentForm.get('vehiclesFormGroup.vehicleMake').dirty || 
+                                fitmentForm.get('vehiclesFormGroup.vehicleMake').touched)" class="text-danger">
+                                    Vehicle Make is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Vehicle (Model)</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Vehicle Model"
+                                        formControlName="vehicleModel" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('vehiclesFormGroup.vehicleModel').invalid && 
+                                (fitmentForm.get('vehiclesFormGroup.vehicleModel').dirty || 
+                                fitmentForm.get('vehiclesFormGroup.vehicleModel').touched)" class="text-danger">
+                                    Vehicle Model is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Engine No.</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Engine No."
+                                        formControlName="engineNo" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('vehiclesFormGroup.engineNo').invalid && 
+                                (fitmentForm.get('vehiclesFormGroup.engineNo').dirty || 
+                                fitmentForm.get('vehiclesFormGroup.engineNo').touched)" class="text-danger">
+                                    Engine No. is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Chassis No.</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Chassis No."
+                                        formControlName="chassisNo" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('vehiclesFormGroup.chassisNo').invalid && 
+                                (fitmentForm.get('vehiclesFormGroup.chassisNo').dirty || 
+                                fitmentForm.get('vehiclesFormGroup.chassisNo').touched)" class="text-danger">
+                                    Chassis No. is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Vehicle Type</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Vehicle Type"
+                                        formControlName="vehicleType" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('vehiclesFormGroup.vehicleType').invalid && 
+                                (fitmentForm.get('vehiclesFormGroup.vehicleType').dirty || 
+                                fitmentForm.get('vehiclesFormGroup.vehicleType').touched)" class="text-danger">
+                                    Vehicle Type is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">No. Of SOS / Panic </label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter SOS"
+                                        formControlName="noOfSos" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('vehiclesFormGroup.noOfSos').invalid && 
+                                (fitmentForm.get('vehiclesFormGroup.noOfSos').dirty || 
+                                fitmentForm.get('vehiclesFormGroup.noOfSos').touched)" class="text-danger">
+                                    No. Of SOS is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Fitness Date</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" formControlName="fitnessDate"
+                                        placeholder="MM/dd/yyyy" #dp="bsDatepicker" bsDatepicker />
+                                </div>
+                                <div *ngIf="fitmentForm.get('vehiclesFormGroup.fitnessDate').invalid && 
+                                (fitmentForm.get('vehiclesFormGroup.fitnessDate').dirty || 
+                                fitmentForm.get('vehiclesFormGroup.fitnessDate').touched)" class="text-danger">
+                                    Fitness Date is required
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div>
+                            <button mat-button matStepperPrevious color="primary">Back</button>
+                            <button mat-button matStepperNext color="primary"
+                                [disabled]="!fitmentForm.get('vehiclesFormGroup').valid">Next</button>
+                        </div>
+                    </div>
+                </mat-step>
+
+                <mat-step [stepControl]="fitmentForm.get('deviceFormGroup')">
+                    <div formGroupName="deviceFormGroup">
+                        <ng-template matStepLabel>Device details</ng-template>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Device IMEI</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Device IMEI"
+                                        formControlName="deviceImei" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('deviceFormGroup.deviceImei').invalid && 
+                                (fitmentForm.get('deviceFormGroup.deviceImei').dirty || 
+                                fitmentForm.get('deviceFormGroup.deviceImei').touched)" class="text-danger">
+                                    Device IMEI is required
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Fitment Date</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" formControlName="fitmentDate"
+                                        placeholder="MM/dd/yyyy" #dp="bsDatepicker" bsDatepicker />
+                                </div>
+                                <div *ngIf="fitmentForm.get('deviceFormGroup.fitmentDate').invalid && 
+                                (fitmentForm.get('deviceFormGroup.fitmentDate').dirty || 
+                                fitmentForm.get('deviceFormGroup.fitmentDate').touched)" class="text-danger">
+                                    Fitment Date is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Type</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Type"
+                                        formControlName="type" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('deviceFormGroup.type').invalid && 
+                                (fitmentForm.get('deviceFormGroup.type').dirty || 
+                                fitmentForm.get('deviceFormGroup.type').touched)" class="text-danger">
+                                    Type is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Sim Number</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Sim Number"
+                                        formControlName="simNumber" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('deviceFormGroup.simNumber').invalid && 
+                                (fitmentForm.get('deviceFormGroup.simNumber').dirty || 
+                                fitmentForm.get('deviceFormGroup.simNumber').touched)" class="text-danger">
+                                    Sim Number is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Model</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter Model"
+                                        formControlName="model" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('deviceFormGroup.model').invalid && 
+                                (fitmentForm.get('deviceFormGroup.model').dirty || 
+                                fitmentForm.get('deviceFormGroup.model').touched)" class="text-danger">
+                                    Model is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">UID</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter UID"
+                                        formControlName="uid" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('deviceFormGroup.uid').invalid && 
+                                (fitmentForm.get('deviceFormGroup.uid').dirty || 
+                                fitmentForm.get('deviceFormGroup.uid').touched)" class="text-danger">
+                                    UID is required
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label">ICCID</label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" placeholder="Enter ICCID"
+                                        formControlName="iccid" aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('deviceFormGroup.iccid').invalid && 
+                                (fitmentForm.get('deviceFormGroup.iccid').dirty || 
+                                fitmentForm.get('deviceFormGroup.iccid').touched)" class="text-danger">
+                                    ICCID is required
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div>
+                            <button mat-button matStepperPrevious color="primary">Back</button>
+                            <button mat-button matStepperNext color="primary"
+                                [disabled]="!fitmentForm.get('deviceFormGroup').valid">Next</button>
+                        </div>
+                    </div>
+                </mat-step>
+
+                <mat-step [stepControl]="fitmentForm.get('imageFormGroup')">
+                    <div formGroupName="imageFormGroup">
+                        <ng-template matStepLabel>Image</ng-template>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label class="form-label">Vehicle Image</label>
+                                <div class="input-group mb-2">
+                                    <input type="file" class="form-control" formControlName="vehicleImage" (change)="upLoadImage($event, 'VehicleImage')"
+                                        aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('imageFormGroup.vehicleImage').invalid && 
+                                (fitmentForm.get('imageFormGroup.vehicleImage').dirty || 
+                                fitmentForm.get('imageFormGroup.vehicleImage').touched)" class="text-danger">
+                                    Vehicle Image is required
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <label class="form-label">Device Image</label>
+                                <div class="input-group mb-2">
+                                    <input type="file" class="form-control" formControlName="deviceImage" (change)="upLoadImage($event, 'DeviceImage')"
+                                        aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('imageFormGroup.deviceImage').invalid && 
+                                (fitmentForm.get('imageFormGroup.deviceImage').dirty || 
+                                fitmentForm.get('imageFormGroup.deviceImage').touched)" class="text-danger">
+                                    Device Image is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-2">
+                                <label class="form-label">Fitment Image</label>
+                                <div class="input-group mb-2">
+                                    <input type="file" class="form-control" formControlName="fitmentImage" (change)="upLoadImage($event, 'FitmentImage')"
+                                        aria-describedby="button-addon2" />
+                                </div>
+                                <div *ngIf="fitmentForm.get('imageFormGroup.fitmentImage').invalid && 
+                                (fitmentForm.get('imageFormGroup.fitmentImage').dirty || 
+                                fitmentForm.get('imageFormGroup.fitmentImage').touched)" class="text-danger">
+                                    Fitment Image is required
+                                </div>
+                            </div>
+
+                        </div>
+                        <div>
+                            <button mat-button matStepperPrevious color="primary">Back</button>
+                            <button mat-button matStepperNext color="primary"
+                                [disabled]="!fitmentForm.get('imageFormGroup').valid">Next</button>
+                        </div>
+                    </div>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>Done</ng-template>
+                    <!-- <p>You are now done.</p> -->
+                    <!-- <button mat-button (click)="saveForm(fitmentForm.value)">save</button> -->
+                    <div class="mt-2">
+                        <button mat-button matStepperPrevious color="primary">Back</button>
+                        <button mat-button color="primary" (click)="saveForm(fitmentForm.value)">save</button>
+                    </div>
+                </mat-step>
+            </mat-stepper>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="filter-part">
+    <form [formGroup]="pointSummaryForm" (ngSubmit)="Submit(pointSummaryForm.value)">
+    <div class="row">
+        
+        <div class="col-md-2">
+            <label class="form-label">Type</label>
+            <ng-select placeholder="Select Type" formControlName="type">
+                <ng-option [value]="null">All</ng-option>
+                <ng-option [value]="1">New</ng-option>
+                <ng-option [value]="2">Recharge</ng-option>
+              </ng-select>
+              <div
+              *ngIf="pointSummaryForm.get('type')?.invalid && (pointSummaryForm.get('type')?.dirty || pointSummaryForm.get('type')?.touched)" class="text-danger mt-3">
+              Type is required
+          </div>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Trans</label>
+            <ng-select placeholder="Select Trans" formControlName="trans">
+                <ng-option [value]="null">Both</ng-option>
+                <ng-option [value]="1">Credit</ng-option>
+                <ng-option [value]="2">Debit</ng-option>
+              </ng-select>
+              <div
+              *ngIf="pointSummaryForm.get('trans')?.invalid && (pointSummaryForm.get('trans')?.dirty || pointSummaryForm.get('trans')?.touched)" class="text-danger mt-3">
+              Trans is required
+          </div>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Reseller</label>
+            <ng-select placeholder="Select Dealer" formControlName="reseller" >
+                <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+              </ng-select>
+              <div 
+              *ngIf="pointSummaryForm.get('reseller')?.invalid && (pointSummaryForm.get('reseller')?.dirty || pointSummaryForm.get('reseller')?.touched)" class="text-danger mt-3">
+              Reseller is required
+          </div>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">From Date</label>
+                        <!-- <div class="input-group mb-3">
+                            <input type="text" class="form-control"  placeholder="dd/MM/yyyy" formControlName="fromDate"
+                                #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"/>
+                        </div> -->
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="point" formControlName="fromDate">
+                            <mat-datepicker-toggle matSuffix [for]="point"></mat-datepicker-toggle>
+                            <mat-datepicker #point></mat-datepicker>
+                        </mat-form-field>
+                        <div
+            *ngIf="pointSummaryForm.get('fromDate')?.invalid && (pointSummaryForm.get('fromDate')?.dirty || pointSummaryForm.get('fromDate')?.touched)" class="text-danger">
+            From Date is required
+        </div>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">To Date</label>
+            <div class="input-group mb-3">
+                <!-- <input type="text" class="form-control"  placeholder="dd/MM/yyyy" formControlName="toDate"
+                    #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"/> -->
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="pointTo" formControlName="toDate">
+                        <mat-datepicker-toggle matSuffix [for]="pointTo"></mat-datepicker-toggle>
+                        <mat-datepicker #pointTo></mat-datepicker>
+                    </mat-form-field>
+            </div>
+            <div
+            *ngIf="pointSummaryForm.get('toDate')?.invalid && (pointSummaryForm.get('toDate')?.dirty || pointSummaryForm.get('toDate')?.touched)" class="text-danger">
+            To Date is required
+        </div>
+        </div>
+        <div class="col-md-2 mt-2">
+            <br>
+            <button class="btn btn-primary" >Submit</button>     
+        </div>
+    </div>
+    </form>
+</div>

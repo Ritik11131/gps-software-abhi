@@ -1,0 +1,85 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<section class="admin-content">
+  <div class="card">
+    <div class="card-header">
+     Bill Summary List
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
+        
+        <div class="col-md-3 mb-2">
+          <div class="search-form">
+            <input placeholder="Search for..." [(ngModel)]="searchKeyword" type="text"
+              class="form-control search-input"><button type="button" class="btn-search"><i class="fa fa-search"
+                aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div class="col-md-3 mt-2 mb-1">
+          <ng-select placeholder="Select Sim Status" [ngModel]="selecteStatus" (change)="onselected($event)">
+            <ng-option *ngFor="let item of statusData" [value]="item?.value">{{ item?.text }}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <!-- <div class="sim-search ">
+           
+            <div class="status">
+             
+            </div>
+
+
+          </div> -->
+          <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+            <div class="dataTables_scroll">
+              <div class="dataTables_scrollBody">
+                <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                  aria-describedby="datatable_info" style="width: 100%" width="100%">
+                  <thead>
+                    <tr role="row">
+                      <th *ngFor="let vehicleHeading of columns">
+                        <strong>{{vehicleHeading?.title}}</strong>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let item of billSummaryList | searchFilter: searchKeyword |  paginate : {
+                              itemsPerPage: tableSize,
+                              currentPage: page,
+                              totalItems: count} let i= index">
+
+                      <td>{{item?.mobileNo || 'NA'}}</td>
+                      <td>{{item?.simId || 'NA'}}</td>
+                      <td>{{item?.imsi || 'NA'}}</td>
+                      <td>{{item?.basketId || 'NA'}}</td>
+                      <td>{{item?.circleName || 'NA'}}</td>
+                      <td>{{item?.planCode || 'NA'}}</td>
+                      <td>{{item?.dataType || 'NA'}}</td>
+                      <td>{{item?.dataUnits || 'NA'}}</td>
+                      <td>{{formatOnboardingDate (item?.onboardingDate) || 'NA'}}</td>
+                      <td>{{formatOnboardingDate (item?.activationDate) || 'NA'}}</td>
+                      <td>{{item?.operatorName || 'NA'}}</td>
+                      <td>{{item?.CustomerName || 'NA'}}</td>
+                      <td>{{item?.DealerName || 'NA'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-center"
+                  *ngIf="billSummaryList && billSummaryList.length == 0 || billSummaryList == null || !(billSummaryList | searchFilter: searchKeyword)?.length"
+                  style="width: 100%;">No Data Available</div>
+              </div>
+              <div class="pagination-data"
+                *ngIf="billSummaryList && billSummaryList?.length > 0 && (billSummaryList | searchFilter:searchKeyword)?.length">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,504 @@
+div#over_map {
+    flex: 1 1 100%;
+    align-items: center;
+    position: absolute;
+    background-color: #fff;
+    top: 15px;
+    left: 50%;
+    display: flex;
+    min-height: 35px;
+    z-index: 99;
+    width: 50%;
+    border: 1px solid grey;
+    border-radius: 0 0 80px 80px;
+    transform: translate(-50%, -50%);
+    padding: 0 20px 0 20px;
+}
+
+.map-container {
+    position: relative;
+    overflow: auto;
+}
+
+.scrollable-container {
+    position: relative;
+}
+
+
+
+.middle-part {
+    position: absolute;
+    top: 10px;
+    width: 30%;
+    left: 10px;
+
+}
+
+.leaflet-popup-content-wrapper {
+    width: 478px !important;
+  }
+  
+  @import "src/styles/mixins/box-shadow.mixin";
+  @import "src/styles/mixins/breakpoints";
+  
+  .container {
+    background-color: #727272;
+  }
+  
+  .main-content {
+  
+    // background-color: #727272;
+    .alert-report-transition {
+      transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+      opacity: 0;
+      /* Start from invisible */
+      transform: translateY(-20px);
+      /* Start slightly above the final position */
+    }
+  
+    .alert-report-transition.active {
+      opacity: 1;
+      /* Fully visible */
+      transform: translateY(0);
+      /* Move to final position */
+    }
+  }
+  
+  .head-sec {
+    background-color: #e8e8e8;
+    padding: 10px;
+    margin-bottom: 1rem;
+  }
+  
+  h4 {
+    font-weight: 100 !important;
+  }
+  
+  .user-exists {
+    color: red;
+  }
+  
+  .brd {
+    border: 0.5px solid #b1b1b1;
+    margin: 10px 0;
+    //  border-radius: 5px;
+    font-weight: bold;
+    // justify-content: space-evenly;
+  }
+  
+  @include breakpoint-range($max: sm) {
+    .mb-3 {
+      margin-bottom: 0px !important;
+    }
+  
+    .btn {
+      width: 100%;
+    }
+  }
+  
+  .text-right {
+    text-align: right;
+  }
+  
+  .align-center {
+    justify-content: center;
+  }
+  
+  .btn-grid {
+    display: grid;
+  }
+  
+  .btn-grid-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    border: none;
+  }
+  
+  .e-btn {
+    display: flex;
+    align-items: end;
+  }
+  
+  .mr-2 {
+    margin-right: 10px;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 130px;
+  }
+  
+  .wdth {
+    width: 50%;
+  }
+  
+  .back-to {
+    color: #{$color-red};
+    display: flex;
+    cursor: pointer;
+    gap: 28px;
+  
+    .details:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  .details {
+  
+  
+    @include breakpoint-range($min :sm) {
+      display: flex;
+      gap: 7px;
+    }
+  }
+  
+  .back-i {
+    @include breakpoint-range($max: sm) {
+      margin-right: 5px;
+    }
+  
+    margin-right: 5px;
+    top: 4px;
+    position: relative;
+    //transform: rotate(180deg);
+  }
+  
+  .minus-icon-size {
+    font-size: 3px;
+    transform: translateY(9px);
+    position: absolute;
+    margin-left: -22px;
+  }
+  
+  .pl-33 {
+    padding-left: 33px;
+  }
+  
+  .btn-secondary:hover .minus-icon::before {
+    color: $color-medium-black;
+  }
+  
+  .btn-secondary:hover .plus-icon::before {
+    color: $color-medium-black;
+  }
+  
+  
+  .form-control.ng-invalid:focus {
+    border: 1px solid $color-gray;
+    color: $color-light-black;
+  }
+  
+  .form-control.ng-invalid.ng-touched:blur {
+    border: 1px solid $color-red;
+    color: $color-red;
+  }
+  
+  .mx-search-suggestions {
+    border: 1px solid #b1b1b1;
+    border-radius: 5px;
+    overflow: hidden;
+    position: absolute;
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 250px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+    z-index: 1050;
+    overflow: hidden;
+    overflow-y: auto;
+    display: block;
+    cursor: pointer;
+  
+    ul {
+      line-height: 43px;
+    }
+  
+    ul:hover {
+      background: $color-light-gray;
+    }
+  }
+  
+  
+  .card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    transition: box-shadow 0.3s;
+    /* Added transition for smooth effect */
+  }
+  
+  .card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) inset;
+    /* Add box shadow with negative spread radius on hover */
+  }
+  
+  img {
+    height: 28px;
+    width: 20px;
+  }
+  
+  .content {
+  
+    @include breakpoint-range($min : sm) {
+      display: flex;
+      gap: 10px;
+    }
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+  }
+  
+  .status-indicator {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 10px;
+  }
+  
+  .status-indicator.running {
+    background-color: green;
+  }
+  
+  .status-indicator.stopped {
+    background-color: red;
+  }
+  
+  .dashboard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  
+    @include breakpoint-range($min :xl) {
+      display: flex;
+    }
+  }
+  
+  .fa {
+    font-size: 23px;
+  }
+  
+  // .main-content{
+  //   padding: 20px;
+  // }
+  
+  .map-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    border-radius: 11px;
+  }
+  
+  .leaflet-container {
+    overflow: visible !important;
+  }
+  
+  .controls {
+    background-color: transparent;
+    height: 38px;
+    padding-top: 10px;
+    margin-right: 60px;
+    margin-left: 50px;
+    position: absolute;
+    z-index: 0;
+    width: 80%;
+    top: 0;
+  }
+  
+  .btn-group {
+    position: relative;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    vertical-align: middle;
+  
+    .mapcontrol {
+      margin: 0px !important;
+      padding: 0px !important;
+      width: 33px !important;
+      height: 33px !important;
+      line-height: 33px !important;
+      border-color: #dfdfe0;
+      color: #212121;
+      background: #fff;
+  
+      .d-flex.justify-content-center {
+        height: 27px;
+        align-items: center;
+      }
+  
+      .label-danger {
+        color: red;
+        display: inline;
+        padding: .2em .6em .3em;
+        font-size: 75%;
+        vertical-align: baseline;
+        border-radius: .25em;
+      }
+    }
+  }
+  
+  
+  .status-0 {
+    color: rgb(25 173 0) !important;
+  }
+  
+  .status-1-substatus-2 {
+    color: #4861ED !important;
+  }
+  
+  .status-2-substatus-3 {
+    color: #FFAF1D !important;
+  }
+  
+  .status-0-no-substatus {
+    color: #696969 !important;
+  }
+  
+  .status {
+    color: balck !important;
+  }
+  
+  #map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 11px;
+    background-color: #696969;
+  }
+  
+  // .map-container {
+  //   height: 100vh;
+  // }
+  
+  
+  ::ng-deep {
+    .live-data {
+      padding: 4px;
+      padding: 4px;
+      width: 460px;
+  
+      span {
+        font-size: 13px;
+        font-weight: 400;
+        color: gray;
+  
+        strong {
+          color: black;
+        }
+      }
+  
+    }
+  
+    .icon-part {
+      padding: 4px;
+      background: #fff;
+      border-radius: 4px;
+    }
+  
+    ul.icon {
+      display: flex;
+      justify-content: space-between;
+      gap: 3px;
+      align-items: center;
+      text-align: center;
+  
+      i.fa {
+        color: gray;
+  
+        &:hover {
+          color: #ff9934;
+        }
+      }
+  
+      li {
+        // border-right: 1px solid black;
+  
+        a {
+          color: black;
+          font-size: 17px;
+        }
+      }
+    }
+  
+    .location-part {
+      height: 25px;
+    }
+  
+  
+  
+    hr {
+      margin: 0;
+    }
+  
+    span.live-value {
+      font-size: 11px;
+    }
+  
+    .leaflet-popup-content-wrapper {
+      width: 478px !important;
+    }
+  
+    .leaflet-popup-content {
+      margin: 8px !important;
+    }
+  }
+  
+  .chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+  }
+  
+  .chat-icon img {
+    height: 40px;
+    width: 40px;
+  }
+  
+  .live {
+    text-align: center !important;
+    position: relative;
+    padding: 0 20px 0 20px;
+  }
+  
+  div#over_map {
+    flex: 1 1 100%;
+    align-items: center;
+    position: absolute;
+    background-color: #fff;
+    top: 15px;
+    left: 50%;
+    display: flex;
+    min-height: 35px;
+    z-index: 99;
+    width: 50%;
+    border: 1px solid grey;
+    border-radius: 0 0 80px 80px;
+    transform: translate(-50%, -50%);
+    padding: 0 20px 0 20px;
+  }
+  
+  
+  #admin_canvas {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 11px;
+  }
+
+  #admin_canvas {
+    height: calc(100vh - 120px);
+    z-index: 0;
+}

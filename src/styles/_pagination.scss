@@ -1,0 +1,40 @@
+.pagination-v2{
+    --mx-pagination-font-size: 16px;
+    --mx-pagination-color: $color-blue;
+    --mx-pagination-padding-y: 0;
+    --mx-pagination-padding-x: 0;
+    --mx-pagination-border-radius: 0;
+    --mx-pagination-focus-box-shadow: none;
+    --mx-pagination-active-bg: $color-white;
+    --mx-pagination-active-border-color: $color-light-gray;
+    &>.page-item{
+                width: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+             border-left: 1px solid #e8e8e8;
+             &:first-child{
+                border: none;
+             }
+        .page-link{
+             color: #000;
+             border: none !important;
+             margin-left: 0 !important;
+        }
+        &.active{
+            .page-link{
+                color: $color-red !important;
+            }
+        }
+        &.pagination-prev{
+            &.disabled{
+                display: none;
+            }
+        }
+        &.pagination-next{
+             &.disabled{
+                display: none;
+            }
+        }
+    }
+}

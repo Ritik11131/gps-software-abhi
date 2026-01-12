@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col-md-6 mb-2">
+        <label class="form-label">Dealer/Reseller</label>
+        <ng-select placeholder="Select Dealer" [ngModel]="selectedDealerId" (ngModelChange)="onDealerSelect($event)">
+            <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+          </ng-select>
+          <div *ngIf="!selectedDealerId" class="text-danger">Please select a Dealer/Reseller.</div>   
+
+    </div>
+    <div class="col-md-6 mb-2">
+        <label class="form-label">Customer</label>
+        <ng-select placeholder="Select Customer" [ngModel]="selectedCustomer" (ngModelChange)="onCustomerSelect($event)">
+            <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
+          </ng-select>
+          <div *ngIf="!selectedCustomer" class="text-danger">Please select a Customer.</div>
+
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Device</label>
+        <ng-select placeholder="Select Device" [ngModel]="selectDevice" (ngModelChange)="onDeviceSelect($event)">
+            <ng-option *ngFor="let item of deviceData" [value]="item?.Id">{{ item?.DeviceType?.Name }}</ng-option>
+          </ng-select>
+          <div *ngIf="!selectDevice" class="text-danger">Please select a Device.</div>   
+
+    </div>
+    <div class="col-md-6" style="margin-top: 30px;">        
+        <button class="btn btn-primary" (click)="onRechargeDevice()">Device</button>
+    </div>
+</div>

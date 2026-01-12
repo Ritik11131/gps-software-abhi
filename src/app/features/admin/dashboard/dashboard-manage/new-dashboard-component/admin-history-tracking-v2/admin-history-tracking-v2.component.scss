@@ -1,0 +1,181 @@
+.main-content {
+    padding: 20px 24px 6px 25px;
+}
+
+#admin_map_canvas {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 75px);
+    border-radius: 11px;
+}
+
+.map-container {
+    position: relative;
+    width: 100%;
+    border-radius: 11px;
+    overflow: hidden;
+}
+
+.widget {
+    margin-bottom: 0px !important;
+}
+
+.leaflet-popup-content-wrapper {
+    width: 478px !important;
+}
+
+.leaflet-popup-content {
+    margin: 8px !important;
+}
+
+
+
+::ng-deep {
+    .live-data {
+        padding: 4px;
+        padding: 4px;
+
+        span {
+            font-size: 13px;
+            font-weight: 400;
+            color: gray;
+
+            strong {
+                color: black;
+            }
+        }
+
+    }
+
+    .icon-part {
+        padding: 4px;
+        background: #fff;
+        border-radius: 4px;
+    }
+
+    ul.icon {
+        display: flex;
+        justify-content: space-between;
+        gap: 3px;
+        align-items: center;
+        text-align: center;
+
+        i.fa {
+            color: gray;
+
+            &:hover {
+                color: #ff9934;
+            }
+        }
+
+        li {
+            // border-right: 1px solid black;
+
+            a {
+                color: black;
+                font-size: 17px;
+            }
+        }
+    }
+
+    .location-part {
+        height: 25px;
+    }
+
+
+
+    hr {
+        margin: 0;
+    }
+
+    span.live-value {
+        font-size: 11px;
+    }
+
+    .leaflet-popup-content-wrapper {
+        width: 400px;
+    }
+
+    .leaflet-popup-content {
+        margin: 8px !important;
+        width: 100% !important;
+    }
+}
+
+.mat-form-field {
+    display: inline;
+}
+
+span.distance {
+    font-size: 12px;
+    margin-left: 9px;
+}
+
+.slider-part {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    top: calc(100% - 80px);
+    left: 50%;
+    transform: translateX(-50%); 
+    width: 95%;
+    padding: 13px;
+    background-color: rgba(255, 255, 255, 0.9); 
+    border: 1px solid grey;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; 
+
+    .play-button {
+        flex: 0 0 10px;
+
+        .button-play {
+            background: none;
+            border: none;
+        }
+
+        .fa.fa-play {
+            font-size: 16px;
+        }
+
+        .fa.fa-pause {
+            font-size: 16px;
+        }
+    }
+
+    .slider-vehicle {
+        flex: 4 0 140px;
+    }
+
+    .speed-value {
+        flex: 0 0 10px;
+    }
+
+    .total-distance {
+        flex: 1 0 60px;
+    }
+
+    input#myRange {
+        width: 100%;
+        height: 3px;
+        border-radius: 2px;
+        background: rgb(104, 104, 250);
+        outline: none;
+        opacity: 1;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+}
+
+.loading-spinner {
+    border: 6px solid #f3f3f3; /* Light grey background */
+    border-top: 6px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: 20px auto; /* Center the spinner horizontally */
+  }

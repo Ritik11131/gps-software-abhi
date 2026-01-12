@@ -1,0 +1,36 @@
+<div class="modal-header">
+
+    <h4 class="modal-title text-center w-100">Additional Comments:</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="onHideModal()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="col-md-12 mb-4">
+        <h4>Comments</h4>
+        <textarea
+          type="textarea"
+          placeholder=""
+          class="form-control"
+          maxlength="250"
+          [(ngModel)]="additionalInfoNotes"
+          [disabled]="disableNotes"
+        ></textarea>
+      </div>
+    </div>
+    <div class="row align-center full-btns">
+      <div class="col-md-3  mb-3 btn-grid">
+        <button class="btn btn-outline-secondary" (click)="onHideModal()">
+          CANCEL
+        </button>
+      </div>
+      <div class="col-md-3 mb-3 btn-grid"  *ngIf="!disableNotes">
+        <button class="btn btn-primary" (click)="submit()" >SUBMIT</button>
+      </div>
+    </div>
+  

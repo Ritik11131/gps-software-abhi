@@ -1,0 +1,659 @@
+<div class="details">
+    <div class="details-heading" *ngIf="filterType">
+        <h2 class="report-heading">{{filterType +':-'}} </h2>
+        <div class="p-2 bd-highlight"
+            *ngIf="filterType == 'Stop' || filterType == 'Idle' || filterType == 'Trip Report' || filterType == 'Overspeed Report' || filterType == 'Movement Summary'">
+            <select [(ngModel)]="displayTableSize" (change)="onTableSizeChange($event)" class="custom-select">
+                <option *ngFor="let size of tableSizes" [value]="size">
+                    {{ size }}
+                </option>
+            </select>
+        </div>
+        <div class="btngroup mb-2">
+            <button class="button" (click)="exportToExcels()">Excel</button>
+            <button class="button button-red" (click)="exportToPDF()">PDF</button>
+        </div>
+      </div>
+    <div *ngIf="filterType == 'Distance' && vehicle" class="distance">
+        <div class="scrollable-table">
+            <table class="table table-striped" #TABLE id="tableToExport">
+                <thead>
+                    <tr>
+                        <th>Vehicle No</th>
+                        <th *ngFor="let day of vehicle[0].Distance">{{ day.Date | date: 'MMM, d' }}</th>
+                        <th class="sticky-col">Total KM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let vehicle of vehicle">
+                        <td>{{ vehicle.Device.VehicleNo }}</td>
+                        <td *ngFor="let dist of vehicle.Distance">{{ dist.Distance | number: '1.2-2' }} KM</td>
+                        <td class="sticky-col">{{ vehicle.Total | number: '1.2-2' }} KM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="others">
+        <div class="report-part mt-3" *ngIf="filterType == 'Stop' || filterType == 'Idle'">
+            <div *ngFor="let group of groupedData" class="vehicle-group">
+                <div class="paging-part d-flex justify-content-between">
+                    <div class="chips-container mb-2">
+                        <div class="chip"
+                            [ngClass]="{'idle-background': filterType === 'Idle', 'other-background': filterType !== 'Idle'}">
+                            {{ group.vehicleNo }}
+                        </div>
+                    </div>
+                    <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                        <pagination-controls previousLabel="Prev" nextLabel="Next"
+                            (pageChange)="onTableDataChange($event)">
+                        </pagination-controls>
+                    </div>
+                </div>
+
+
+                <div class="">
+                    <table class="table table-striped" #TABLE>
+                        <thead>
+                            <tr>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Duration</th>
+                                <th>Location</th>
+                                <!-- <th>Map</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let entry of group.data |  paginate : {
+                                itemsPerPage: tableSize,
+                                currentPage: page,
+                                totalItems: count}; let i = index">
+                                <td>{{ entry.StartTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+                                <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+                                <td>{{ entry.Duration }}</td>
+                                <td>
+                                    <ng-container *ngIf="isLocation === 1; else addressBlock">
+                                        {{ entry.Loc?.Lat }}, {{ entry.Loc?.Lng }}
+                                    </ng-container>
+                                    <ng-template #addressBlock>
+                                        {{ viewAddress('start',entry.Loc, i) }}
+                                        <ng-container *ngIf="selectedStartIndexes.includes(i); else viewAddresss">
+                                            <div *ngIf="startAddresses[i]; else loader">
+                                                {{ startAddresses[i] }}
+                                            </div>
+                                            <ng-template #loader>
+                                                <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-template #viewAddresss>
+                                            View Address
+                                        </ng-template>
+                                    </ng-template>
+                                    
+
+                                </td>
+                                <!-- <td>
+                                    <span class="badge bg-info"  (click)="openMap(entry)"> show on map</span>
+                                </td> -->
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+            </div>
+        </div>
+        <div class="report-part mt-3" *ngIf="filterType == 'Trip Report'">
+            <div *ngFor="let group of groupedData" class="vehicle-group">
+                <div class="total-section">
+                    <div class="chips-container mb-2">
+                        <div class="chip idle-background">
+                            {{ group.Device }}
+                        </div>
+                    </div>
+                    <div class="total">
+                        <div class="chips-container">
+                            <div class="duration chip idle-background">
+                                Total Duration:{{group.totalDuration}}
+                            </div>
+
+                        </div>
+                        <div class="chips-container">
+                            <div class="Distance chip other-background">
+                                Total Distance:{{group.totalDistance
+                                }} Km/h
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                        <pagination-controls previousLabel="Prev" nextLabel="Next"
+                            (pageChange)="onTableDataChange($event)">
+                        </pagination-controls>
+                    </div>                    
+                </div>
+
+                <div class="">
+                    <table class="table table-striped" #TABLE>
+                        <thead>
+                            <tr>
+                                <th>Start Time</th>
+                                <th>Start Location</th>
+                                <th>End Time </th>
+                                <th>End Location</th>
+                                <th>Duration </th>
+                                <th>Distance</th>
+                                <!-- <th>Map</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let entry of group.data |  paginate : {
+                                itemsPerPage: tableSize,
+                                currentPage: page,
+                                totalItems: count}; let i = index">
+                                <td>{{ entry.StartTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+                                <td>
+                                    <ng-container *ngIf="isLocation === 1; else startaddress">
+                                        {{ entry?.Start?.Lat }}, {{ entry?.Start?.Lng }}
+                                    </ng-container>
+                                    <ng-template #startaddress>
+                                        {{ viewAddress('start',entry.Start, i) }}
+                                        <ng-container *ngIf="selectedStartIndexes.includes(i); else viewAddresss">
+                                            <div *ngIf="startAddresses[i]; else loader">
+                                                {{ startAddresses[i] }}
+                                            </div>
+                                            <ng-template #loader>
+                                                <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-template #viewAddresss>
+                                            View Address
+                                        </ng-template>
+                                    </ng-template>
+                                   
+                                </td>
+                                <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+                                <td>
+                                    <ng-container *ngIf="isLocation === 1; else endaddress">
+                                        {{ entry.End?.Lat }}, {{ entry.End?.Lng }}
+                                    </ng-container>
+                                    <ng-template #endaddress>
+                                        {{ viewAddress('end',entry.End, i) }}
+                                        <ng-container *ngIf="selectedEndIndexes.includes(i); else viewAddresss">
+                                            <div *ngIf="endAddresses[i]; else loader">
+                                                {{ endAddresses[i] }}
+                                            </div>
+                                            <ng-template #loader>
+                                                <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-template #viewAddresss>
+                                            View Address
+                                        </ng-template>
+                                    </ng-template>
+                                   
+                                </td>
+                                <td>{{entry.Duration}}</td>
+                                <td>{{entry.Distance}}</td>
+                                <td>
+                                    <!-- <span class="badge bg-info"  (click)="openMap(entry)"> show on map</span> -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+            </div>
+        </div>
+
+        <div class="report-part mt-3" *ngIf="filterType == 'Movement Summary'">
+            <div *ngFor="let group of groupedData" class="vehicle-group">
+                <div class="total-section">
+                    <div class="total">
+                        <div class="chips-container">
+                        </div>
+
+                        <div class="chips-container">
+                            <div class="Distance chip other-background">
+                                Total Distance:{{group.totalDistance
+                                }} Km
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                        <pagination-controls previousLabel="Prev" nextLabel="Next"
+                            (pageChange)="onTableDataChange($event)">
+                        </pagination-controls>
+                    </div>
+                  
+                </div>
+
+
+                <div class="">
+                    <table class="table table-striped" #TABLE>
+                        <thead>
+                            <tr>
+                                <th>Duration </th>
+                                <th>Start Point</th>
+                                <th>End Point </th>
+                                <th>Start Address</th>
+                                <th>End Address</th>
+                                <th>Distance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let entry of group.data |  paginate : {
+                                itemsPerPage: tableSize,
+                                currentPage: page,
+                                totalItems: count}; let i = index">
+                                <td>{{entry.StartTime | date: ' h:mm:ss a'}} ,
+                                    {{entry.EndTime | date: ' h:mm:ss a'}}</td>
+                                    <td>{{entry?.StartPoint?.Lat}} , {{ entry?.StartPoint?.Lng }} </td>
+                                    <td>{{ entry.EndPoint?.Lat }} , {{ entry.EndPoint?.Lng }}</td>
+                                <!-- <td>{{ entry.StartTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td> -->
+
+                                <td>
+                                    <ng-container *ngIf="isLocation === 1; else startaddress">
+                                        {{ entry?.StartPoint?.Lat }}, {{ entry?.StartPoint?.Lng }}
+                                    </ng-container>
+                                    <ng-template #startaddress>
+                                        {{ viewAddress('start',entry?.StartPoint, i) }}
+                                        <ng-container *ngIf="selectedStartIndexes.includes(i); else viewAddresss">
+                                            <div *ngIf="startAddresses[i]; else loader">
+                                                {{ startAddresses[i] }}
+                                            </div>
+                                            <ng-template #loader>
+                                                <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-template #viewAddresss>
+                                            View Address
+                                        </ng-template>
+                                    </ng-template>
+                                </td>
+                                <!-- <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td> -->
+                                <td>
+                                    <ng-container *ngIf="isLocation === 1; else endaddress">
+                                        {{ entry.EndPoint?.Lat }}, {{ entry.EndPoint?.Lng }}
+                                    </ng-container>
+                                    <ng-template #endaddress>
+                                        {{ viewAddress('end',entry.EndPoint, i) }}
+
+                                        <ng-container *ngIf="selectedEndIndexes.includes(i); else viewAddresss">
+                                            <div *ngIf="endAddresses[i]; else loader">
+                                                {{ endAddresses[i] }}
+                                            </div>
+                                            <ng-template #loader>
+                                                <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-template #viewAddresss>
+                                            View Address
+                                        </ng-template>
+                                    </ng-template>
+                                </td>
+                                
+                                <td>{{entry.Distance}}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+            </div>
+        </div>
+        <div class="report-part  mt-3" *ngIf="filterType == 'Overspeed Report'">
+            <div *ngFor="let group of groupedData" class="vehicle-group">
+                <div class="total-section">
+                    <div class="chips-container mb-2">
+                        <div class="chip idle-background">
+                            {{ group.Device }}
+                        </div>
+                    </div>
+                  
+                    <div class="total">
+                        <div class="chips-container">
+                            <div class="duration chip idle-background">
+                                Total Duration:{{group.totalDuration}}
+                            </div>
+
+                        </div>
+                        <div class="chips-container">
+                            <div class="Distance chip other-background">
+                                Total Distance:{{group.totalDistance
+                                }} Km
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                        <pagination-controls previousLabel="Prev" nextLabel="Next"
+                            (pageChange)="onTableDataChange($event)">
+                        </pagination-controls>
+                    </div>
+                </div>
+
+
+                <div class="">
+                    <table class="table table-striped" #TABLE>
+                        <thead>
+                            <tr>
+                                <th>Start Time</th>
+                                <th>Start Location</th>
+                                <th>End Time </th>
+                                <th>End Location</th>
+                                <th>Duration </th>
+                                <th>Distance</th>
+                                <th>Speed</th>
+                                <!-- <th>Map</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let entry of group.data |  paginate : {
+                                itemsPerPage: tableSize,
+                                currentPage: page,
+                                totalItems: count}; let i = index">
+                                <td>{{ entry.StartTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+                                <td>
+                                    <ng-container *ngIf="isLocation === 1; else overstartaddress">
+                                        {{entry.StartLoc?.Lat }}, {{entry.StartLoc?.Lng }}
+                                    </ng-container>
+                                    <ng-template #overstartaddress>
+                                        {{ viewAddress('start',entry.StartLoc, i) }}
+                                        <ng-container *ngIf="selectedStartIndexes.includes(i); else viewAddresss">
+                                            <div *ngIf="startAddresses[i]; else loader">
+                                                {{ startAddresses[i] }}
+                                            </div>
+                                            <ng-template #loader>
+                                                <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-template #viewAddresss>
+                                            View Address
+                                        </ng-template>
+                                    </ng-template>
+                                   
+                                </td>
+                                <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+                                <td>
+                                    <ng-container *ngIf="isLocation === 1; else overEndaddress">
+                                        {{entry.EndLoc?.Lat }}, {{entry.EndLoc?.Lng }}
+                                    </ng-container>
+                                    <ng-template #overEndaddress>
+                                        {{ viewAddress('end',entry.EndLoc, i) }}
+                                        <ng-container *ngIf="selectedEndIndexes.includes(i); else viewAddresss">
+                                            <div *ngIf="endAddresses[i]; else loader">
+                                                {{ endAddresses[i] }}
+                                            </div>
+                                            <ng-template #loader>
+                                                <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+                                            </ng-template>
+                                        </ng-container>
+                                        <ng-template #viewAddresss>
+                                            View Address
+                                        </ng-template>
+                                    </ng-template>
+                                    
+                                </td>
+                                <td>{{entry.Duration}}</td>
+                                <td>{{entry.Distance}}</td>
+                                <td style="color: red;">
+                                    {{entry.StartSpeed}} km/h</td>
+                                <!-- <td>
+                                    <span class="badge bg-info"  (click)="openMap(entry)"> show on map</span>
+                                </td> -->
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+            </div>
+        </div>
+
+        <div class="report-part  mt-3" *ngIf="filterType == 'AC Report'">
+            <div class="total-duration">
+                <p><b>Total Duration :- {{ totalDuration }} minutes</b></p>
+                <p><b>Total Distance :- {{ totalDistance | number: '1.2-2'}} KM</b></p>
+            </div>
+            <div class="card mb-3" *ngFor="let vehicleValue of vehicle?.Points; let i = index">
+                <div class="card-header" *ngFor="let option of filteredReports">
+                    <p class="vehicle-number-SsF" *ngFor="let header of option[filterType]">
+                        {{header}}</p>
+                </div>
+                <div class="card-body">
+                    <div class="vehicle-data">
+                        <p class="vehicle-number">{{vehicleValue?.ACStartTime | date: "dd/MM/yyyy HH:mm:ss"}}</p>
+                        <p>
+                            Start Address :-
+                            <span class="start-address" (click)="viewAddress('start', vehicleValue.StartLoc , i)">
+                                {{ selectedStartIndexes.includes(i) ? (startAddresses[i] || 'View Address') : 'View Address'
+                                }}
+                            </span>
+                        </p>
+                        <p class="vehicle-number">{{vehicleValue?.ACEndTime | date: "dd/MM/yyyy HH:mm:ss"}}</p>
+                        <p>
+                            End Address :-
+                            <span class="end-address" (click)="viewAddress('end', vehicleValue.EndLoc , i)">
+                                {{ selectedEndIndexes.includes(i) ? (endAddresses[i] || 'View Address') : 'View Address'
+                                }}
+                            </span>
+                        </p>
+                        <p class="vehicle-number">{{vehicleValue?.Duration}}</p>
+                        <p class="vehicle-number">{{vehicleValue?.Distance}}KM</p>
+                        <!-- <p class="vehicle-number">
+                            <span class="badge bg-info"  (click)="openMap(vehicleValue.StartLoc)"> show on map</span>
+                        </p> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-part  mt-3" *ngIf="filterType == 'temperature Report'">
+            <div class="card mb-3" *ngFor="let vehicleValue of vehicle?.Points; let i = index">
+                <div class="card-header" *ngFor="let option of filteredReports">
+                    <p class="vehicle-number-SsF" *ngFor="let header of option[filterType]">
+                        {{header}}</p>
+                </div>
+                <div class="card-body">
+                    <div class="vehicle-data">
+                        <p class="vehicle-number">{{vehicleValue?.Timestamp | date: "dd/MM/yyyy HH:mm:ss"}}</p>
+                        <p class="vehicle-number">{{vehicleValue?.Speed }}</p>
+                        <p class="vehicle-number" [style.color]="vehicleValue?.di === 1 ? 'green' : 'red'">
+                            {{ vehicleValue?.di === 1 ? 'ON' : 'OFF' }}
+                        </p>
+                        <p class="vehicle-number">{{vehicleValue?.Temp1}}</p>
+                        <p>
+                            Address :-
+                            <span class="end-address" (click)="viewAddress('start', vehicleValue.Point , i)">
+                                selectedStartIndexes.includes(i) ? (startAddresses[i] || 'View Address') : 'View Address'
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-part  mt-3" *ngIf="!filterType || filterType == ''">
+            <div class="card">
+                <div class="card-body" style="text-align: center;">
+                    <p>No data available</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-part mt-3" *ngIf="filterType == 'GeoFence Report'">
+            <div *ngFor="let group of groupedData" class="vehicle-group">
+                <div class="paging-part d-flex justify-content-between">
+                    <div class="chips-container mb-2">
+                        <div class="chip"
+                            [ngClass]="{'idle-background': filterType === 'Idle', 'other-background': filterType !== 'Idle'}">
+                            {{ group.vehicleNo }}
+                        </div>
+                    </div>
+                    <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                        <pagination-controls previousLabel="Prev" nextLabel="Next"
+                            (pageChange)="onTableDataChange($event)">
+                        </pagination-controls>
+                    </div>
+                </div>
+
+                <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                    <div class="dataTables_scroll">
+                        <div class="dataTables_scrollBody">
+                            <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                role="grid" aria-describedby="datatable_info" style="width: 100%" width="100%">
+                                <thead>
+                                    <tr role="row">
+                                        <th>Vehicle No</th>
+                                        <th>GeoFence Name</th>
+                                        <th>In</th>
+                                        <th>Out</th>
+                                        <th>Duration </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr
+                                        *ngFor="let entry of group.data | paginate: { itemsPerPage: tableSize, currentPage: page, totalItems: count }; let i = index">
+                                        <td>{{entry.VehicleNo}}</td>
+                                        <td>{{entry.GeofenceName}}</td>
+                                        <td>{{ entry.StartTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+                                        <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+                                        <td>{{entry.Duration}}</td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>
+
+                    </div>
+                </div>
+               
+            </div>
+            <div class="text-center" *ngIf="groupedData && groupedData.length == 0 || groupedData == null"
+                                style="width: 100%;">No Data Available</div>
+            <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+            </div>
+        </div>
+
+        <div class="report-part mt-3" class="report-part  mt-3" *ngIf="filterType == 'Duration Report'">
+            <div class="total-duration">
+                <div class="chips-container">
+                    <div class="Distance chip other-background">
+                        Total Distance :- {{ totalDistance | number: '1.2-2'}} KM
+                    </div>
+                </div>
+            </div>
+            <div *ngFor="let vehicleItem of vehicle">
+                        <div class="chips-container">
+                            <div class="duration chip idle-background">
+                                {{vehicleItem?.Device?.VehicleNo}}'s Distance: {{vehicleItem?.Total || 'NA'}}KM
+                            </div>
+                        </div>
+                <div class="card mt-3 mb-3">
+                    <div class="card-body">
+                        <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                            <div class="dataTables_scroll">
+                                <div class="dataTables_scrollBody">
+
+                                    <table id="datatable"
+                                        class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                                        aria-describedby="datatable_info" style="width: 100%" width="100%">
+                                        <thead>
+                                            <tr role="row">
+                                                <th *ngFor="let vehicleHeading of tableData1">
+                                                    <strong>{{vehicleHeading?.val}}</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr *ngFor="let data of vehicleItem?.Distance">
+                                                <td>{{vehicleItem?.Device?.VehicleNo}}</td>
+                                                <td>
+                                                    {{data?.Date | date:'dd/MM/yyyy HH:mm:ss' }} To {{data?.ToDate |
+                                                    date:'dd/MM/yyyy HH:mm:ss' }}
+                                                </td>
+                                                <td>
+                                                    {{data?.Distance}} KM
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center"
+                                        *ngIf="vehicle && vehicleItem?.Distance.length == 0 || vehicleItem?.Distance == null"
+                                        style="width: 100%;">No Data Available</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="report-part mt-3" class="report-part  mt-3" *ngIf="filterType == 'Alert Report'">
+        <div class="card">
+            <div class="card-body">
+                <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                    <div class="dataTables_scroll">
+                        <div class="dataTables_scrollBody">
+
+                            <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                role="grid" aria-describedby="datatable_info" style="width: 100%" width="100%">
+                                <thead>
+                                    <tr role="row">
+                                        <th *ngFor="let vehicleHeading of tableData2">
+                                            <strong>{{vehicleHeading?.val}}</strong>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let data of vehicle">
+                                        <td>{{data?.vehicle_no}}</td>
+                                        <td>
+                                            {{data?.alert_type_name}}
+                                        </td>
+                                        <td>
+                                            {{ data?.alert_timestamp | date : 'dd-MM-yyyy HH:mm:ss' }}
+                                        </td>
+                                        <td>
+                                            {{ data?.alert_creationtime | date : 'dd-MM-yyyy HH:mm:ss' }}
+                                        </td>
+                                        <td>
+                                            {{ data?.narration }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="text-center" *ngIf="vehicle && vehicle.length == 0 || vehicle == null"
+                                style="width: 100%;">No Data Available</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

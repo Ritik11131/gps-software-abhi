@@ -1,0 +1,129 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<section class="admin-content">
+    <div class="card">
+        <div class="card-header">
+            Liberties List
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="filter-part">
+                    <form [formGroup]="libertiesForm" (ngSubmit)="Submit(libertiesForm.value)">
+                        <div class="row">
+
+                            <div class="col-md-2">
+                                <label class="form-label">Type</label>
+                                <ng-select placeholder="Select Type" formControlName="type">
+                                    <ng-option [value]="null">All</ng-option>
+                                    <ng-option [value]="1">New</ng-option>
+                                    <ng-option [value]="2">Recharge</ng-option>
+                                </ng-select>
+                                <div *ngIf="libertiesForm.get('type')?.invalid && (libertiesForm.get('type')?.dirty || libertiesForm.get('type')?.touched)"
+                                    class="text-danger mt-3">
+                                    Type is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label">From Date</label>
+                                <div class="input-group mb-3">
+                                        <!-- <input type="text" class="form-control" formControlName="fromDate"
+                                        placeholder="dd/MM/yyyy" #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"/> -->
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="reseller" formControlName="fromDate">
+                                            <mat-datepicker-toggle matSuffix [for]="reseller"></mat-datepicker-toggle>
+                                            <mat-datepicker #reseller></mat-datepicker>
+                                        </mat-form-field>
+                                </div>
+                                <div *ngIf="libertiesForm.get('fromDate')?.invalid && (libertiesForm.get('fromDate')?.dirty || libertiesForm.get('fromDate')?.touched)"
+                                    class="text-danger">
+                                    From Date is required
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">To Date</label>
+                                <div class="input-group mb-3">
+                                    <!-- <input type="text" class="form-control" placeholder="dd/MM/yyyy"
+                                        formControlName="toDate" #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"/> -->
+                                        <mat-form-field>
+                                            <input matInput [matDatepicker]="resellerTo" formControlName="toDate">
+                                            <mat-datepicker-toggle matSuffix [for]="resellerTo"></mat-datepicker-toggle>
+                                            <mat-datepicker #resellerTo></mat-datepicker>
+                                        </mat-form-field>
+                                </div>
+                                <div *ngIf="libertiesForm.get('toDate')?.invalid && (libertiesForm.get('toDate')?.dirty || libertiesForm.get('toDate')?.touched)"
+                                    class="text-danger">
+                                    To Date is required
+                                </div>
+                            </div>
+                            <div class="col-md-2 mt-2">
+                                <br>
+                                <button class="btn btn-primary"
+                                    >Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                        <div class="dataTables_scroll">
+                            <div class="dataTables_scrollBody">
+                                <table id="datatable"
+                                    class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                                    aria-describedby="datatable_info" style="width: 100%" width="100%">
+                                    <thead>
+                                        <tr role="row">
+                                            <th *ngFor="let vehicleHeading of columns">
+                                                <strong>{{vehicleHeading?.title}}</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let row of libertiesList |  paginate : {
+                                                  itemsPerPage: tableSize,
+                                                  currentPage: page,
+                                                  totalItems: count} let i= index">
+                                            <td>
+                                                <a>{{ row?.Datetime | date: "dd/MM/yyyy" }}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.PointType }}</a>
+                                            </td>
+
+                                            <td>
+                                                <a>{{ row?.TransType }}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Expenditure }}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Balance }}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Remarks }}</a>
+                                            </td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="text-center"
+                                    *ngIf="libertiesList && libertiesList.length == 0 || libertiesList == null "
+                                    style="width: 100%;">No Data Available</div>
+                                <div class="pagination-data"
+                                    *ngIf="libertiesList && libertiesList?.length > 0">
+                                    <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                        (pageChange)="onTableDataChange($event)">
+                                    </pagination-controls>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

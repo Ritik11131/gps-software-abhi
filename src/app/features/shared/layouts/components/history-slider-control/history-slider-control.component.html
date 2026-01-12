@@ -1,0 +1,13 @@
+<footer class="footer-sections">
+  <div class="container">
+    <div class="footer-content">
+      <div>
+        <div class="slidecontainer">
+          <input type="range" min="1" [max]="userService.gethistoryList() - 1" [value]="sliderValue" (input)="sliderChange($event)" class="slider" id="myRange">
+         
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

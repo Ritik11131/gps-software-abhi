@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="_card white-bg">
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <h4 class="mb-3"> Vehicle No :- {{deviceValue?.Device?.VehicleNo}}</h4>
+          <p> Point Recharge Due On :- {{rechargeData?.NextRechargeDue | date:'dd/MM/yyyy'}}</p>
+          <p> Customer Recharge Due On :- {{rechargeData?.CustomerRechargeDue | date:'dd/MM/yyyy'}} </p>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-success" (click)="submit()">
+                   Recharge Now
+                  </button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-danger" (click)="cancel()">
+                   Cancel
+                  </button>
+            </div>
+            
+        </div>
+    </div>
+  </div>

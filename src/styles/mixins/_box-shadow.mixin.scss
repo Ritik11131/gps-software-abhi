@@ -1,0 +1,15 @@
+@import "src/styles/colors";
+
+@mixin box-shadow($top : 0, $left : 3px, $blur : 6px, $spread : 0, $color: $color-black, $opacity: 0.1600, $inset: false) {
+    @if $inset {
+        -webkit-box-shadow: inset $top $left $blur $spread rgba($color, $opacity);
+        -moz-box-shadow: inset $top $left $blur $spread rgba($color, $opacity);
+        box-shadow: inset $top $left $blur $spread rgba($color, $opacity);
+    }
+
+    @else {
+        -webkit-box-shadow: $top $left $blur $spread rgba($color, $opacity);
+        -moz-box-shadow: $top $left $blur $spread rgba($color, $opacity);
+        box-shadow: $top $left $blur $spread rgba($color, $opacity);
+    }
+}

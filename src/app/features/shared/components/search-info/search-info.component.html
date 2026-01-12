@@ -1,0 +1,236 @@
+<div class="button-part">
+    <div class="device-button">
+        <button class="btn btn-primary" (click)="device()">Device</button>
+    </div>
+    <div class="uer-button">
+        <button class="btn btn-primary" (click)="getUser()">User</button>
+
+    </div>
+</div>
+<div class="row mt-2" *ngIf="showContent">
+    <div class="spinner-container" *ngIf="tableLoading">
+        <div class="spinner-borders text-primary" role="status">
+        </div>
+    </div>
+    <div class="col-md-12" *ngIf="!tableLoading">
+        <div class="main" [ngStyle]="{'height': deviceListById && deviceListById?.length > 2 ? '244px': 'auto','overflow':deviceListById && deviceListById?.length > 2 ? 'scroll': 'auto'}">
+            <div class="heading">
+                <strong *ngFor="let vehicleHeading of columns" class="heading-item">{{vehicleHeading.title}}</strong>
+            </div>
+            <div class="body-content" [ngClass]="{'active': selectColour?.Device?.Id === item?.Device?.Id}" *ngFor="let item of deviceListById; let i = index">
+                <div class="body-item">
+                    <p>{{item?.Dealer?.Name}}</p>
+                    <p>{{item?.Customer?.CustomerName}}</p>
+                    <p></p>
+                    <p>{{item?.Device?.InstallationOn | date: "dd/MM/yyyy"}}</p>
+                    <p>{{item?.Device?.VehicleNo}}</p>
+                    <p>{{item?.Device?.SimPhoneNumber}}</p>
+                    <p>{{item?.Device?.DeviceImei}}</p>
+                    <p><span class="show-detail" (click)="toggoleButton(item)">Detail</span></p>
+                </div>
+            </div>
+            <div class="text-center"
+            *ngIf="deviceListById && deviceListById.length == 0 || deviceListById == null"
+            style="width: 100%;">No Data Available</div>
+        </div>
+        
+
+        <!-- <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+            <div class="dataTables_scroll">
+                <div class="dataTables_scrollBody" [ngStyle]="{'height': deviceListById && deviceListById?.length > 2 ? '244px': 'auto'}">
+                    <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                        aria-describedby="datatable_info" style="width: 100%" width="100%">
+                        <thead>
+                            <tr role="row">
+                                <th *ngFor="let vehicleHeading of columns">
+                                    <strong>{{vehicleHeading?.title}}</strong>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let item of deviceListById; let i = index">
+                                <td>
+                                    <a>{{item?.Dealer?.Name}}</a>
+                                </td>
+                                <td>
+                                    <a>{{item?.Customer?.CustomerName}}</a>
+                                </td>
+
+                                <td>
+                                    <a>{{item?.Device?.InstallationOn | date: "dd/MM/yyyy"}}</a>
+                                </td>
+                                <td>
+                                    <a>{{item?.Device?.VehicleNo}}</a>
+                                </td>
+                                <td>
+                                    <a>{{item?.Device?.SimPhoneNumber}}</a>
+                                </td>
+                                <td>
+                                    <a>{{item?.Device?.DeviceImei}}</a>
+                                </td>
+                                <td>
+                                    <button (click)="toggoleButton(item)" class="btn btn-primary">Detail</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center"
+                    *ngIf="deviceListById && deviceListById.length == 0 || deviceListById == null "
+                        style="width: 100%;">No Data Available</div>
+                </div>
+                
+            </div>
+        </div> -->
+    </div>
+</div>
+
+<div class="row mt-2" *ngIf="showUserContent">
+    <div class="spinner-container" *ngIf="userTableLoading">
+        <div class="spinner-borders text-primary" role="status">
+        </div>
+    </div>
+    <div class="col-md-12" *ngIf="!userTableLoading">
+
+        <div class="main" [ngStyle]="{'height': userListById && userListById?.length > 2 ? '244px': 'auto','overflow':userListById && userListById?.length > 2 ? 'scroll': 'auto'}">
+            <div class="heading">
+                <strong *ngFor="let vehicleHeading of userColumns" class="heading-item">{{vehicleHeading.title}}</strong>
+            </div>
+            <div class="body-content" [ngClass]="{'active': selectColour?.Customer?.Id === item?.Customer?.Id}" *ngFor="let item of userListById; let i = index">
+                <div class="body-item">
+                    <p>{{item?.Dealer?.Name}}</p>
+                    <p>{{item?.Customer?.CustomerName}}</p>
+                    <p>{{item?.Customer?.User?.LoginId}}</p>
+                    <p>{{item?.Customer?.User?.Password}}</p>
+                    <p>{{item?.Customer?.ContactNumber}}</p>
+                    <p>{{item?.Customer?.Email}}</p>
+                    <p><span class="show-detail" (click)="userDetail(item)">Detail</span></p>
+                </div>
+
+            </div>
+            <div class="text-center"
+            *ngIf="userListById && userListById.length == 0 || userListById == null"
+            style="width: 100%;">No Data Available</div>
+        </div>
+
+        <!-- <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+            <div class="dataTables_scroll">
+                <div class="dataTables_scrollBody" [ngStyle]="{'height': userListById && userListById?.length > 2 ? '244px': 'auto'}">
+                    <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                        aria-describedby="datatable_info" style="width: 100%" width="100%">
+                        <thead>
+                            <tr role="row">
+                                <th *ngFor="let vehicleHeading of userColumns">
+                                    <strong>{{vehicleHeading?.title}}</strong>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let item of userListById; let i = index">
+                                <td>
+                                    <a>{{item?.Dealer?.Name}}</a>
+                                </td>
+                                <td>
+                                    <a>{{item?.Customer?.CustomerName}}</a>
+                                </td>
+
+                                <td>
+                                    <a>{{item?.Customer?.User?.LoginId}}</a>
+                                </td>
+                                <td>
+                                    <a>{{item?.Customer?.User?.Password}}</a>
+                                </td>
+                                <td>
+                                    <a>{{item?.Customer?.ContactNumber}}</a>
+                                </td>
+                                <td>
+                                    <a>{{item?.Customer?.Email}}</a>
+                                </td>
+                                <td>
+                                    <button (click)="userDetail(item)" class="btn btn-primary">Detail</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center"
+                    *ngIf="userListById && userListById.length == 0 || userListById == null "
+                        style="width: 100%;">No Data Available</div>
+                </div>
+               
+            </div>
+        </div> -->
+    </div>
+</div>
+
+<div class="row mt-3" *ngIf="openCloseNave">
+    <div class="col-lg-4 col-xl-3 my-profile-nav-bg">
+        <div class="my-profile-nav-container">
+            <ul class="my-profile-nav" myProfileNav>
+                <li class="nav-action-li"></li>
+                <li class="nav-item" style="cursor: pointer;" [class.active]="isNavItemSelected(nav.name)" (click)="selectNavItem(nav.name)"
+                    *ngFor="let nav of navigation">
+                    <a class="nav-link">
+                        {{ nav.name }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-8 col-xl-9 white-bg">
+        <ng-container *ngIf="loading; else content">
+            <div class="spinner-container">
+                <div class="spinner-borders text-primary" role="status">
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #content>
+            <ng-container [ngSwitch]="selectedNavItem">
+                <detail *ngSwitchCase="'Detail'" [deviceValue]="selectedData" (closePopup)="receivedClosePage($event)"></detail>
+                <move *ngSwitchCase="'Move'" [deviceValue]="selectedData" (closePopup)="receivedClosePage($event)"></move>
+                <sell *ngSwitchCase="'Sell'" (closePopup)="receivedClosePage($event)"></sell>
+                <recharge *ngSwitchCase="'Recharge'" [deviceValue]="selectedData" (closePopup)="receivedClosePage($event)"></recharge>
+                <command *ngSwitchCase="'Command'"></command>
+                <io-settings *ngSwitchCase="'I/O Settings'"></io-settings>
+                <create-account *ngSwitchCase="'Create Account'" [deviceValue]="selectedData" (closePopup)="receivedClosePage($event)"></create-account>
+                <modified-password *ngSwitchCase="'Modified Password'" (closePopup)="receivedClosePage($event)"></modified-password>
+            </ng-container>
+        </ng-template>
+    </div>
+</div>
+
+
+<div class="row mt-3" *ngIf="openUserNave">
+    <div class="col-lg-4 col-xl-3 my-profile-nav-bg">
+        <div class="my-profile-nav-container">
+            <ul class="my-profile-nav" myProfileNav>
+                <li class="nav-action-li"></li>
+                <li class="nav-item" style="cursor: pointer;" [class.active]="isNavItemSelected(nav.name)" (click)="selectNavItem(nav.name)"
+                    *ngFor="let nav of userNavigation">
+                    <a class="nav-link">
+                        {{ nav.name }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-8 col-xl-9 white-bg">
+        <ng-container *ngIf="loading; else userContent">
+            <div class="spinner-container">
+                <div class="spinner-borders text-primary" role="status">
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #userContent>
+            <ng-container [ngSwitch]="selectedNavItem">
+                <user-details *ngSwitchCase="'Detail'" [userData]="selectedData" (closePopup)="receivedClosePage($event)"></user-details>
+                <user-sale *ngSwitchCase="'Sale'" [userData]="selectedData" (closePopup)="receivedClosePage($event)"></user-sale>
+                <add-user *ngSwitchCase="'Add user'" [userData]="selectedData" (closePopup)="receivedClosePage($event)"></add-user>
+                <move-account *ngSwitchCase="'Move Account'" [userData]="selectedData" (closePopup)="receivedClosePage($event)"></move-account>
+                <add-device *ngSwitchCase="'Add Device'" [userData]="selectedData" (closePopup)="receivedClosePage($event)"></add-device>
+                <move-device *ngSwitchCase="'Move Device'" [userData]="selectedData" (closePopup)="receivedClosePage($event)"></move-device>
+                <user-device-list *ngSwitchCase="'Device List'" [userData]="selectedData" (closePopup)="receivedClosePage($event)"></user-device-list>
+            </ng-container>
+        </ng-template>
+    </div>
+</div>

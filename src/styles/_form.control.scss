@@ -1,0 +1,67 @@
+// Form Control
+@import 'src/styles/mixins/breakpoints';
+
+.form-control {
+    // height: 45px;
+    // border: 1px solid $color-gray;
+    // border-radius: 5px;
+    // color: $color-light-black;
+    // padding: 0 17px;
+
+        height: 35px;
+        border: 1px solid $color-gray;
+        border-radius: 5px;
+        // color: #fff;
+        padding: 0 16px 2px;
+        // background-color: #646464 !important;
+
+    &:focus {
+        box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, 0.21);
+        @include box-shadow(2px, 2px, 6px, 0, #{var(--color-dark-black)}, 0.21);
+        border: solid 1px $color-blue;
+        // background-color: #646464;
+        // color: #fff;
+    }
+
+    &.error,
+    &:invalid,
+    &.ng-invalid,
+    &.ng-invalid.ng-touched,
+    &.ng-invalid:focus {
+        @include box-shadow();
+        // color: #fff;
+        border-color: $color-red;
+    }
+
+    //if any form is untouched border should not be red it should be gray untli its tocuhed
+
+    &.ng-untouched{
+        border-color: $color-gray;
+        
+
+    }
+
+    &::placeholder {
+        color: $color-gray;
+    }
+
+    &:disabled {
+        background: $color-medium-gray;
+
+    }
+    @include breakpoint-range($max : sm){
+        margin-bottom: 15px;
+    }
+    
+}
+
+
+
+// Text Area
+textarea.form-control {
+    padding: 17px;
+    min-height: 100px;
+    @include breakpoint-range($max : sm){
+        margin-bottom: 15px;
+    }
+}

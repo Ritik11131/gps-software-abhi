@@ -1,0 +1,37 @@
+<div class="chat-box" id="chatBox" [ngClass]="{'active': showChatBox}">
+    <div class="messages" (scroll)="onScroll($event)">
+
+        <div class="filter-data">
+            <ng-select placeholder="All Alert" class="filteBy" [(ngModel)]="selectedFilter" (change)="applyFilter()">
+                <ng-option *ngFor="let filter of alertFilterOptions" [value]="filter.id">
+                    {{ filter.label }}
+                </ng-option>
+            </ng-select>
+        </div>
+        <div class="card mt-2">
+            <div *ngFor="let alert of alertData | filterAlerts:selectedFilter; let i = index"
+                (click)="onAlertLocation(alert, i)" [class.selected]="selectedAlertIndex === i" class="card-body"
+                style="cursor: pointer;">
+
+                <div class="alert-data">
+                    <div class="vehicle-no">{{ alert?.VehicleNo }}</div>
+                    <div class="alert-type vehicle-no" [style.color]="onGetAlert(alert).color">{{
+                        onGetAlert(alert).message }}</div>
+                </div>
+                <div class="time vehicle-no">
+                    {{ alert?.Timestamp | date: 'dd/MM/yyyy HH:mm:ss' }}
+                </div>
+            </div>
+            <!-- Display when no alerts are available -->
+            <div *ngIf="alertData.length == 0 " class="card-body vehicle-no">
+                <div class="no-data">No Alert Available</div>
+            </div>
+            <div *ngIf="storageService.returnalertValue()" class="card-body vehicle-no">
+                <div class="no-data">No Filtered Alert Available</div>
+            </div>
+
+
+        </div>
+        <div *ngIf="isLoading" class="loading-spinner"></div>
+    </div>
+</div>

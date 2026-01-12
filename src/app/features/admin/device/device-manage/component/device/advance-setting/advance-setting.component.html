@@ -1,0 +1,117 @@
+<div class="card">
+    <div class="card-header">
+        Advance Settings
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="advanceSettingForm" (ngSubmit)="submit(advanceSettingForm.value)">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">SIM IMEI</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" formControlName="simImei" placeholder="Enter SIM IMEI"
+                            form />
+                    </div>
+                    <div *ngIf="advanceSettingForm.get('simImei')?.invalid && (advanceSettingForm.get('simImei')?.dirty || advanceSettingForm.get('simImei')?.touched)"
+                        class="text-danger">
+                        SIM IMEI is required
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Igntion Input</label>
+                    <ng-select placeholder="Select Igntion" formControlName="ignition">
+                        <ng-option [value]="1">DI1</ng-option>
+                        <ng-option [value]="0">Disable</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">AC Input</label>
+                    <ng-select placeholder="Select Input" formControlName="ac"
+                        (change)="filterOptions(advanceSettingForm.value.ac, 'ac')">
+                        <ng-option *ngFor="let item of acFilteredData" [value]="item?.id">{{ item?.name }}</ng-option>
+                    </ng-select>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Door Input</label>
+                    <ng-select placeholder="Select Input" formControlName="door"
+                        (change)="filterOptions(advanceSettingForm.value.door, 'door')">
+                        <ng-option *ngFor="let item of doorFilteredData" [value]="item?.id">{{ item?.name }}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fuel Input</label>
+                    <ng-select placeholder="Select Fuel" formControlName="fuel"
+                        (change)="filterOptions(advanceSettingForm.value.fuel, 'fuel')">
+                        <ng-option *ngFor="let item of fueltData" [value]="item?.id">{{ item?.name }}</ng-option>
+                    </ng-select>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Temp Input</label>
+                    <ng-select placeholder="Select Temp" formControlName="temp">
+                        <ng-option *ngFor="let item of tempFilterData" [value]="item?.id">{{ item?.name }}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">RFID Input</label>
+                    <ng-select placeholder="Select RFID" formControlName="rfid">
+                        <ng-option *ngFor="let item of enableData" [value]="item?.id">{{ item?.name }}</ng-option>
+                    </ng-select>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Overspeed</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Enter Overspeed"
+                            formControlName="overspeed" />
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Enable Odometer</label>
+                    <ng-select placeholder="Select Odometer" formControlName="enable"
+                        (change)="addOdometer(advanceSettingForm.value.enable)">
+                        <ng-option *ngFor="let item of enableData" [value]="item?.id">{{ item?.name }}</ng-option>
+                    </ng-select>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">SOS Enable</label>
+                    <ng-select placeholder="Select SOS" formControlName="sos_enable">
+                        <ng-option *ngFor="let item of enableData" [value]="item?.id">{{ item?.name }}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-6  mb-3">
+                    <label class="form-label">Admin Number</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Admin Number"
+                            formControlName="admin_number" />
+                    </div>
+                    <div *ngIf="advanceSettingForm.get('admin_number')?.invalid && (advanceSettingForm.get('admin_number')?.dirty || advanceSettingForm.get('admin_number')?.touched)"
+                        class="text-danger">
+                        Admin Number is required
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-primary">Submit</button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger" (click)="cancel($event)">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

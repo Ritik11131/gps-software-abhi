@@ -1,0 +1,164 @@
+<!-- <div class="modal-header text-center" style="color: #fff;">
+    <h2>
+       Fitment
+    </h2>
+    <div class="close-modal">
+        <i class="fa fa-close" (click)="cancel()"></i>
+    </div>
+</div> -->
+<div class="modal-body p-20">
+    <div class="print-part">
+        <button  (click)="printContent()">
+            Print
+          </button>
+            <i class="fa fa-close" (click)="cancel()"></i>
+    </div>
+    <div #printSection class="body-content">
+        <div class="heading">
+            <h2>PantherGPS</h2>
+            <h2><img src="assets/images/panther-logo.png" alt=""></h2>
+            <h2>Fitment Certificate</h2>
+            <h3>Department Copy</h3>
+
+        </div>
+        <p>Fitment Certificate No.: {{fitmentData?.FitmentRto?.RootId}}</p>
+        <div class="vehicle-details">
+            <h6><b>Vehicle Details.</b></h6>
+            <div class="details-part">
+                <div class="details">
+                    <span><b>Vehicle.:</b></span>
+                    <span>{{fitmentData?.FitmentVehicleDetails?.VehicleNo}}</span>
+                    <span><b>Registration Date.:</b></span>
+                    <span>{{fitmentData?.FitmentVehicleDetails?.FitnessDate | date:'dd/MM/yyyy'}}</span>
+                    <span><b>Chassis No.:</b></span>
+                    <span>{{fitmentData?.FitmentVehicleDetails?.ChasisNo}}</span>
+                    <span><b>Maker Model.:</b></span>
+                    <span>{{fitmentData?.FitmentVehicleDetails?.VehicleModel}}</span>
+                </div>
+                <div class="details">
+                    <span><b>Manufacture Year.:</b></span>
+                    <span>{{fitmentData?.FitmentVehicleDetails?.MafYear}}</span>
+                    <span><b>Engine No.:</b></span>
+                    <span>{{fitmentData?.FitmentVehicleDetails?.EngineNo}}</span>
+                    <span><b>State.:</b></span>
+                    <span>{{fitmentData?.FitmentRto?.State}}</span>
+                </div>
+                <div class="details">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="Owner-details">
+            <h6><b>Vehicle Owner Details</b></h6>
+            <div class="details-part">
+                <div class="details">
+                    <span><b>Name.:</b></span>
+                    <span>{{fitmentData?.FitmentOwner?.Name}}</span>
+                </div>
+                <div class="details">
+                    <span><b>Mobile.:</b></span>
+                    <span>{{fitmentData?.FitmentOwner?.MobileNumber}}</span>
+                </div>
+                <div class="details">
+                    <span><b>Address.:</b></span>
+                    <span>{{fitmentData?.FitmentOwner?.Address}}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="vts-details">
+            <h6><b>VTS Details</b></h6>
+            <div class="details-part">
+                <div class="details">
+                    <span><b>Model.:</b></span>
+                    <span>{{fitmentData?.FitmentDeviceDetails?.Model}}</span>
+                    <span><b>IMEI No.:</b></span>
+                    <span>{{fitmentData?.FitmentDeviceDetails?.IMEI}}</span>
+                    <span><b>ICCID No.:</b></span>
+                    <span>{{fitmentData?.FitmentDeviceDetails?.ICCID}}</span>
+                    <span><b>UID.:</b></span>
+                    <span>{{fitmentData?.FitmentDeviceDetails?.UID}}</span>
+                </div>
+                <div class="details">
+                    <span><b>Type/Tac No.:</b></span>
+                    <span>AIS140/CM-8755</span>
+                    <span><b>Rotor Seal No.:</b></span>
+                    <span>N/A</span>
+                    <span><b>Installation Date.:</b></span>
+                    <span>{{fitmentData?.FitmentRto?.CalibrationOn | date:'dd/MM/yyyy' }}</span>
+                    <span><b>Recalibration Date.:</b></span>
+                    <span>{{fitmentData?.FitmentRto?.CalibrationTill | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="details">
+                    <span><b>No. of SOS/ Panic Button.:</b></span>
+                    <span>{{fitmentData?.FitmentVehicleDetails?.VehicleSubType}}</span>
+                    <span><b>Invoice No.:</b></span>
+                    <span>{{fitmentData?.FitmentInvoice?.InvoiceNumber}}</span>
+                    <span><b>Invoice Date.:</b></span>
+                    <span>{{fitmentData?.FitmentInvoice?.InvoiceDate | date:'dd/MM/yyyy'}}</span>
+                    <span><b>SIM No.:</b></span>
+                    <span>{{fitmentData?.FitmentDeviceDetails?.SimPhoneNumber}}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-detail">
+            <div class="first-part">
+                <span><b>Installed By.:</b> {{fitmentData?.FitmentDealer?.Name}}</span>
+            </div>
+
+            <div class="second-part">
+                <span><b>Address.:</b> {{fitmentData?.FitmentDealer?.Address}}</span>
+            </div>
+        </div>
+
+        <div class="history-part mt-2">
+            <span>This is to acknowledge that we have got our vehicle bearing registration no. <b>{{fitmentData?.FitmentVehicleDetails?.VehicleNo}}</b>
+                fitted with
+                GPS/VTS/VLTD bearing IMEI No.
+                <b>{{fitmentData?.FitmentDeviceDetails?.IMEI}}</b>
+                We have checked the performance of the vehicle after fitment of the said GPS/VTS/VLTD Device and we
+                confirm that device functioning as per the norms laid out in AIS140 by ICAT. We are satisfied with the
+                performance of the unit in all respects. We undertake not to raise any dispute or any legal claims
+                against <b>M/s. PantherGPS</b> in the event that the above mentioned
+                seals/device and
+                harness are found broken/tampered till expiry of warranty period of 12 months from the dateof
+                installation. * All disputes are subject to Delhi Jurisdiction only.</span>
+        </div>
+
+        <div class="image-part">
+            <div class="vehicle-image">
+                <img src="{{fitmentData?.FitmentImage?.VehicleImage}}" alt="image not available">
+            </div>
+            <div class="device-image">
+                <img src="{{fitmentData?.FitmentImage?.DeviceImage}}" alt="image not available">
+            </div>
+            <div class="fitment-image">
+                <img src="{{fitmentData?.FitmentImage?.FitmentImage}}" alt="image not available">
+            </div>
+        </div>
+
+        <div class="signature-part">
+            <div class="customer-signature">
+                <span><b>Signature of Customer</b></span>
+            </div>
+            <div class="rto-signature">
+                <span><b>Signature of RTA/RTO/STA</b></span>
+            </div>
+            <div class="installer-signature">
+                <span><b>Stamp & Signature of Installer</b></span>
+            </div>
+        </div>
+
+        <div class="address-part">
+            <div class="first-part">
+                <span></span>
+            </div>
+            <div class="second-part mt-2">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+</div>

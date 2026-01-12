@@ -1,0 +1,81 @@
+<div class="card">
+    <div class="card-header">
+         Device Command
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="deviceCommandForm" (ngSubmit)="submit(deviceCommandForm.value)">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Device Maker</label>
+                    <ng-select placeholder="Select Maker" formControlName="deviceMaker" (change)="onMakerSelect($event)">
+                        <ng-option *ngFor="let item of deviceMakerData" [value]="item?.id">{{ item?.name }}</ng-option>
+                      </ng-select>
+                    <div *ngIf="deviceCommandForm.get('deviceMaker')?.invalid && (deviceCommandForm.get('deviceMaker')?.dirty || deviceCommandForm.get('deviceMaker')?.touched)"
+                        class="text-danger">
+                        Device Maker is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Device Type</label>
+                    <ng-select placeholder="Select Device" formControlName="deviceType" (change)="ondeviceTypeSelect($event)">
+                        <ng-option *ngFor="let item of deviceTypeData" [value]="item?.id">{{ item?.name }}</ng-option>
+                      </ng-select>
+                    <div *ngIf="deviceCommandForm.get('deviceType')?.invalid && (deviceCommandForm.get('deviceType')?.dirty || deviceCommandForm.get('deviceType')?.touched)"
+                        class="text-danger">
+                        Device Type is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Command Type</label>
+                    <ng-select placeholder="Select Command" formControlName="commandType" (change)="onSelectCommand($event)">
+                        <ng-option *ngFor="let item of commandTypeData" [value]="item?.id">{{ item?.command_text }}</ng-option>
+                      </ng-select>
+                    <div *ngIf="deviceCommandForm.get('commandType')?.invalid && (deviceCommandForm.get('commandType')?.dirty || deviceCommandForm.get('commandType')?.touched)"
+                        class="text-danger">
+                        Command Type is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Hexa Code</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Hexa Code"
+                            formControlName="hexa_code" aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="deviceCommandForm.get('hexa_code')?.invalid && (deviceCommandForm.get('hexa_code')?.dirty || deviceCommandForm.get('hexa_code')?.touched)"
+                        class="text-danger">
+                        Hexa Code is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Command</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Command"
+                            formControlName="command" aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="deviceCommandForm.get('command')?.invalid && (deviceCommandForm.get('command')?.dirty || deviceCommandForm.get('command')?.touched)"
+                        class="text-danger">
+                        Command is required
+                    </div>
+                </div>
+                
+
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-success" type="submit">
+                        {{button}}
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-danger" (click)="cancel($event)">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

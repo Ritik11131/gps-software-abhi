@@ -1,0 +1,55 @@
+<div class="modal-header text-center" style="color: #fff;">
+  {{vehicleNo}}
+  <div class="close-modal">
+    <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel()"></i>
+  </div>
+</div>
+<div class="modal-body p-20">
+  <div class="_card white-bg">
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label">Vehicle No</label>
+        <input class="form-control" placeholder="Enter Device Name" [(ngModel)]="vehicleNo" type="text" />
+        <div *ngIf="!vehicleNo" class="text-danger">
+          Vehicle No is required
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Over Speed Limit</label>
+        <input class="form-control" placeholder="Enter Speed Limit" [(ngModel)]="speedLimit" type="text" />
+        <div *ngIf="!speedLimit" class="text-danger">
+          Vehicle No is required
+        </div>
+      </div>
+      <div class="col-md-12 mt-2">
+        <label class="form-label">Select Icon</label>
+        <ng-select placeholder="Vehicle Type" [(ngModel)]="selectedVehicle" (change)="selectedVehicleColor($event)">
+          <ng-option *ngFor="let item of bulk" [value]=" item?.id">{{
+            item?.title
+            }}</ng-option>
+        </ng-select>
+        <div *ngIf="!selectedVehicle" class="text-danger">
+          Vehicle No is required
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="icon-container">
+          <div class="icon-detail" *ngFor="let item of bulk">
+            <img src="{{item?.icon}}" alt="not available" (click)="imageId(item?.id)"
+              [ngClass]="{'selected': selectedColor == item?.id}">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer mt-3">
+    <div class="row">
+      <div class="col-md-6">
+        <button class="btn btn-success" (click)="submit()">OK</button>
+      </div>
+      <div class="col-md-6">
+        <button class="btn btn-danger" (click)="cancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

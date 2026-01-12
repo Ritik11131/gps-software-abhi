@@ -1,0 +1,131 @@
+.card-data {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.card-value {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.widget {
+    flex-grow: 1;
+    box-shadow: 0px 2px 6px 0px rgb(85 84 84 / 50%);
+    border-radius: 11px;
+}
+
+.widget.bg-light {
+    padding: 20px;
+    &:hover{       
+        background-color: #001529  !important;   
+        h2 {
+            color: white !important;
+        }
+
+        i.fa {
+            color: #fff !important;
+        }
+        span {
+            color: #fff !important;
+        }
+    }
+    
+}
+
+h2.margin-b-5 {
+    font-size: 17px;
+}
+
+h2.ani-image {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.footer-part {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    align-items: center;
+    
+    i.fa {
+        display: block;
+        font-size: 16px;
+    }
+
+    span {
+        font-size: 13px;
+        text-align: left;
+    }
+}
+
+.status-part {
+    ul {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 10px;
+        list-style: none;
+
+        li span {
+            display: block;
+        }
+    }
+
+}
+
+.footer-part.balance {
+    display: block;
+    text-align: left;
+    line-height: 1.7;
+}
+
+.middle-part{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    .widget.bg-light {
+        &:hover{       
+            background-color: #f8f9fa  !important;   
+            h2 {
+                color: #4c4d4b !important;
+            }
+    
+            i.fa {
+                color: #4c4d4b !important;
+            }
+            span {
+                color: #4c4d4b !important;
+            }
+        }
+    }   
+}
+
+.card-value-middle {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+.card-value-middle:first-child {
+    grid-column: span 2;
+}
+
+.widget.bg-light.middle.reminder{
+    position: relative;
+    .edit-descrbe {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+    }
+
+}
+
+.user-part {
+    cursor: pointer;
+}
+
+.widget.bg-light.middle.info {
+    padding: 0;
+}

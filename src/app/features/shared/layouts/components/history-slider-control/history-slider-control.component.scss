@@ -1,0 +1,255 @@
+@import "src/styles/mixins/breakpoints";
+
+:host {
+  width: 100%;
+  align-self: flex-end;
+}
+
+.footer-content {
+  img {
+    height: 20px;
+    width: 20px;
+  }
+
+  .slidecontainer {
+    margin: -4px;
+  }
+
+  .slider {
+    //  -webkit-appearance: none !important;
+    //  appearance: none !important;
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    background: rgb(104, 104, 250);
+    outline: none;
+    opacity: 1;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+
+  }
+
+  .fas {
+    color: white !important;
+    font-weight: 600;
+    font-size: medium !important;
+  }
+
+  .fas:hover {
+    color: orange;
+  }
+
+  input {
+    width: 100%;
+  }
+
+  .car-icon {
+    position: absolute;
+    top: -10px;
+    /* Adjust based on icon size */
+    left: 0;
+    width: 30px;
+    /* Adjust based on icon size */
+    transition: left 0.1s;
+  }
+}
+
+
+.footer-menu {
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+
+  .search {
+    display: flex;
+    align-items: baseline;
+
+
+
+
+    input {
+      width: 351px;
+    }
+
+  }
+
+  img {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-radius 0.3s;
+  }
+
+  img:hover {
+    border-radius: 50%;
+    background-color: orange;
+  }
+
+  li {
+    a {
+      font-size: 16px;
+    }
+  }
+
+  .search-box {
+    position: relative;
+    display: inline-block;
+    width: 243px;
+
+    input {
+      width: 257px;
+      padding-right: 30px;
+      box-sizing: border-box;
+      border-radius: 5px !important;
+      border: 1px solid white !important;
+    }
+
+    ::placeholder {
+      color: #656565;
+      font-size: 12px;
+      opacity: 1;
+    }
+
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      right: 0px;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+  }
+
+  @include breakpoint-range($max: xl) {
+    &>li {
+      margin-bottom: 5px;
+      width: 100%;
+
+      &>a {
+        border-right: none;
+      }
+    }
+  }
+}
+
+.copy-right-text {
+  font-size: 16px;
+}
+
+.card {
+  position: absolute;
+  top: 490px;
+  width: 95%;
+  background-color: rgba(101, 101, 101, 0.5);
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.card.collapsed {
+  display: none;
+}
+
+.toggle-class {
+  margin-left: 20px;
+
+  i.fa.fa-angle-double-up {
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
+
+.collapsed .card-content {
+  height: 30px;
+}
+
+.card-content {
+  overflow: hidden;
+}
+
+.card .first-part {
+  display: flex;
+  align-items: center;
+}
+
+.first-part {
+  display: flex;
+  align-items: center;
+
+  .toggle-class {
+    i.fa.fa-angle-double-down {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    i.fa.fa-angle-double-up {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+
+  .address {
+    flex-grow: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-left: 20px;
+    border-bottom: 1px solid white;
+    width: 100%;
+
+    span {
+      color: #fff;
+      font-size: 13px;
+    }
+  }
+}
+
+.card .toggle-class {
+  margin-right: 10px;
+}
+
+.card-data {
+  margin-top: 10px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+
+  .widget.bg-light {
+    border-radius: 4px;
+    padding: 10px;
+
+    .status-data {
+      ul {
+        li {
+          line-height: 1.7;
+          border-bottom: 1px solid #d7d4d4;
+
+          a.status {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+
+            span.status-key {
+              font-weight: bold !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .pac-container {
+    width: 350px !important;
+    position: absolute !important;
+    left: 576px !important;
+    top: 522px !important;
+  }
+}

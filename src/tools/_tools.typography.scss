@@ -1,0 +1,598 @@
+@import 'src/styles/settings/settings.typography';
+
+@import 'src/styles/tools/tools.fonts-units';
+
+@import 'src/styles/tools/tools.mediaquery';
+
+// ========================== PRIVATE BASE MIXINS
+@mixin font-sans-base($size, $lineheight, $spacing, $family) {
+	font-family: map-get($font-families, $family);
+	font-size: if(type_of($size) == string, $size, rem($size));
+	line-height: $lineheight;
+	letter-spacing: $spacing;
+}
+@mixin font-nunito-base($size, $lineheight, $spacing, $family) {
+	font-weight: 300;
+	font-family: normal $family;
+	font-size: $size;
+	line-height: $lineheight;
+	letter-spacing: $spacing;
+}
+@mixin font-nunito-bold(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 700;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'normal'
+	);
+}
+@mixin typeBreakpointSizes($size, $lineheight, $spacing, $family) {
+	@include font-sans-base(nth($size, 1), $lineheight, $spacing, $family);
+	@for $i from 1 through length($size) {
+		@if ($i == 2) {
+			@include mq-breakpoint-md() {
+				@include font-sans-base(nth($size, 2), $lineheight, $spacing, $family);
+			}
+		}
+		@if ($i == 3) {
+			@include mq-breakpoint-lg() {
+				@include font-sans-base(nth($size, 3), $lineheight, $spacing, $family);
+			}
+		}
+	}
+}
+// ========================== PUBLIC MIXINS
+// --------- FONTS
+
+@mixin font-open-sans($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 400;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+@mixin font-open-sans-medium($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 400;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-semibold(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 500;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-semibold-italic(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 600;
+	font-style: italic;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-bold($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 700;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-nunito-bold($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 700;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+@mixin font-open-sans-light($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 100;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-light-italic(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 300;
+	font-style: italic;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-stilson($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 400;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'stilson'
+	);
+}
+
+@mixin font-stilson-italic($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 400;
+	font-style: italic;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'stilson'
+	);
+}
+
+@mixin font-stilson-bold($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 700;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'stilson'
+	);
+}
+@mixin font-stilson-bold-italic(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 700;
+	font-style: italic;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'stilson'
+	);
+}
+
+@mixin font-open-sans($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 300;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-bold($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 700;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-helvetica($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 300;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'helvetica'
+	);
+}
+
+@mixin font-size-break-point-sizes($size: [16]) {
+	font-size: nth($size, 1);
+	@for $i from 1 through length($size) {
+		@if ($i == 2) {
+			@include mq-breakpoint-md() {
+				font-size: nth($size, 2);
+			}
+		}
+		@if ($i == 3) {
+			@include mq-breakpoint-lg() {
+				font-size: nth($size, 3);
+			}
+		}
+	}
+}
+
+@mixin font-inherit() {
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+	letter-spacing: inherit;
+}
+
+/** USAGE
+	> font-size is converted into rem units
+
+.class-name {
+	@include font-gotham-light($size: [12px or 12], $lineheight: [number]);
+}
+
+...converts to....
+
+.class-name {
+	font-weight: 300;
+	font-family: 'Gotham', Helvetica, sans-serif;
+	font-size: .75rem;
+	line-height: 2;
+	letter-spacing: .45px;
+}
+
+ */
+
+@mixin iconFontClass() {
+	[class^='icon-'],
+	[class*=' icon-'] {
+		/* use !important to prevent issues with browser extensions that change fonts */
+		font-family: '#{$font-karastan-icons}' !important;
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+
+		/* Enable Ligatures ================ */
+		letter-spacing: 0;
+		-webkit-font-feature-settings: 'liga';
+		-moz-font-feature-settings: 'liga=1';
+		-moz-font-feature-settings: 'liga';
+		-ms-font-feature-settings: 'liga' 1;
+		font-feature-settings: 'liga';
+		-webkit-font-variant-ligatures: discretionary-ligatures;
+		font-variant-ligatures: discretionary-ligatures;
+
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: greyscale;
+	}
+}
+
+// ========================== PRIVATE BASE MIXINS
+@mixin font-sans-base($size, $lineheight, $spacing, $family) {
+	font-family: map-get($font-families, $family);
+	font-size: if(type_of($size) == string, $size, rem($size));
+	line-height: $lineheight;
+	letter-spacing: $spacing;
+}
+
+@mixin typeBreakpointSizes($size, $lineheight, $spacing, $family) {
+	@include font-sans-base(nth($size, 1), $lineheight, $spacing, $family);
+	@for $i from 1 through length($size) {
+		@if ($i == 2) {
+			@include mq-breakpoint-md() {
+				@include font-sans-base(nth($size, 2), $lineheight, $spacing, $family);
+			}
+		}
+		@if ($i == 3) {
+			@include mq-breakpoint-lg() {
+				@include font-sans-base(nth($size, 3), $lineheight, $spacing, $family);
+			}
+		}
+	}
+}
+// ========================== PUBLIC MIXINS
+// --------- FONTS
+
+@mixin font-gotham-light($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 300;
+
+	@include typeBreakpointSizes($size, $lineheight, $spacing, $family: 'gotham');
+}
+
+@mixin font-gotham-book($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 500;
+
+	@include typeBreakpointSizes($size, $lineheight, $spacing, $family: 'gotham');
+}
+
+@mixin font-gotham-medium($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 700;
+
+	@include typeBreakpointSizes($size, $lineheight, $spacing, $family: 'gotham');
+}
+
+@mixin font-futura-normal($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 400;
+
+	@include typeBreakpointSizes($size, $lineheight, $spacing, $family: 'futura');
+}
+
+@mixin font-futura-bold($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 600;
+
+	@include typeBreakpointSizes($size, $lineheight, $spacing, $family: 'futura');
+}
+
+@mixin font-open-sans-extralight(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 200;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+@mixin font-open-sans-extralight-italic(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 200;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-light($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 300;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-light-italic(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 300;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 300;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-italic($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 400;
+	font-style: italic;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-bold($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 700;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+@mixin font-open-sans-bold-italic(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 700;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+@mixin font-open-sans-extrabold(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 800;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+@mixin font-open-sans-extrabold-italic(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45pxs
+) {
+	font-weight: 800;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-open-sans-black($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 900;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+@mixin font-open-sans-black-italic(
+	$size: [16],
+	$lineheight: 1.5,
+	$spacing: 0.45px
+) {
+	font-weight: 900;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'open-sans'
+	);
+}
+
+@mixin font-helvetica($size: [16], $lineheight: 1.5, $spacing: 0.45px) {
+	font-weight: 300;
+
+	@include typeBreakpointSizes(
+		$size,
+		$lineheight,
+		$spacing,
+		$family: 'helvetica'
+	);
+}
+
+@mixin font-size-break-point-sizes($size: [16]) {
+	font-size: nth($size, 1);
+	@for $i from 1 through length($size) {
+		@if ($i == 2) {
+			@include mq-breakpoint-md() {
+				font-size: nth($size, 2);
+			}
+		}
+		@if ($i == 3) {
+			@include mq-breakpoint-lg() {
+				font-size: nth($size, 3);
+			}
+		}
+	}
+}
+
+@mixin font-inherit() {
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	line-height: inherit;
+	letter-spacing: inherit;
+}
+
+/** USAGE
+	> font-size is converted into rem units
+
+.class-name {
+	@include font-gotham-light($size: [12px or 12], $lineheight: [number]);
+}
+
+...converts to....
+
+.class-name {
+	font-weight: 300;
+	font-family: 'Gotham', Helvetica, sans-serif;
+	font-size: .75rem;
+	line-height: 2;
+	letter-spacing: .45px;
+}
+
+ */
+
+@mixin iconFontClass() {
+	[class^='icon-'],
+	[class*=' icon-'] {
+		/* use !important to prevent issues with browser extensions that change fonts */
+		font-family: '#{$font-karastan-icons}' !important;
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+
+		/* Enable Ligatures ================ */
+		letter-spacing: 0;
+		-webkit-font-feature-settings: 'liga';
+		-moz-font-feature-settings: 'liga=1';
+		-moz-font-feature-settings: 'liga';
+		-ms-font-feature-settings: 'liga' 1;
+		font-feature-settings: 'liga';
+		-webkit-font-variant-ligatures: discretionary-ligatures;
+		font-variant-ligatures: discretionary-ligatures;
+
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: greyscale;
+	}
+}

@@ -1,0 +1,88 @@
+<div class="main">
+  <!-- Container for sidebar(s) + page content *ngIf="userType == 'admin'"-->
+  <div #appHeader>
+    <admin-header (exitEvent)="closeSidebar($event)"></admin-header>
+  </div>
+  <ng-sidebar-container
+    [allowSidebarBackdropControl]="true"
+    (onBackdropClicked)="hideSidebar()"
+    [backdropClass]="sidenavConfig.backdropClass"
+    class="main-side-bar-container"
+    [style.height.px]="calculateMinHeight(appHeader)"
+  >
+    <!-- A sidebar -->
+    <ng-sidebar
+      #sidebar
+      [(opened)]="_opened"
+      [showBackdrop]="sidenavConfig.showBackdrop"
+      [mode]="sidenavConfig.mode"
+      *ngIf="!hideSideBar"
+   
+      [sidebarClass]="sidenavConfig.sidebarClass"
+      [dockedSize]="sidenavConfig.dockedSize"
+      [dock]="sidenavConfig.dock"
+    >
+      <aside class="layout-side-bar">
+        <admin-sidebar class="overflow-x-axis"></admin-sidebar>
+      </aside>
+    </ng-sidebar>
+    <!-- Page content -->
+    <div
+      ng-sidebar-content
+      class="page custom-scrollbar mainPage"  [ngStyle]="{'height': currentUrl === '/admin/dashboard' ? 'auto' : '100%'}"  
+      #mainPage
+      id="mainPage"
+    >
+      <div class="w-100">
+        <div class="admin">
+          <div class="header-box">
+            <div class="header-content">
+              <a routerLink="/admin/overview/admin-overview/sell" (click)="
+              this.tabService.setActive('OverView'); routetopage('/admin/overview/admin-overview/sell')
+            "  class="monitor">
+                <i class="fa fa-desktop" aria-hidden="true" ></i>Monitor</a
+              >
+            </div>
+            <div class="search-box">              
+              <sky-search-control 
+              placeholder="search"
+              title="Please fill out this field."
+            ></sky-search-control>
+             
+            </div>
+            
+            <div class="setting">
+              <div class="usericon">
+                <span class="logout-section" (click)="logout()">Logout</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="horizontal-list-container">
+          <div class="horizontal-list">
+            <div
+              *ngFor="let tab of tabs; let i = index"
+              class="item"
+              (click)="
+                this.tabService.setActive(tab.name); routetopage(tab.path)
+              "
+              [ngClass]="{ 'active-item': tab.active }"
+            >
+              <i class="fa fa-file left-icon"></i>
+              <!-- Left-side icon -->
+              {{ tab.name }}
+              <i
+              *ngIf="i !==0"
+                class="fas fa-times close-icon"
+                (click)="tabService.removeTab(tab.name)"
+              ></i>
+            </div>
+          </div>
+        </div>
+        <router-outlet></router-outlet>
+      </div>
+      <!-- <site-footer></site-footer> -->
+    </div>
+  </ng-sidebar-container>
+</div>

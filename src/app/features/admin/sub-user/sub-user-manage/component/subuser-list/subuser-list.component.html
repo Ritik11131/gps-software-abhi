@@ -1,0 +1,88 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                Sub User List
+            </div>
+            <div class="card-body">
+                <div class="fiter-data mb-3">
+                    <subuser-filter (filterValue)="confirm($event)" (addSubuser)="addSubUser($event)"></subuser-filter>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                            <div class="dataTables_scroll">
+                                <div class="dataTables_scrollBody">
+                                    <table id="datatable"
+                                        class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                                        aria-describedby="datatable_info" style="width: 100%" width="100%">
+                                        <thead>
+                                            <tr role="row">
+                                                <th *ngFor="let vehicleHeading of columns">
+                                                    <strong>{{vehicleHeading?.title}}</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr *ngFor="let row of subUserData |  paginate : {
+                                                      itemsPerPage: tableSize,
+                                                      currentPage: page,
+                                                      totalItems: count} let i= index"
+                                                      [ngClass]="{'active': selectColor?.Id === row?.Id}">
+                                                <td>
+                                                    <a>{{ row?.LoginId }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.Password }}</a>
+                                                </td>
+
+                                                <td>
+                                                    <a>{{ row?.MobileNo }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.CreationTime | date : "dd/MM/yyyy HH:mm:ss" }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.IsActive == 0 ? 'Active' : 'InActive' }}</a>
+                                                  </td>
+                                                <td>
+                                                    <button mat-icon-button (click)="onContextMenu($event, row, i)">
+                                                        <mat-icon>more_vert</mat-icon>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center"
+                                        *ngIf="subUserData && subUserData.length == 0 || subUserData == null "
+                                        style="width: 100%;">No Data Available</div>
+                                </div>
+                                <div class="pagination-data" *ngIf="subUserData && subUserData?.length > 0">
+                                    <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                        (pageChange)="onTableDataChange($event)">
+                                    </pagination-controls>
+                                </div>
+                            </div>
+                            <div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
+                                    [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
+                                </div>
+                                <mat-menu #contextMenu="matMenu">
+                                    <ng-template matMenuContent let-item="item">
+                                        <button mat-menu-item *ngFor="let menuItem of urlPath" (click)="redirectTo(menuItem?.path)">
+                                            {{ menuItem.name }}
+                                        </button>
+                                        
+                                    </ng-template>
+                                </mat-menu>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <router-outlet></router-outlet>
+    </div>
+</div>

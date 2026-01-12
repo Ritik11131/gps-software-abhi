@@ -1,0 +1,50 @@
+<div class="card">
+    <div class="card-header">
+        Recharge
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Manufactur</label>
+                <ng-select placeholder="Select Manufactur">
+                    <ng-option ></ng-option>
+                </ng-select>
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Device</label>
+                <ng-select placeholder="Select Device">
+                    <ng-option ></ng-option>
+                </ng-select>
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Plan</label>
+                <ng-select placeholder="Select Plan">
+                    <ng-option ></ng-option>
+                </ng-select>
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Qty</label>
+                <input type="text" class="form-control" placeholder="Enter Qty" 
+                aria-describedby="button-addon2" />
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Amount</label>
+                <input type="text" class="form-control" placeholder="Enter Amount" 
+                aria-describedby="button-addon2" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-success" type="submit">
+                    Submit
+                </button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-danger">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

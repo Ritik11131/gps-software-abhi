@@ -1,0 +1,98 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="reseller-part">
+  <div class="card">
+    <div class="card-header">
+      Reseller List
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="reseller-search ">
+            <div class="search-form mb-2">
+              <input placeholder="Search for..." [(ngModel)]="searchKeyword" type="text"
+                class="form-control search-input"><button type="button" class="btn-search"><i class="fa fa-search"
+                  aria-hidden="true"></i></button>
+            </div>
+            <div class="text-right">
+              <button class="btn btn-primary" (click)="redirectTo('add-reseller')"><i style="margin-right: 8px;"
+                  class="fa fa-plus" aria-hidden="true"></i>Add
+                Reseller</button>
+            </div>
+          </div>
+          <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+            <div class="dataTables_scroll">
+              <div class="dataTables_scrollBody">
+                <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                  aria-describedby="datatable_info" style="width: 100%" width="100%">
+                  <thead>
+                    <tr role="row">
+                      <th *ngFor="let vehicleHeading of columns">
+                        <strong>{{vehicleHeading?.title}}</strong>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let row of resellerList | searchFilter: searchKeyword |  paginate : {
+                                  itemsPerPage: tableSize,
+                                  currentPage: page,
+                                  totalItems: count}; let i= index"
+                                  [ngClass]="{'active': selectedColor?.Id === row?.Id}">
+                      <td>
+                        <a>{{ row?.OrgName }}</a>
+                      </td>
+                      <td>
+                        <a>{{ row?.Name }}</a>
+                      </td>
+                      <td>
+                        <a>{{ row?.LoginId }}</a>
+                      </td>
+                      <td>
+                        <a>{{ row?.MobileNo || 'NA' }}</a>
+                      </td>
+                      <td>
+                        <a>{{ row?.NewPoints }}</a>
+                      </td>
+                      <td>
+                        <a>{{ row?.RenewalPoints }}</a>
+                      </td>
+
+                      <td>
+                        <button mat-icon-button (click)="onContextMenu($event, row, i)">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-center"
+                  *ngIf="resellerList && resellerList.length == 0 || resellerList == null || !(resellerList | searchFilter: searchKeyword)?.length"
+                  style="width: 100%;">No Data Available</div>
+              </div>
+              <div class="pagination-data" *ngIf="resellerList && resellerList.length > 0">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+              </div>
+            </div>
+            <div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
+              [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
+            </div>
+            <mat-menu #contextMenu="matMenu">
+              <ng-template matMenuContent let-item="item">
+                <button mat-menu-item *ngFor="let menuItem of urlPath" (click)="redirectTo(menuItem?.path)">
+                  {{ menuItem.name }}
+                </button>
+
+              </ng-template>
+            </mat-menu>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <!-- <add-reseller></add-reseller> -->
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

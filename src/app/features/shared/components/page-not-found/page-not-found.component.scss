@@ -1,0 +1,59 @@
+ .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .content {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .icon-container {
+            margin-bottom: 2rem;
+        }
+        
+        .icon {
+            width: 12rem;
+            height: 12rem;
+            margin: 0 auto;
+            color: #696cff;
+        }
+        
+        .error-code {
+            font-size: 6rem;
+            font-weight: bold;
+            color: #696cff;
+            margin-bottom: 1rem;
+        }
+        
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .error-message {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .home-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: #696cff;
+            color: white;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        
+        .home-button:hover {
+            background-color: #787bff;
+        }

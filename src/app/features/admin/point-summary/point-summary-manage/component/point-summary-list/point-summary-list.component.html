@@ -1,0 +1,96 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                Point Summary List
+            </div>
+            <div class="card-body">
+                <div class="fiter-data mb-3">
+                    <app-point-summary-filter (filterValue)="confirm($event)"></app-point-summary-filter>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                            <div class="dataTables_scroll">
+                                <div class="dataTables_scrollBody">
+                                    <table id="datatable"
+                                        class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                                        aria-describedby="datatable_info" style="width: 100%" width="100%">
+                                        <thead>
+                                            <tr role="row">
+                                                <th *ngFor="let vehicleHeading of columns">
+                                                    <strong>{{vehicleHeading?.title}}</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr *ngFor="let row of pointSummaryData |  paginate : {
+                                                      itemsPerPage: tableSize,
+                                                      currentPage: page,
+                                                      totalItems: count} let i= index">
+                                                <td>
+                                                    <a>{{ row?.Datetime | date: "dd/MM/yyyy" }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.PointType }}</a>
+                                                </td>
+
+                                                <td>
+                                                    <a>{{ row?.TransType }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.Expenditure }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.Balance }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.Remarks }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.DeviceModel?.CustomerName }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.DeviceModel?.Installation | date : 'dd/MM/yyyy' }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.DeviceModel?.VehicleNo }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.DeviceModel?.Description }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.DeviceModel?.NextRechargeDue | date : 'dd/MM/yyyy' }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.DeviceModel?.CustomerRechargeDue | date : 'dd/MM/yyyy' }}</a>
+                                                </td>
+                                                <!-- <td>
+                                                    <a style="cursor: pointer; color: #3f51b5;" (click)="openDetailsOpenpop(row)">Show Details</a>
+                                                </td> -->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center"
+                                        *ngIf="pointSummaryData && pointSummaryData.length == 0 || pointSummaryData == null "
+                                        style="width: 100%;">No Data Available</div>
+                                    <div class="pagination-data"
+                                        *ngIf="pointSummaryData && pointSummaryData?.length > 0">
+                                        <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                            (pageChange)="onTableDataChange($event)">
+                                        </pagination-controls>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <router-outlet></router-outlet>
+    </div>
+</div>

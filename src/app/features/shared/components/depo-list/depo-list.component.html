@@ -1,0 +1,128 @@
+<div class="container" #scrollToTop>
+    <div class="banner-height mt-4 mb-4">
+      <img
+        class="rounded w-100"
+        [src]="
+          '.././../../../../assets/images/1.jpg'
+        "
+        alt=""
+      />
+    </div>
+    <h2 class="text-center mt-4 mb-4">Account Search</h2>
+    <div class="mb-3">
+      <!-- <alert
+        type="danger"
+        class="dashboard-page-alert"
+        [dismissible]="true"
+        *ngIf="showErrorMessage"
+      >
+        <div class="container ps-0">
+          {{ errorMessage }}
+        </div>
+      </alert> -->
+    </div>
+    <div class="_card-container">
+      <!-- <app-loader *ngIf="spinnerLoading"></app-loader> -->
+  
+      <!--<div class="col-12 col-sm-6 col-md-4 mb-3">
+        <h4>Customer name</h4>
+        <input
+          type="text"
+          placeholder="Enter Name"
+          class="form-control"
+          [(ngModel)]="customerName"
+        />
+      </div> -->
+  
+      <tabset [justified]="true" responsiveTabs>
+        <!-- Cusotmer section -->
+        <tab class="tab-content">
+          <ng-template tabHeading>Customer #</ng-template>
+  
+          <!-- <form >
+            <div class="row mt-3">
+              <div class="col-12 col-sm-6 col-md-3">
+                <h4>Customer # *</h4>
+                <input
+                  type="text"
+                  placeholder="Enter #"
+                  class="form-control"
+                  formControlName="customerNumber"
+                  (paste)="checkValue()"
+                  (keypress)="keyPressNumbers($event)"
+                  (keyup.enter)="onSearch(customerForm.value, template3)"
+                />
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <h4>Store #</h4>
+                <input
+                  type="text"
+                  placeholder="Enter #"
+                  class="form-control"
+                  formControlName="storeNumber"
+                  (keypress)="keyPressNumbers($event)"
+                  (keyup.enter)="onSearch(customerForm.value, template3)"
+                />
+              </div>
+              <div
+                class="col-12 col-sm-6 col-md-3 d-flex align-items-end search-button"
+              >
+                <button
+                  class="btn btn-primary w-100"
+                  (click)="onSearch(customerForm.value, template3)"
+                  [disabled]="!customerForm.valid"
+                >
+                  SEARCH
+                </button>
+              </div>
+            </div>
+          </form> -->
+          <div>
+            <div class="col-12 mt-4">
+              <ngx-table>
+                <ng-template let-row>
+                  <td>
+                    <a >
+                     njknkk
+                    </a>
+                  </td>
+                  <td>
+                   njkkjnjk
+                  </td>
+                  <!--   <td>
+                    {{ row.suffix }}
+                  </td> -->
+                  <td>
+                    njknknk
+                  </td>
+                  <td>jknkjnkjn <br />jknkjnk</td>
+                  <td>njknkjn</td>
+                </ng-template>
+              </ngx-table>
+            </div>
+          </div>
+        </tab>
+        <!-- Cusotmer section -->
+      </tabset>
+    </div>
+  </div>
+  <!-- <ng-template #noResultsTemplate>
+    <td [attr.colspan]="columns.length" class="no-results text-center">
+      No Result
+    </td>
+  </ng-template>
+  
+  <ng-template #template3>
+    <div class="modal-header text-center">
+      <h4 class="modal-title f-w text-center"></h4>
+    </div>
+    <div class="modal-body p-20">
+      <div class="text-center">
+        <p>{{ errorMessage }}</p>
+        <div class="mt-4 mb-4">
+          <button class="btn btn-primary" (click)="bsModalRef?.hide()">OK</button>
+        </div>
+      </div>
+    </div>
+  </ng-template> -->
+  

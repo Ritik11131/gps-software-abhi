@@ -1,0 +1,100 @@
+<section class="admin-content">
+  <app-loader *ngIf="spinnerLoading"></app-loader>
+  <div class="row">
+    <div class="col-md-12">
+
+      <div class="card">
+        <div class="card-header">
+          Bulk Activity
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="fiter-data mb-3">
+                  <bulk-activated-filter (filterValue)="confirm($event)"
+                    [activateData]="selectedRows"></bulk-activated-filter>
+                </div>
+                <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                  <div class="dataTables_scroll">
+                    <div class="dataTables_scrollBody">
+                      <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline"
+                        role="grid" aria-describedby="datatable_info" style="width: 100%" width="100%">
+                        <thead>
+                          <tr role="row">
+                            <th *ngFor="let vehicleHeading of columns">
+                              <ng-container *ngIf="vehicleHeading.isCheckbox; else titleTemplate">
+                                <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleAllRows()"> {{
+                                vehicleHeading.title }}
+                              </ng-container>
+                              <ng-template #titleTemplate>
+                                <strong [innerHTML]="vehicleHeading.title">{{vehicleHeading?.title}}</strong>
+                              </ng-template>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            *ngFor="let row of deviceData | paginate: { itemsPerPage: tableSize, currentPage: page, totalItems: count } let i = index"
+                            [ngClass]="{'active': selectColor?.Id === row?.Id}">
+                            <td>
+                              <input type="checkbox" [(ngModel)]="row.selected" (change)="onRowChange(row)">
+                            </td>
+                            <td>
+                              <a>{{ row?.VehicleNo }}</a>
+                            </td>
+                            <td>
+                              <a (mouseenter)="showCopyIcon = i" style="cursor: pointer;"
+                                [ngStyle]="{'color': (showCopyIcon === i) ? 'red' : 'blue','display': (showCopyIcon === i) ? 'inline-flex' : '', 'gap': (showCopyIcon === i) ? '8px' : ''}"
+                                (mouseleave)="showCopyIcon = null">
+                                {{ row?.DeviceId }}
+                                <i *ngIf="showCopyIcon === i" (click)="copyContent(row?.DeviceId, i)"
+                                  class="fa-regular fa-copy cursor-pointer"
+                                  [title]="copy == true && showCopyIcon === index ? 'Copied' : 'Copy'"></i>
+                              </a>
+                            </td>
+                            <td>
+                              <a>{{ row?.SimPhoneNumber }}</a>
+                            </td>
+                            <td>
+                              <a>{{ row?.DeviceType?.Name }}</a>
+                            </td>
+                            <td>
+                              <a>{{ row?.CreationTime | date : 'dd/MM/yyyy HH:mm:ss' }}</a>
+                            </td>
+                            <td>
+                              <a>{{ row?.InstallationOn | date : 'dd/MM/yyyy HH:mm:ss' }}</a>
+                            </td>
+                            <td>
+                              <a>{{ row?.PointValidity?.CurrentPointType === 0 ? 'dd/mm/yyyy' :
+                                row?.PointValidity?.NextRechargeDue | date : 'dd/MM/yyyy' }}</a>
+                            </td>
+                            <td>
+                              <a>{{ row?.PointValidity?.CurrentPointType === 0 ? 'dd/mm/yyyy' :
+                                row?.PointValidity?.CustomerRechargeDue | date : 'dd/MM/yyyy' }}</a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                      <div class="text-center" *ngIf="deviceData && deviceData.length == 0 || deviceData == null "
+                        style="width: 100%;">No Data Available</div>
+                    </div>
+                    <div class="pagination-data" *ngIf="deviceData && deviceData?.length > 0">
+                      <pagination-controls previousLabel="Prev" nextLabel="Next"
+                        (pageChange)="onTableDataChange($event)">
+                      </pagination-controls>
+                    </div>
+                  </div>
+                  <!-- <div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
+                    [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

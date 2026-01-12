@@ -1,0 +1,137 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<section class="admin-content">
+    <div class="card">
+        <div class="card-header">
+            Bulk Upload Device
+            <div class="refresh-part">
+                <i class="fa fa-refresh" (click)="refreshPage()"></i>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="filter-part">
+                <div class="row">
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" style="padding: 0;" (click)="downloadExcel()">
+                            <i class="fa fa-arrow-down" aria-hidden="true"></i> Download Sample Excel
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="middle-part">
+                            <ng-select placeholder="Select Dealer" [ngModel]="selectedDealer"
+                                (change)="onDealerSelect($event)">
+                                <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name
+                                    }}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="customer-part">
+                            <ng-select placeholder="Select Customer" [ngModel]="selectedCustomer"
+                                (change)="onCustomerSelect($event)">
+                                <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName
+                                    }}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-2">
+                        <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none"
+                            (change)="uploadExcel($event)">
+                        <button class="btn btn-primary" (click)="selectFile($event)"><i *ngIf="selectedFile" class="fa fa-check" aria-hidden="true"></i> Browse</button>
+                       
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <button class="btn btn-success" (click)="getBulkDeviceList()" [disabled]="!selectedFile || !selectedDealer || !selectedCustomer">
+                            upload File
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                    
+                    </div>
+                   
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                            <div class="dataTables_scroll">
+                                <div class="dataTables_scrollBody">
+                                    <table id="datatable"
+                                        class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                        role="grid" aria-describedby="datatable_info" style="width: 100%"
+                                        width="100%">
+                                        <thead>
+                                            <tr role="row">
+                                                <th *ngFor="let vehicleHeading of columns">
+                                                    <strong>{{vehicleHeading?.title}}</strong>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr *ngFor="let row of bulkDeviceData |  paginate : {
+                                                      itemsPerPage: tableSize,
+                                                      currentPage: page,
+                                                      totalItems: count} let i= index"
+                                                     >
+                                                     <td>
+                                                        <a>{{ row?.device_maker }}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ row?.device_type }}</a>
+                                                    </td>
+                                                <td>
+                                                    <a>{{ row?.vehicle_number }}</a>
+                                                </td>
+                                                <!-- <td  >
+                                                    <a (mouseenter)="showCopyIcon = i" style="cursor: pointer;" [ngStyle]="{'color': (showCopyIcon === i) ? 'red' : 'blue','display': (showCopyIcon === i) ? 'inline-flex' : '', 'gap': (showCopyIcon === i) ? '8px' : ''}" (mouseleave)="showCopyIcon = null">
+                                                        {{ row?.DeviceId }}
+                                                        <i *ngIf="showCopyIcon === i" (click)="copyContent(row?.DeviceId,i)" class="fa-regular fa-copy cursor-pointer" [title]="copy == true && showCopyIcon === index ? 'Copied' : 'Copy'"></i>
+                                                    </a>
+                                                </td> -->
+                                                <td>
+                                                    <a>{{ row?.imei }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.sim_operator}}</a>
+                    
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.sim_number}}</a>
+                                                </td>
+                                               
+                                                <td>
+                                                    <a>{{ row?.install_date | date : "yyyy-MM-dd" }}</a>
+                                                </td>
+                                                <td>
+                                                    <a>{{ row?.vehicle_type}}</a>
+                                                </td>
+                                               
+                                                <td>
+                                                    <a>{{ row?.entry_status_message }}</a>
+                                                </td>
+                                               
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center"
+                                        *ngIf="bulkDeviceData && bulkDeviceData.length == 0 || bulkDeviceData == null "
+                                        style="width: 100%;">No Data Available</div>
+                                </div>
+                                <div class="pagination-data" *ngIf="bulkDeviceData && bulkDeviceData?.length > 0">
+                                    <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                        (pageChange)="onTableDataChange($event)">
+                                    </pagination-controls>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

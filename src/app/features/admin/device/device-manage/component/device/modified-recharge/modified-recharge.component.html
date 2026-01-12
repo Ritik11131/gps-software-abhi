@@ -1,0 +1,39 @@
+<div class="modal-header text-center" style="color: #fff;">
+    {{tittle}}
+    <div class="close-modal">
+      <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel()"></i>
+  </div>
+</div>
+<div class="modal-body p-20">
+    <form [formGroup]="modifyRechargeForm">
+        <div class="_card white-bg">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Point Recharge</label>
+                    <input type="text" placeholder="Point Recharge Date" class="form-control"
+                        formControlName="rechargeDate" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }">
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Customer Recharge</label>
+                    <input type="text" placeholder="Customer Recharge Date" class="form-control"
+                        formControlName="customerDate" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }">
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-success" (click)="submit(modifyRechargeForm.value)">
+                        Modify
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger" (click)="cancel()">
+                        Cancel
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,43 @@
+
+<div class="modal-body p-20">
+  <div class="card white-bg">
+    <div class="card-header">
+       Details
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="details">
+                  <ul>
+                      <li>
+                          <p><span>Customer Name :</span> {{details?.DeviceModel?.CustomerName}}</p>
+                      </li>
+                      <li>
+                          <p><span>Customer Mobile :</span> {{details?.DeviceModel?.CustomerMobile}} </p>
+                      </li>
+                      <li>
+                          <p><span>Customer Email :</span> {{details?.DeviceModel?.email}}</p>
+                      </li>
+                      <li>
+                          <p><span>Installation :</span> {{details?.DeviceModel?.Installation | date : 'dd/MM/yyyy'}}</p>
+                      </li>
+                      <li>
+                          <p><span>Vehicle No :</span> {{details?.DeviceModel?.VehicleNo}}</p>
+                      </li>
+                      <li>
+                          <p><span>Description :</span> {{details?.DeviceModel?.Description}}</p>
+                      </li>
+                      <li>
+                          <p><span>Point Recharge Due :</span> {{details?.DeviceModel?.NextRechargeDue | date : 'dd/MM/yyyy'}}</p>
+                      </li>
+                      <li>
+                          <p><span>Customer Recharge Due :</span> {{details?.DeviceModel?.CustomerRechargeDue | date : 'dd/MM/yyyy'}}</p>
+                      </li>
+                  </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+  </div>
+</div>

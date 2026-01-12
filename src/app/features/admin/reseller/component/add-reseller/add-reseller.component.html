@@ -1,0 +1,102 @@
+<div class="card">
+    <div class="card-header">
+        {{reseller}} Reseller
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="resellerForm" (ngSubmit)="submit(resellerForm.value)">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Name" formControlName="name"
+                            aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="resellerForm.get('name')?.invalid && (resellerForm.get('name')?.dirty || resellerForm.get('name')?.touched)"
+                        class="text-danger">
+                        Name is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Organization Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Organization Name"
+                            formControlName="orgName" aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="resellerForm.get('orgName')?.invalid && (resellerForm.get('orgName')?.dirty || resellerForm.get('orgName')?.touched)"
+                        class="text-danger">
+                        Organization Name is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Mobile No.</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Mobile No."
+                            formControlName="phn" aria-describedby="button-addon2" />
+                    </div>
+                    <div
+                        *ngIf="resellerForm.get('phn')?.invalid && (resellerForm.get('phn')?.dirty || resellerForm.get('phn')?.touched)">
+                        <div  class="text-danger" *ngIf="resellerForm.get('phn')?.errors?.['required']">Mobile no is required</div>
+                        <div class="text-danger" *ngIf="resellerForm.get('phn')?.errors?.['pattern']">Invalid phone
+                            number format.</div>
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Login Id</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Enter Login Id" formControlName="loginId"
+                            aria-describedby="button-addon2" autocomplete="new-Login"/>
+                    </div>
+                    <div *ngIf="resellerForm.get('loginId')?.invalid && (resellerForm.get('loginId')?.dirty || resellerForm.get('loginId')?.touched)"
+                        class="text-danger">
+                        Login Id is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="Enter Email" formControlName="email"
+                        aria-describedby="button-addon2" autocomplete="new-Email"/>
+                        <div *ngIf="resellerForm.get('email')?.invalid && (resellerForm.get('email')?.dirty || resellerForm.get('email')?.touched)" class="text-danger">
+                            <div *ngIf="resellerForm.get('email')?.errors?.['required']">Email is required</div>
+                            <div *ngIf="resellerForm.get('email')?.errors?.['email']">Invalid email format</div>
+                        </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group ">
+                        <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control"
+                            formControlName="pwd" placeholder="Enter Password" aria-describedby="button-addon2" autocomplete="new-Password"/>
+                        <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+                            <i class="fa" [ngClass]="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="resellerForm.get('pwd')?.invalid && (resellerForm.get('pwd')?.dirty || resellerForm.get('pwd')?.touched)"
+                        class="text-danger">
+                        Password is required
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Address</label>
+                    <div class="input-group mb-3">
+                        <textarea class="form-control" placeholder="Enter Address" formControlName="Address"
+                            id="exampleFormControlTextarea1" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-success" type="submit">
+                        Submit
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-danger" (click)="cancel($event)">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

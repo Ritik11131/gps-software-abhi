@@ -1,0 +1,183 @@
+<!-- <app-loader *ngIf="spinnerLoading"></app-loader> -->
+<div class="container">
+  <sky-breadcrumb [breadcrumbItems]="breadcrumbItems"></sky-breadcrumb>
+  <!-- <app-alerts [alertData]="alertData" [alertType]="alertType" *ngIf="alertTrigger"></app-alerts> -->
+  <h2 class="text-center mb-4">Add New User</h2>
+  <div class="row mb-3">
+    <div class="col-lg-12 back-to" (click)="nagivateTocompany()">
+      <span class="mohawak-icon angle-left-icon back-i" ></span>Back To Your
+      Company
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <form [formGroup]="addUserForm">
+      <div class="_card-container">
+        <div class="row mb-4 brd">
+          <div class="head-sec">Demographics</div>
+          <div class="col-md-4 mb-3">
+            <h4>CompanyName*</h4>
+            <input type="text" formControlName="comp_name" placeholder="Type Here" class="form-control" />
+            <div *ngIf="addUserForm.controls['comp_name'].touched && addUserForm.controls['comp_name'].invalid"
+              class="form-text text-danger">
+              <div *ngIf="addUserForm.controls['comp_name'].errors?.['required']">
+                Company Name is
+                required.</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h4>MobileNumber*</h4>
+            <input type="number" formControlName="phn" placeholder="Type Here" class="form-control" />
+
+            <div
+              *ngIf="addUserForm.controls['phn'].invalid && (addUserForm.controls['phn'].dirty || addUserForm.controls['phn'].touched)"
+              class="form-text text-danger">
+              <div *ngIf="addUserForm.controls['phn'].errors?.['required']">
+                Mobile No is required.
+              </div>
+              <div *ngIf="addUserForm.controls['phn'].errors" class="form-text text-danger">
+                Please, Enter 10 digit Mobile Number.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h4>Address*</h4>
+            <input type="text" formControlName="add" placeholder="Type Here" class="form-control" />
+            <div *ngIf="addUserForm.controls['add'].touched && addUserForm.controls['add'].invalid"
+              class="form-text text-danger">
+              <div *ngIf="addUserForm.controls['add'].errors?.['required']">
+                Address is
+                required.</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h4>GST*</h4>
+            <input type="text" formControlName="gst" placeholder="Type Here" class="form-control" />
+            <div *ngIf="addUserForm.controls['gst'].touched && addUserForm.controls['gst'].invalid"
+              class="form-text text-danger">
+              <div *ngIf="addUserForm.controls['gst'].errors?.['required']">
+                GST is
+                required.</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h4>Contact Person Name*</h4>
+            <input type="text" formControlName="contect_per_no" placeholder="Type Here" class="form-control" />
+            <div
+              *ngIf="addUserForm.controls['contect_per_no'].touched && addUserForm.controls['contect_per_no'].invalid"
+              class="form-text text-danger">
+              <div *ngIf="addUserForm.controls['contect_per_no'].errors?.['required']">
+                Contect Person No is
+                required.</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h4>Agreement duration*</h4>
+             <input type="text" placeholder="Select Date" class="form-control" formControlName="date"
+                                    bsDaterangepicker />
+            <!-- <input type="text" formControlName="agreement" placeholder="Type Here" class="form-control" /> -->
+            <!-- <div *ngIf="addUserForm.controls['agreement'].touched && addUserForm.controls['agreement'].invalid"
+              class="form-text text-danger">
+              <div *ngIf="addUserForm.controls['agreement'].errors?.['required']">
+                Agreement is
+                required.</div>
+            </div> -->
+          </div>
+
+        </div>
+        <div class="row mb-4 brd">
+          <div class="head-sec">
+            <div class="row">
+              <div class="wdth">Module Permissions</div>
+              <div class="wdth text-right">
+                <sky-custom-checkbox type="checkbox" [id]="'xyz1'" label="Entire Site"></sky-custom-checkbox>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 mt-2 mb-2" *ngFor="let item of moduleList">
+
+            <div class="">
+              <div> <sky-custom-checkbox type="checkbox" [id]="item.module_id"></sky-custom-checkbox>
+                {{item?.module_name}}
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="row mb-4 brd">
+          <div class="head-sec">
+            <div class="row">
+              <div class="wdth">Notification Permissions</div>
+              <div class="wdth text-right">
+
+                <sky-custom-checkbox type="checkbox" [id]="'xyz1'" label="Entire Site"></sky-custom-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 mt-2 mb-2" *ngFor="let item of notification">
+
+            <div class="">
+              <div> <sky-custom-checkbox type="checkbox" [id]='item.service_id'></sky-custom-checkbox>
+                {{item?.Service_Name}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-4 brd">
+          <div class="head-sec">Create Id and Password</div>
+          <div class="col-md-4 mb-3">
+            <h4>Company Id*</h4>
+            <input type="text" formControlName="comp_id" placeholder="Type Here" class="form-control" />
+            <!-- <div *ngIf="addUserForm.controls['comp_id'].touched && addUserForm.controls['comp_id'].invalid"
+              class="form-text text-danger">
+              <div *ngIf="addUserForm.controls['comp_id'].errors?.['required']">
+                Company Name is
+                required.</div>
+            </div> -->
+          </div>
+          <div class="col-md-4 mb-3">
+            <h4>Company Password*</h4>
+            <input type="password" formControlName="password" placeholder="Type Here" class="form-control" />
+
+            <div
+              *ngIf="addUserForm.controls['password'].invalid && (addUserForm.controls['password'].dirty || addUserForm.controls['password'].touched)"
+              class="form-text text-danger">
+              <div *ngIf="addUserForm.controls['password'].errors?.['required']">
+                Mobile No is required.
+              </div>
+              <div *ngIf="addUserForm.controls['password'].errors" class="form-text text-danger">
+                Must contain at least 1 Special Character And 1 Number!
+              </div>
+            </div>
+          </div>
+          </div>
+        <!-- <div class="check">
+                <div><sky-custom-checkbox></sky-custom-checkbox> Dms</div>
+                <div><sky-custom-checkbox></sky-custom-checkbox> Dms</div>
+                <div><sky-custom-checkbox></sky-custom-checkbox> Dms</div>
+                <div><sky-custom-checkbox></sky-custom-checkbox> Dms</div>
+              </div> -->
+        <div class="row align-center">
+          <div class="col-md-3 btn-grid">
+            <button class="btn btn-outline-secondary">
+              Cancel
+            </button>
+          </div>
+          <div class="col-md-3  btn-grid">
+            <!--[ngClass]="{
+                  'btn-grid-disabled':
+                    !addNewUserForm.valid || existingEmail.length !== 0
+                }"-->
+            <button class="btn btn-primary" type="submit" [disabled]="!addUserForm.valid"
+              (click)="submit(addUserForm.value)">
+              ADD NEW USER
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+</div>

@@ -1,0 +1,110 @@
+/* ==========================================================================
+   #COLOR-VARIABLES
+   ========================================================================== */
+
+//Base Colors..
+$color-karastan-gold: rgb(131, 116, 78);
+$color-karastan-gold-dark: #73603C;
+$color-black-medium: #101010;
+$color-beige-light: #faf8f5;
+$color-beige-transparent: #f6f5f1;
+$color-beige-medium: #dddad6;
+$color-grey-regular: #777978;
+$color-grey-medium: #9b9b9b;
+$color-grey-dark: #4f5758;
+$color-red-error: #ff0000;
+$color-green-confirm: #37af13;
+$color-white: #fff;
+$color-black-dark: #000000;
+$color-top-header-bg: $color-black-medium;
+$color-body-text: $color-white;
+$color-home-text: #727272;
+
+// Base Colors...
+$color-black-lighter: #151515;
+$mohawk-black: #151515;
+$color-dark-brown:#2E2A24;
+
+
+$color-black: $color-black-medium;
+$mohawk-red: #ce0e2d;
+$color-red: #ff2f51;
+$primary-color: $color-black-medium;
+$secondary-color: $color-white;
+
+$color-dark-grey: #54565b;
+$color-grey: #767676;
+$color-grey-light: #e2e2e2;
+$color-extra-light-grey: #f8f8f8;
+$color-teal: #61a3db;
+
+$color-red-light: #ff0000;
+$color-green: #37af13;
+$color-brown-medium: $color-dark-grey;
+$color-brown-light: $color-grey;
+$color-red: $mohawk-red;
+$color-red-dark: $mohawk-red;
+
+$color-black-linear-gradient: transparent
+	linear-gradient(180deg, #00000000 60%, #0000004e 90%, #000000 150%) 0% 0%
+	no-repeat padding-box;
+
+$color-top-text: $color-white;
+$color-logo-menu-bg: $color-black;
+$color-body-text: $color-brown-medium;
+$color-accordion-bg: $color-beige-light;
+$color-header-menu-hover: $color-beige-medium;
+$color-icon-bg: $color-teal;
+$color-text-dark-text: $color-beige-light;
+$color-text-dark-border: $color-grey-dark;
+$color-swiper-navigation: $color-grey-medium;
+$color-message-success: $color-green-confirm;
+$color-message-error: $color-red-error;
+$color-coupon: $color-karastan-gold;
+$color-light-blue: #e8e8e8;
+// RGB
+$color-black-rgb: 0, 0, 0;
+$color-brown-light-rgb: 66, 57, 57;
+
+$material-grey-palette: (
+	50: #fff,
+	100: #7c7c7c,
+	200: #6e6e6e,
+	300: #606060,
+	400: #535353,
+	500: #454545,
+	600: #373737,
+	700: #292929,
+	800: #1c1c1c,
+	900: #0e0e0e,
+	A100: #ffffff,
+	A200: #5a5a5a,
+	A400: #292929,
+	A700: #222222,
+	contrast: (
+		50: #0e0e0e,
+		100: #0e0e0e,
+		200: #0e0e0e,
+		300: #0e0e0e,
+		400: #0e0e0e,
+		500: #ffffff,
+		600: #ffffff,
+		700: #ffffff,
+		800: #ffffff,
+		900: #ffffff,
+		A100: #222222,
+		A200: #222222,
+		A400: #ffffff,
+		A700: #ffffff,
+	),
+);
+
+//Opacity
+$opacity-two: rgba(0, 0, 0, 0.2);
+$opacity-six: rgba(0, 0, 0, 0.6);
+$opacity-twentyfive: rgba(0, 0, 0, 0.25);
+$opacity-thirtyeight: rgba(0, 0, 0, 0.38);
+$opacity-fortyfive: rgba(0, 0, 0, 0.45);
+
+//Input Border
+$input-border: #707070;

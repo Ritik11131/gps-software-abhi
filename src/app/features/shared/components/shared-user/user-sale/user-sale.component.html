@@ -1,0 +1,97 @@
+<div class="row">
+    <form [formGroup]="sellForm" (ngSubmit)="submit(sellForm.value)">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Dealer/Reseller</label>
+                <ng-select placeholder="Select Dealer" formControlName="dealer" (change)="onDealerSelect($event)" (click)="$event.stopPropagation()">
+                    <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                </ng-select>
+                <div *ngIf="sellForm.get('dealer')?.invalid && (sellForm.get('dealer')?.dirty || sellForm.get('dealer')?.touched)"
+                    class="text-danger">
+                    Dealer/Reseller is required
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Customer</label>
+                <ng-select placeholder="Select Customer" formControlName="customer" (change)="onCustomerSelect($event)" (click)="$event.stopPropagation()">
+                    <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
+                </ng-select>
+                <div *ngIf="sellForm.get('customer')?.invalid && (sellForm.get('customer')?.dirty || sellForm.get('customer')?.touched)"
+                    class="text-danger">
+                    Customer is required
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label class="form-label">Device Type</label>
+                <ng-select placeholder="Select Device" formControlName="deviceType" (click)="$event.stopPropagation()">
+                    <ng-option *ngFor="let item of deviceData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                </ng-select>
+                <div *ngIf="sellForm.get('deviceType')?.invalid && (sellForm.get('deviceType')?.dirty || sellForm.get('deviceType')?.touched)"
+                    class="text-danger">
+                    Device Type is required
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Device IMEI</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Enter Device IMEI" formControlName="deviceImei"
+                        aria-describedby="button-addon2" />
+                </div>
+                <div *ngIf="sellForm.get('deviceImei')?.invalid && (sellForm.get('deviceImei')?.dirty || sellForm.get('deviceImei')?.touched)"
+                    class="text-danger">
+                    Device IMEI is required
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Sim Phone Number</label>
+                <div class="input-group ">
+                    <input type="text" class="form-control" formControlName="simNumber"
+                        placeholder="Enter Sim Phone Number" aria-describedby="button-addon2" />
+                </div>
+                <div *ngIf="sellForm.get('simNumber')?.invalid && (sellForm.get('simNumber')?.dirty || sellForm.get('simNumber')?.touched)"
+                class="text-danger">
+                Sim Phone Number is required
+            </div>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">User Due</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" formControlName="userDate" placeholder="MM/dd/yyyy"
+                        #dp="bsDatepicker" bsDatepicker />
+                </div>
+                <div *ngIf="sellForm.get('userDate')?.invalid && (sellForm.get('userDate')?.dirty || sellForm.get('userDate')?.touched)"
+                class="text-danger">
+                User Due is required
+            </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Remark</label>
+                <div class="input-group ">
+                    <textarea class="form-control" placeholder="Enter Address" formControlName="Address"
+                        id="exampleFormControlTextarea1" rows="4"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-success" type="submit">
+                    Submit
+                </button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-danger" (click)="cancel()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

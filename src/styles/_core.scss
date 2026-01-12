@@ -1,0 +1,473 @@
+@import "./mixins/box-shadow.mixin";
+@import "./mixins/breakpoints";
+
+// Common Config
+.cursor-pointer {
+    cursor: pointer;
+}
+
+ul,
+ol {
+    list-style: none;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+.form-label {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+// Font weights
+.font-weight-400 {
+    font-weight: 400;
+}
+
+.font-weight-500 {
+    font-weight: 500;
+}
+
+.font-weight-600 {
+    font-weight: 600;
+}
+
+.font-weight-700 {
+    font-weight: 700;
+}
+
+// Color Classes
+.color-red {
+    color: $color-red;
+}
+
+.color-white {
+    color: $color-white;
+}
+
+.color-dark-gray {
+    color: $color-dark-gray;
+}
+
+// Margin Left
+.ml-10 {
+    margin-left: 10px;
+}
+
+.ml-5 {
+    margin-left: 5px;
+}
+
+.ml-15 {
+    margin-left: 15px;
+}
+
+
+// Top bar right menu
+.top-bar-menu-right {
+    display: flex;
+    align-items: center;
+
+
+    &>li {
+        // display: flex;
+        // align-items: center;
+        // margin: 0px 12px 0px 12px;
+        display: flex;
+        align-items: center;
+        padding: 0px 0px 0px 11px;
+        // border-right: 1px solid $color-white;
+
+        // &:first-child{
+        //     border-left: 1px solid $color-white;
+        // }
+
+        &>a {
+            font-size: 14px;
+            padding: 1px 8px;
+            display: block;
+            line-height: 16px;
+            cursor: pointer;
+
+            @include breakpoint-range($min : lg, $max: xl) {
+                font-size: 10px;
+                padding: 1px 5px;
+            }
+
+            .change-btn {
+                border: none;
+                background: transparent;
+                font-weight: 700;
+                color: $color-white;
+                font-size: 12px;
+            }
+        }
+
+        &:first-child {
+            a {
+                font-weight: 700;
+            }
+        }
+
+        &:last-child {
+            a {
+                border-right: none;
+            }
+        }
+    }
+
+    &.footer-menu {
+        &>li {
+            &>a {
+                font-size: 20px;
+                font-weight: 500;
+
+                &:hover {
+                    color: $color-red;
+                }
+            }
+        }
+    }
+}
+
+// App search bar
+xchange-search-control {
+    display: block;
+}
+
+// IS Icon
+.is-icon {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    border-radius: 100%;
+    background: $color-medium-gray;
+    color: $color-medium-black;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 30px;
+    margin-top: -4px;
+}
+
+
+
+
+xchange-custom-icon {
+    display: inline-block;
+}
+
+// Footer 
+.footer-section {
+    width: 100%;
+    background: #727272;
+    padding: 6px 0;
+    color: #fff;
+
+
+    .copy-right-text {
+        font-size: 20px;
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+
+        @include breakpoint-range($max : lg) {
+            flex-direction: column-reverse;
+            align-items: flex-start;
+
+            .footer-menu {
+                margin-top: 20px;
+                flex-wrap: wrap;
+
+                &>li {
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+
+}
+
+// Dashboard Page Search
+.dashboard-page-search-section {
+    padding: 15px 0;
+}
+
+// Owl
+
+.owl-theme {
+    .owl-nav {
+        margin: 0;
+
+        .owl-next,
+        .owl-prev {
+            top: 50%;
+            transform: translateY(-50%);
+            position: absolute;
+            background: transparent;
+            font-size: 50px;
+            color: $color-red;
+            &:hover {
+                background: transparent;
+                color: $color-red;
+            }
+        }
+
+        .owl-prev {
+            left: 20px;
+
+            &::before {
+                content: '';
+            }
+        }
+
+        .owl-next {
+            right: 20px;
+
+            &::before {
+                content: "";
+            }
+        }
+    }
+
+    .owl-dots {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        .owl-dot {
+            &:hover {
+                background: transparent;
+            }
+
+            &.active span {
+                background: $color-white;
+            }
+
+            span {
+                width: 13px;
+                height: 13px;
+                background: transparent;
+                border: solid 1.5px $color-white;
+
+                &:hover {
+                    background: $color-white;
+                }
+            }
+        }
+    }
+}
+
+// Breadcrumb
+
+.breadcrumb {
+    --mx-breadcrumb-divider-color: #{$color-dark-gray};
+    --mx-breadcrumb-item-active-color: #{$color-red};
+    font-size: 16px;
+    margin: 15px 0;
+
+    &.size14 {
+        font-size: 14px;
+    }
+
+    .breadcrumb-item {
+        &:first-child {
+            &::before {
+                display: none;
+            }
+        }
+
+        &::before {
+            content: '|';
+        }
+
+        a {
+            color: #{$color-dark-gray};
+            text-decoration: none;
+            cursor: pointer;
+        }
+    }
+
+}
+
+// Dashboard Page Alert
+.dashboard-page-alert {
+    .alert {
+        margin: 0;
+    }
+}
+
+// Registration Layout
+.registration-layout-section {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+
+    .registration-layout-left {
+        width: 50%;
+        background: $color-black;
+        padding: 80px;
+        color: $color-white;
+        background: url('/assets/images/registration-bg.png') no-repeat left top;
+        background-size: cover;
+
+        @include breakpoint-range($max : lg) {
+            padding: 50px;
+        }
+
+        @include breakpoint-range($max : md) {
+            padding: 50px;
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    .registration-layout-right {
+        width: 50%;
+        padding: 30px;
+        background-color: #1f2223;
+        color: $color-white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @include breakpoint-range($max : lg) {
+            padding: 30px;
+        }
+
+        @include breakpoint-range($max : md) {
+            padding: 30px;
+            width: 100%;
+        }
+
+    }
+}
+
+.xchange-accordion {
+    border-radius: 0 0 5px 5px;
+    border: 1px solid $color-gray;
+    overflow: hidden;
+
+    &.xchange-spec-accordion {
+        border-radius: 7px;
+        border: none;
+
+        .panel {
+            .panel-heading {
+                .panel-title {
+                    .btn {
+                        background: $color-medium-gray;
+
+                        &::before {
+                            content: 'Show Product Details';
+                        }
+                    }
+                }
+            }
+
+            .panel-body {
+                padding: 0 !important;
+            }
+
+            &.panel-open {
+                .panel-heading {
+                    .panel-title {
+                        .btn {
+                            &::before {
+                                content: 'Hide Product Details';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @include breakpoint-range($max: lg) {
+        border: none;
+    }
+
+    .panel {
+        border: 0;
+        border-top: 1px solid $color-gray;
+
+        &:first-child {
+            border: 0;
+        }
+
+        .panel-heading {
+            padding: 0;
+            border: none;
+            border-radius: 0;
+
+
+            .panel-title {
+                .btn {
+                    padding: 0;
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    height: auto;
+                    color: $color-dark-gray;
+                    text-decoration: none;
+                    font-size: 16px;
+                    font-weight: 500;
+                    padding: 10px 22px;
+                    background: $color-white;
+                    margin: 0;
+                    text-transform: capitalize;
+
+                    &::after {
+                        content: '\e918';
+                        // font-family: var(--mohawak-icon-font);
+                        font-weight: 700;
+                        transform: rotate(90deg);
+                        transition: all;
+                        font-size: 13px;
+                    }
+                }
+            }
+        }
+
+        &.panel-open {
+            .panel-heading {
+                .panel-title {
+                    .btn {
+                        background: $color-medium-gray;
+
+                        &::after {
+                            transform: rotate(-90deg);
+                            transition: all;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+.flat-popup-window {
+    background: $color-white;
+    margin: 0;
+    height: 100%;
+
+    .modal-dialog {
+        margin: 0;
+        height: 100%;
+        box-shadow: none;
+
+    }
+
+    .modal-content {
+        box-shadow: none !important;
+        border: none;
+        height: 100%;
+    }
+}

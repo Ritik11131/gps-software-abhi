@@ -1,0 +1,44 @@
+<div class="filter-part" [ngClass]="{'modified': modifiedEnabled}">
+    <div class="middle-part">
+        <ng-select placeholder="Select Dealer" [ngModel]="selectedDealer" (change)="onDealerSelect($event)">
+            <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+        </ng-select>
+    </div>
+    <div class="customer-part">
+        <ng-select placeholder="Select Customer" [ngModel]="selectedCustomer" (change)="onCustomerSelect($event)">
+            <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
+        </ng-select>
+    </div>
+    <div class="customer-part">
+        <ng-select placeholder="Select Customer" [ngModel]="selectedStatus" (change)="onStatusSelect($event)">
+            <ng-option *ngFor="let item of selectStatus" [value]="item?.value">{{ item?.name }}</ng-option>
+        </ng-select>
+    </div>
+    <div class="customer-part mt-2" *ngIf="enableDatepicker">                   
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="date" [(ngModel)]="currentDate">
+                        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                        <mat-datepicker #date></mat-datepicker>
+                    </mat-form-field>
+     
+    </div>
+    <!-- <div class="date-part mt-3" *ngIf="modifiedEnabled">
+        <div class="input-group">
+            <input type="text" placeholder="Date" class="form-control"
+                [bsConfig]="{ withTimepicker: true, keepDatepickerOpened: true, rangeInputFormat: 'MMMM Do YYYY, HH:mm:ss', dateInputFormat: 'MMMM Do YYYY, HH:mm:ss' }"
+                bsDatepicker>
+        </div>
+        <mat-form-field>
+            <input matInput [ngxMatDatetimePicker]="picker2" 
+            >
+            <mat-datepicker-toggle matSuffix [for]="$any(picker2)"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker [showSeconds]="true" [enableMeridian]="true" #picker2>
+            </ngx-mat-datetime-picker>
+        </mat-form-field>
+    </div> -->
+    <div class="button-part" >
+        <button class="btn btn-primary" (click)="submitBulk()" [disabled]="!enableButton || (enableDatepicker && !currentDate) || !activateData.length">
+            <i class="fa fa-plus" aria-hidden="true"></i> {{button}}
+        </button>
+    </div>
+</div>

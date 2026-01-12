@@ -1,0 +1,76 @@
+@import "src/styles/settings/settings.breakpoints";
+
+@import "src/styles/settings/settings.containers";
+
+@mixin mq-breakpoint-xs() {
+  @media (min-width: #{$screen-xs-min}) {
+    @content;
+  }
+}
+
+@mixin mq-breakpoint-sm() {
+  @media (min-width: #{$screen-sm-min}) {
+    @content;
+  }
+}
+
+@mixin mq-breakpoint-md() {
+  @media (min-width: #{$screen-md-min}) {
+    @content;
+  }
+}
+
+@mixin mq-breakpoint-lg() {
+  @media (min-width: #{$screen-lg-min}) {
+    @content;
+  }
+}
+
+@mixin mq-breakpoint-xl() {
+  @media (min-width: #{$screen-xl-min}) {
+    @content;
+  }
+}
+
+@mixin mq-content-width() {
+  @media (min-width: #{$content-max-width}) {
+    @content;
+  }
+}
+
+
+@mixin mq-breakpoint-ipadMax() {
+	@media (min-width: #{$screen-ipad-max}) {
+		@content;
+	}
+}
+
+
+@mixin mq-breakpoint-ipad-pro-ipad() {
+	@media only screen and (min-device-width: #{$screen-md-min}) and (max-device-width: #{$screen-ipad-pro-portrait-min}){
+		@content;
+	}
+}
+@mixin mq-breakpoint-ipadProMin() {
+	@media (min-width: #{$screen-ipad-pro-portrait-min}) {
+		@content;
+	}
+}
+//ipad potrait and landscape (except ipad air landscape
+@mixin mq-breakpoint-ipadMinNew() {
+	@media (min-width: #{$screen-768-min}) and (max-width: #{$screen-ipad-pro-portrait-min}) {
+		@content;
+	}
+}
+//ipad air landscape
+@mixin mq-breakpoint-ipadMinNewLandscape() {
+	@media (min-width: #{$screen-ipad-max-landscape}) and (min-height: #{$screen-ipad-max-landscapeH}) {
+		@content;
+	}
+}
+//ipad air Potrait
+@mixin mq-breakpoint-ipadMinNewPotrait() {
+	@media (min-width: #{$screen-ipad-max-landscapeH}) and (min-height: #{$screen-ipad-max-landscape}) {
+		@content;
+	}
+}

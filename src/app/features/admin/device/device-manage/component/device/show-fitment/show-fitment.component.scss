@@ -1,0 +1,110 @@
+.modal-body{
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.body-content {
+    border: 2px solid rgb(12, 12, 233);
+    padding: 20px;
+    background-color: #fff;
+}
+
+.heading {
+    text-align: center;
+    margin-bottom: 20px;
+    h2 {
+        color: rgb(52, 156, 156);
+        font-weight: bold;
+        img {
+            width: 220px;
+            height: 50px;
+        }
+    }
+}
+
+.vehicle-details,.Owner-details,.vts-details{
+    border: 2px solid black;
+    padding: 5px;
+    margin-top: 5px;
+  
+}
+
+.details-part{
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    flex: 1;
+    margin: 0 10px;
+}
+
+.profile-detail{
+    border: 2px solid black;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.image-part{
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    margin-top: 20px;
+    text-align: center;
+   
+    .vehicle-image,.device-image,.fitment-image{
+        border-bottom: 1px solid black;
+        align-items: center;
+
+        img{
+            margin-bottom: 20px;
+            
+        }
+    }
+}
+
+.signature-part{
+    border-bottom: 1px solid black;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    text-align: center;
+  .customer-signature,.rto-signature,.installer-signature{
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+}
+
+.address-part{
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.print-part{
+    display: flex;
+    justify-content: space-between;
+    button {
+        padding: 8px 20px;
+        font-size: 14px;
+        color: white;
+        background-color: #1372d9;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+      i{
+        font-size: 20px;
+        color: red;
+        margin-top: 5px;
+        cursor: pointer;
+      }
+}

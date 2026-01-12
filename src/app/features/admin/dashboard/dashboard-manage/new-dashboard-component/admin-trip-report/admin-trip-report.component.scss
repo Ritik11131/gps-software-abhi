@@ -1,0 +1,201 @@
+.report-heading {
+    font-size: 22px !important
+}
+
+.card-header {
+    display: flex;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    background: #727272;
+    color: white !important;
+}
+
+.card-body{
+    background-color: #F4F8FF !important;
+    box-shadow: 0 0.4rem 0.4rem rgba(0, 0, 0, 0.25) !important;
+    border-radius: 0.5rem !important;
+    padding: 6px;
+    .vehicle-data {
+        display: flex;
+        justify-content: space-between;    }
+    .start-address,
+    .end-address {
+        cursor: pointer;
+        text-decoration: none; 
+    }
+    
+    .start-address:hover,
+    .end-address:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+}
+
+.report-part.mt-3 {
+    // max-height: 411px;
+    height: calc(100vh - 411px);
+    overflow-y: auto;
+}
+
+// .main-content {
+//     height: 87vh;
+// }
+
+.vehicle-number {
+        span {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+        }
+    font-size: 12px;
+    text-align: center;
+  
+}
+.vehicle-number.date {
+    border-bottom: 2px solid;
+}
+.vehicle-address p{
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    
+.cssload-loading i {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    border-radius: 50%;
+    background: #b7b7b7;
+  }
+  .cssload-loading i:first-child {
+    opacity: 0;
+    animation: cssload-loading-ani2 0.5s linear infinite;
+    -o-animation: cssload-loading-ani2 0.5s linear infinite;
+    -ms-animation: cssload-loading-ani2 0.5s linear infinite;
+    -webkit-animation: cssload-loading-ani2 0.5s linear infinite;
+    -moz-animation: cssload-loading-ani2 0.5s linear infinite;
+    transform: translate(-8px);
+    -o-transform: translate(-8px);
+    -ms-transform: translate(-8px);
+    -webkit-transform: translate(-8px);
+    -moz-transform: translate(-8px);
+  }
+  .cssload-loading i:nth-child(2),
+  .cssload-loading i:nth-child(3) {
+    animation: cssload-loading-ani3 0.5s linear infinite;
+    -o-animation: cssload-loading-ani3 0.5s linear infinite;
+    -ms-animation: cssload-loading-ani3 0.5s linear infinite;
+    -webkit-animation: cssload-loading-ani3 0.5s linear infinite;
+    -moz-animation: cssload-loading-ani3 0.5s linear infinite;
+  }
+  .cssload-loading i:last-child {
+    animation: cssload-loading-ani1 0.5s linear infinite;
+    -o-animation: cssload-loading-ani1 0.5s linear infinite;
+    -ms-animation: cssload-loading-ani1 0.5s linear infinite;
+    -webkit-animation: cssload-loading-ani1 0.5s linear infinite;
+    -moz-animation: cssload-loading-ani1 0.5s linear infinite;
+  }
+  
+  @keyframes cssload-loading-ani1 {
+    100% {
+      transform: translate(17px);
+      opacity: 0;
+    }
+  }
+  
+  @-o-keyframes cssload-loading-ani1 {
+    100% {
+      -o-transform: translate(17px);
+      opacity: 0;
+    }
+  }
+  
+  @-ms-keyframes cssload-loading-ani1 {
+    100% {
+      -ms-transform: translate(17px);
+      opacity: 0;
+    }
+  }
+  
+  @-webkit-keyframes cssload-loading-ani1 {
+    100% {
+      -webkit-transform: translate(17px);
+      opacity: 0;
+    }
+  }
+  
+  @-moz-keyframes cssload-loading-ani1 {
+    100% {
+      -moz-transform: translate(17px);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes cssload-loading-ani2 {
+    100% {
+      transform: translate(8px);
+      opacity: 1;
+    }
+  }
+  
+  @-o-keyframes cssload-loading-ani2 {
+    100% {
+      -o-transform: translate(8px);
+      opacity: 1;
+    }
+  }
+  
+  @-ms-keyframes cssload-loading-ani2 {
+    100% {
+      -ms-transform: translate(8px);
+      opacity: 1;
+    }
+  }
+  
+  @-webkit-keyframes cssload-loading-ani2 {
+    100% {
+      -webkit-transform: translate(8px);
+      opacity: 1;
+    }
+  }
+  
+  @-moz-keyframes cssload-loading-ani2 {
+    100% {
+      -moz-transform: translate(8px);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes cssload-loading-ani3 {
+    100% {
+      transform: translate(8px);
+    }
+  }
+  
+  @-o-keyframes cssload-loading-ani3 {
+    100% {
+      -o-transform: translate(8px);
+    }
+  }
+  
+  @-ms-keyframes cssload-loading-ani3 {
+    100% {
+      -ms-transform: translate(8px);
+    }
+  }
+  
+  @-webkit-keyframes cssload-loading-ani3 {
+    100% {
+      -webkit-transform: translate(8px);
+    }
+  }
+  
+  @-moz-keyframes cssload-loading-ani3 {
+    100% {
+      -moz-transform: translate(8px);
+    }
+  }
+}
+
+.selected {
+    border: 2px solid blue; /* Example style to indicate selected state */
+}

@@ -1,0 +1,37 @@
+<div class="card">
+    <div class="card-header">
+        Move Device
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Dealer/Reseller</label>
+                <ng-select placeholder="Select Dealer" [ngModel]="selectedDealer" (change)="onDealerSelect($event)">
+                    <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                </ng-select>
+                <div *ngIf="!selectedDealerId" class="text-danger">Please select a Dealer/Reseller.</div>
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Customer</label>
+                <ng-select placeholder="Select Customer" [ngModel]="selectedCustomer" (change)="onCustomerSelect($event)">
+                    <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
+                </ng-select>
+                <div *ngIf="!selectedCustomer" class="text-danger">Please select a Customer.</div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-success" type="submit" (click)="submit()">
+                    Move
+                </button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-danger" (click)="cancel($event)">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

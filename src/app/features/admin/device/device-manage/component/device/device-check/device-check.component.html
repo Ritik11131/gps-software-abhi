@@ -1,0 +1,46 @@
+<div class="modal-header text-center" style="color: #fff;">
+   
+    <h2>
+        Time Duration
+    </h2>
+    <div class="close-modal">
+        <i class="fa fa-close" (click)="cancel()"></i>
+    </div>
+</div>
+<div class="modal-body">
+  <div class="_card white-bg">
+    <form [formGroup]="timeform">
+        <div class="row">
+            <div class="col-md-4">
+                <label class="form-label">Device Maker</label>
+                <ng-select placeholder="Select Maker" formControlName="maker" (change)="getdevicemakertype($event)">
+                    <ng-option *ngFor="let item of devicemakerList" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                </ng-select>
+            </div>
+            <div class="col-md-4" *ngIf="makerTypes">
+              <label class="form-label">No device Found </label>
+          </div>     
+            <div class="col-md-4" *ngIf="makerType?.length > 0">
+              <label class="form-label">Device </label>
+              <ng-select placeholder="Select device" formControlName="device"  (change)="onSelectDevice($event)">
+                  <ng-option *ngFor="let item of makerType" [value]="item?.Id">{{ item?.Name }}</ng-option>
+              </ng-select>
+          </div>  
+          <div class="col-md-4" *ngIf="ishours">
+            <label class="form-label">Select Time Duration </label>
+            <ng-select placeholder="Select Plan" formControlName="plan"  (change)="onChangeDeviceTime($event)">
+                <ng-option *ngFor="let item of hours" [value]="item?.id">{{ item?.label }}</ng-option>
+            </ng-select>
+        </div> 
+        </div>
+    </form>
+ 
+  </div>
+  <div class="container">
+    <div class="box" *ngFor="let data of devicevalidity" [ngStyle]="{
+        'background-color': data?.color,
+        'border': (data.counts === maxCounts ? '2px solid black' : 'none'),
+        'box-shadow': (data.counts === maxCounts ? 'rgba(0, 0, 0, 0.3) 0px 4px 8px 6px' : 'none')
+      }"><span>{{data?.counts}}</span></div>
+</div>
+</div>

@@ -1,0 +1,32 @@
+<div class="card">
+    <div class="card-header">
+        Device Mapping
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <label class="form-label">Device </label>
+                <ng-select placeholder="Select Device" [multiple]="true" [(ngModel)]="selectedDevice" (change)="selectDevice($event)">
+                    <ng-option *ngFor="let item of deviceData" [value]="item?.Id">{{ item?.VehicleNo }}</ng-option>
+                </ng-select>
+                <div class="text-danger text-right">You can select multiple Device!</div>
+            </div>
+        
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <br>
+                <button class="btn btn-success" type="submit" (click)="submit()">
+                    Submit
+                </button>
+            </div>
+            <div class="col-md-6">
+                <br>
+                <button class="btn btn-danger" (click)="cancel()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="modal-header text-center" style="color: #fff;">
+    <!-- {{vehicleNo}} --> Plan Modify
+</div>
+<div class="modal-body p-20">
+  <div class="_card white-bg">
+    <form >
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Plan</label>
+                <ng-select placeholder="Select Plan" >
+                    <ng-option *ngFor="let item of serviceCharge">{{ item}}</ng-option>
+                </ng-select>
+
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Plan Duration</label>
+                <ng-select placeholder="Select Duration">
+                    <ng-option *ngFor="let item of planDuration" [value]="item?.Id">{{ item?.PeriodName
+                        }}</ng-option>
+                </ng-select>
+
+            </div>
+            <div class="col-md-12">
+                <label class="form-label">Rate</label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Enter Rate"
+                        aria-describedby="button-addon2" />
+                </div>
+            </div>
+            <div class="col-md-12">
+                <label class="form-label">Tax</label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Enter Tax"
+                        aria-describedby="button-addon2" />
+                </div>
+            </div>
+           
+        </div>
+        
+    </form>
+  </div>
+  <div class="footer">
+   <div class="row">
+      <div class="col-md-6">
+          <button class="btn btn-success">Sumbit</button>
+      </div>
+      <div class="col-md-6">
+          <button class="btn btn-danger">Cancel</button>
+      </div>
+   </div>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<div class="card">
+    <div class="card-header">
+        Point Management
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="pointForm" (ngSubmit)="submit(pointForm.value)">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Select Plan</label>
+                    <ng-select placeholder="Select Plan" formControlName="plan">
+                        <ng-option value="1">New Point</ng-option>
+                        <ng-option value="2">Recharge Point</ng-option>
+                    </ng-select>
+                    <div *ngIf="pointForm.get('plan')?.invalid && (pointForm.get('plan')?.touched || pointForm.get('plan')?.dirty)" class="text-danger">
+                        Plan is required.
+                    </div>
+                </div>
+        
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Transaction</label>
+                    <ng-select placeholder="Select Transaction" formControlName="transation">
+                        <ng-option value="1">Allocate</ng-option>
+                        <ng-option value="2">Return</ng-option>
+                    </ng-select>
+                    <div *ngIf="pointForm.get('transation')?.invalid && (pointForm.get('transation')?.touched || pointForm.get('transation')?.dirty)" class="text-danger">
+                        Transaction type is required.
+                    </div>
+                </div>
+        
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Point Count</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" formControlName="pointCount" placeholder="No of Points"
+                            aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="pointForm.get('pointCount')?.invalid && (pointForm.get('pointCount')?.touched || pointForm.get('pointCount')?.dirty)">
+                        <div class="text-danger" *ngIf="pointForm.get('pointCount')?.errors?.['required']">Point Count is required.</div>
+                        <div class="text-danger" *ngIf="pointForm.get('pointCount')?.errors?.['invalidPointCount']">Point Count must be greater than 0.</div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-success" type="submit">
+                        Submit
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger" (click)="cancel($event)">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</div>

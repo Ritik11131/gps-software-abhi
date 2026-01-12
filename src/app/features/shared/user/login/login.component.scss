@@ -1,0 +1,348 @@
+.sliders {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.slider.active {
+  opacity: 1;
+}
+
+.slider .img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.form-container {
+  position: relative;
+  z-index: 1;
+}
+
+.form-control {
+  // border: 1px solid #383B3E !important;
+  color: black !important;
+  border: none;
+
+  &:focus {
+    box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, 0.21);
+    background-color: #fff;
+    color: black;
+
+  }
+}
+
+.ng-tns-c23-0.ng-star-inserted {
+  text-align: left;
+}
+
+input {
+  #typeEmailX-2 {
+    margin-bottom: 0px !important;
+  }
+
+  #typePasswordX-2 {
+    margin-bottom: 0px !important;
+
+  }
+}
+
+.invalid-feedback {
+  margin-top: -17px !important;
+}
+
+label {
+  display: flex;
+}
+
+.input.form-control.password {
+  position: relative;
+}
+
+button.btn.btn-outline-secondary.eye {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  border: none;
+
+  &:hover {
+    background: transparent;
+  }
+
+  i.fa-eye {
+    color: black;
+  }
+
+  i.fa-eye-slash {
+    color: black;
+  }
+}
+
+
+.login-container {
+  position: fixed;
+  top: 150px;
+  bottom: 100px;
+  right: -90px;
+  width: 50%;
+}
+
+/* Transparent background for the login card */
+.transparent-card {
+  background: rgba(8, 8, 8, 0.75);
+  // background: rgba(255, 255, 255, 0.8);
+  // border-radius: 1rem;
+}
+
+.login-container .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  // padding: 40px;
+}
+
+/* Ensure that the form takes full height of the card body */
+.login-container .card-body form {
+  height: 120%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .login-container {
+    position: static;
+    margin: 100px auto;
+    width: 90%;
+  }
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  // margin-top: 20px;
+}
+
+.forgot-password {
+  display: flex;
+  justify-content: space-between;
+
+  .remember {
+    color: #fff;
+  }
+
+  .pasword {
+    cursor: pointer;
+    color: #fff;
+  }
+
+  .pasword:hover {
+    text-decoration: underline;
+    color: red;
+  }
+}
+
+.login-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  // background-color: rgba(36, 34, 34, 0.8);
+  background: rgba(8, 8, 8, 0.35);
+  padding: 5px 10px 5px 10px;
+  z-index: 1000;
+}
+
+.login-header .company-name {
+  margin-left: 10%;
+  width: 50%;
+}
+
+.login-header .company-name h3 {
+  font-size: 37px;
+  font-weight: 200;
+  margin-bottom: 0%;
+  color: #fff;
+}
+
+.login-header .store-button {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-right: 10%;
+  height: 45px;
+}
+
+.login-header .store-button .app-store {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 0px 10px 0px 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  position: relative;
+}
+
+.login-header .store-button .app-store h5 {
+  font-size: 15px;
+  color: white;
+}
+
+.login-header .store-button .app-store span {
+  font-size: 10px;
+  color: white;
+}
+
+.login-header .store-button .app-store .fa-apple {
+  font-size: 30px;
+  width: 25px;
+  height: auto;
+  margin-right: 5px;
+  color: white;
+}
+
+.login-header .store-button .app-store img {
+  font-size: 30px;
+  width: 25px;
+  height: auto;
+  margin-right: 5px;
+}
+
+.login-header .store-button .app-store .barcode {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 10px;
+  background-color: white;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-header .store-button .app-store:hover .barcode {
+  display: block;
+}
+
+.login-header .store-button .app-store .barcode img {
+  width: 100px;
+  height: auto;
+}
+
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.selection-part {
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    color: #fff;
+  }
+
+  input[type="radio"] {
+    transform: scale(1.5);
+    margin-right: 10px;
+  }
+}
+
+.input-group.position-relative {
+  position: relative;
+}
+
+.input-group-text {
+  background-color: rgba(255, 165, 0, 1); /* Background color for the input group text */
+  border: none; /* Remove border */
+}
+
+.input-group-text .fa {
+  color: white; /* Color of the icon */
+}
+
+.form-control {
+  border-left: none; /* Remove left border */
+}
+
+.form-control:focus {
+  box-shadow: none; /* Remove focus shadow */
+}
+
+
+.input-group {
+  .fa-user,.fa-lock {
+    color: white;  
+  }
+
+  input {
+    color: #fff !important;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.3);
+    outline: none;
+
+    // &:focus{
+    //   color: black !important;
+    //   background-color: white;
+    // }
+  }
+
+
+
+}
+
+#visiblePassword {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px;
+  z-index: 9999999;
+  color: white;
+  
+}
+
+input[type="radio"]:checked {
+  accent-color: #727272;
+}
+
+.button-part {
+  background-color: #FF9934;
+  height: 35px;
+  width: 100% !important;
+  color: white;
+}
+
+.button-part:hover {
+  background-color: rgb(235, 197, 126);
+}
+
+// @media (min-width: 1200px) {
+//   .login-section {
+//       flex: 0 0 auto;
+//       width: 48.666667%;
+//   }
+// }
+

@@ -1,0 +1,12 @@
+@mixin themeColors() {
+	&.theme-light,
+	.theme-light {
+		color: var(--color-text-primary);
+		margin-bottom: 30px;
+	}
+
+	&.theme-dark,
+	.theme-dark {
+		color: var(--color-text-primary-inverted);
+	}
+}

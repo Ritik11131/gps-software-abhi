@@ -1,0 +1,12 @@
+<div class="toggle-switch">
+    <input type="checkbox" class="input" (change)="onChange($event)" [id]="config.id">
+    <label class="label" [for]="config.id">
+        <div class="toggle"></div>
+        <div class="unchecked">
+            <span>{{ config.leftLabel }}</span>
+        </div>
+        <div class="checked">
+            <span>{{ config.rightLabel }}</span>
+        </div>
+    </label>
+</div>

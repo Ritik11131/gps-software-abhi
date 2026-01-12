@@ -1,0 +1,104 @@
+<div class="card">
+    <div class="card-header">
+        Plan Master
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <!-- <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <button class="btn btn-primary" (click)="openManage()"><i class="fa fa-plus"></i> Manage Plan</button>
+            </div>
+
+        </div> -->
+        <form [formGroup]="planForm" (ngSubmit)="submit(planForm.value)">
+            <!-- <div class="row mb-3 mt-3">
+                <div class="col-md-6">
+                    <label class="form-label">Device Maker</label>
+                    <ng-select placeholder="Select Manufacture" formControlName="manufacture" (change)="getdevicemakertype($event)">
+                        <ng-option *ngFor="let item of devicemakerList" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Device</label>
+                    <ng-select placeholder="Select Device" formControlName="device">
+                        <ng-option *ngFor="let item of makerType" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                    </ng-select>
+                </div>
+            </div> -->
+            <!-- <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Status</label>
+                    <ng-select placeholder="Select Device" formControlName="status">
+                        <ng-option *ngFor="let item of statusData" [value]="item?.id">{{ item?.status }}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Plan</label>
+                    <ng-select placeholder="Select Plan" formControlName="plan">
+                        <ng-option *ngFor="let item of serviceCharge" [value]="item?.id">{{ item.name}}</ng-option>
+                    </ng-select>
+                </div>
+            </div> -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Plan Duration</label>
+                    <ng-select placeholder="Select Duration" formControlName="duration">
+                        <ng-option *ngFor="let item of planDuration" [value]="item?.Id">{{ item?.PeriodName
+                            }}</ng-option>
+                    </ng-select>
+                    <div *ngIf="planForm?.get('duration')?.invalid && 
+                    (planForm?.get('duration')?.dirty || planForm?.get('duration')?.touched)"
+                        class="text-danger">
+                        Plan Duration is required
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Rate</label>
+                    <div class="input-group ">
+                        <input type="text" class="form-control" formControlName="rate" placeholder="Enter Rate"
+                            aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="planForm?.get('rate')?.invalid && 
+                    (planForm?.get('rate')?.dirty || planForm?.get('rate')?.touched)"
+                        class="text-danger">
+                        Rate is required
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tax</label>
+                    <div class="input-group ">
+                        <input type="text" class="form-control" formControlName="tax" placeholder="Enter Tax"
+                            aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="planForm?.get('tax')?.invalid && 
+                    (planForm?.get('tax')?.dirty || planForm?.get('tax')?.touched)"
+                        class="text-danger">
+                        Tax is required
+                    </div>
+                </div>
+                <!-- <div class="col-md-6">
+                    <label class="form-label">Discount</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" formControlName="discount"  placeholder="Enter Discount"
+                            aria-describedby="button-addon2" />
+                    </div>
+                </div> -->
+            </div>          
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-success" type="submit">
+                        Submit
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger" (click)="Cancel($event)">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

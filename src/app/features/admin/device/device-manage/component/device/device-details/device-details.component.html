@@ -1,0 +1,328 @@
+<ng-container *ngIf="type === 'Admin'; else elseblock">
+    <div class="modal-header text-center" style="color: #fff;">
+        Device
+        <div class="close-modal">
+            <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="close()"></i>
+        </div>
+    </div>
+    <div class="modal-body p-20">
+        <div class="_card white-bg">
+            <form [formGroup]="deviceForm" (ngSubmit)="submit(deviceForm.value)">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Device </label>
+                        <ng-select placeholder="Select device" formControlName="deviceMarkerType"
+                            (change)="onSelectedDevice($event)">
+                            <ng-option *ngFor="let item of deviceType" [value]="item?.formatted_DeviceId">{{
+                                item?.formatted_DeviceName }}</ng-option>
+                        </ng-select>
+                        <div *ngIf="deviceForm.get('deviceMarkerType')?.invalid && (deviceForm.get('deviceMarkerType')?.dirty || deviceForm.get('deviceMarkerType')?.touched)"
+                            class="text-danger">
+                            Device is required
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Device Id / IMEI</label>
+                        <div class="input-group ">
+                            <input type="text" class="form-control" placeholder="Enter Device Id"
+                                formControlName="deviceId" aria-describedby="button-addon2" />
+                        </div>
+                        <div class="text-danger" *ngIf="duplicateDevice == true">
+                            Duplicate device Id
+                        </div>
+                        <div *ngIf="deviceForm.get('deviceId')?.invalid && (deviceForm.get('deviceId')?.dirty || deviceForm.get('deviceId')?.touched)"
+                            class="text-danger">
+                            <div *ngIf="deviceForm.get('deviceId')?.errors?.['required']">
+                                Device Id / IMEI is required
+                            </div>
+                            <div *ngIf="deviceForm.get('deviceId')?.errors?.['pattern']">
+                                Minimum 10 To 15 characters required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6  mb-3">
+                        <label class="form-label">Installation Date</label>
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="deviceDetails" formControlName="installationDate">
+                            <mat-datepicker-toggle matSuffix [for]="deviceDetails"></mat-datepicker-toggle>
+                            <mat-datepicker #deviceDetails></mat-datepicker>
+                          </mat-form-field>
+                        <div *ngIf="deviceForm.get('installationDate')?.invalid && (deviceForm.get('installationDate')?.dirty || deviceForm.get('installationDate')?.touched)"
+                            class="text-danger">
+                            InstallationDate is required
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Device UID</label>
+                        <div class="input-group ">
+                            <input type="text" class="form-control" placeholder="Enter Device UID"
+                                formControlName="deviceuid" aria-describedby="button-addon2" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Description</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter Description"
+                                formControlName="description" aria-describedby="button-addon2" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Sim Operator</label>
+                        <ng-select placeholder="Select Sim" formControlName="simopr">
+                            <ng-option *ngFor="let item of operatorData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                        </ng-select>
+                        <div *ngIf="deviceForm.get('simopr')?.invalid && (deviceForm.get('simopr')?.dirty || deviceForm.get('simopr')?.touched)"
+                            class="text-danger">
+                            Sim Operator is required
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Sim Phone Number</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" formControlName="phn" placeholder="Enter Sim Number"
+                                aria-describedby="button-addon2" />
+                        </div>
+                        <div *ngIf="deviceForm.get('phn')?.invalid && (deviceForm.get('phn')?.dirty || deviceForm.get('phn')?.touched)"
+                            class="text-danger">
+                            <div *ngIf="deviceForm.get('phn')?.errors?.['required']">
+                                Sim Phone Number is required
+                            </div>
+                            <div *ngIf="deviceForm.get('phn')?.errors?.['pattern']">
+                                Please Fill 10 or 13 Digit
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Vehicle No.</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" formControlName="vehicle"
+                                placeholder="Enter Vehicle No." aria-describedby="button-addon2" maxlength="20"
+                                oninput="this.value = this.value.toUpperCase()" />
+                        </div>
+                        <div *ngIf="deviceForm.get('vehicle')?.errors?.['required'] && (deviceForm.get('vehicle')?.dirty || deviceForm.get('vehicle')?.touched)"
+                            class="text-danger">
+                            Vehicle No. is required
+                        </div>
+                        <div class="text-danger" *ngIf="checkaplpha(deviceForm.get('vehicle').value)">
+                            Only alphanumeric characters and spaces are allowed.
+                          </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Vehicle type</label>
+                        <ng-select placeholder="Select Vehicle Type" formControlName="vehicletype" (change)="selectedVehicle($event)">
+                            <ng-option *ngFor="let item of vehiclTypeData" [value]="item?.Id">{{ item?.Name
+                                }}</ng-option>
+                        </ng-select>
+                        <div *ngIf="deviceForm.get('vehicletype')?.invalid && (deviceForm.get('vehicletype')?.dirty || deviceForm.get('vehicletype')?.touched)"
+                            class="text-danger">
+                            Vehicle type is required
+                        </div>
+                    </div>                   
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="icon-container">
+                            <div class="icon-detail" *ngFor="let item of iconList">
+                                <img src="{{item?.icon}}" alt="not available"
+                                    (click)="imageId(item?.id)" [ngClass]="{'selected': selectedColor == item?.id}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <br>
+                        <button class="btn btn-success" type="submit">
+                            Submit
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <br>
+                        <button class="btn btn-danger" (click)="cancel($event)">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-container>
+<ng-template #elseblock>
+    <div class="card">
+        <div class="card-header">
+            {{deivceLable}} Device
+            <app-close-routes [route]="routePath"></app-close-routes>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="deviceForm" (ngSubmit)="submit(deviceForm.value)">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Device </label>
+                        <ng-select placeholder="Select device" formControlName="deviceMarkerType"
+                            (change)="onSelectedDevice($event)">
+                            <ng-option *ngFor="let item of deviceType" [value]="item?.formatted_DeviceId">{{
+                                item?.formatted_DeviceName }}</ng-option>
+                        </ng-select>
+                        <div *ngIf="deviceForm.get('deviceMarkerType')?.invalid && (deviceForm.get('deviceMarkerType')?.dirty || deviceForm.get('deviceMarkerType')?.touched)"
+                            class="text-danger">
+                            Device is required
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Device Id / IMEI</label>
+                        <div class="input-group ">
+                            <input type="text" class="form-control" placeholder="Enter Device Id"
+                                formControlName="deviceId" aria-describedby="button-addon2" />
+                        </div>
+                        <div class="text-danger" *ngIf="duplicateDevice == true">
+                            Duplicate device Id
+                        </div>
+                        <div *ngIf="deviceForm.get('deviceId')?.invalid && (deviceForm.get('deviceId')?.dirty || deviceForm.get('deviceId')?.touched)"
+                            class="text-danger">
+                            <div *ngIf="deviceForm.get('deviceId')?.errors?.['required']">
+                                Device Id / IMEI is required
+                            </div>
+                            <div *ngIf="deviceForm.get('deviceId')?.errors?.['pattern']">
+                                Minimum 10 To 15 characters required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6  mb-3">
+                        <label class="form-label">Installation Date</label>
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="deviceDetails" formControlName="installationDate">
+                            <mat-datepicker-toggle matSuffix [for]="deviceDetails"></mat-datepicker-toggle>
+                            <mat-datepicker #deviceDetails></mat-datepicker>
+                          </mat-form-field>
+                        <div *ngIf="deviceForm.get('installationDate')?.invalid && (deviceForm.get('installationDate')?.dirty || deviceForm.get('installationDate')?.touched)"
+                            class="text-danger">
+                            InstallationDate is required
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Device UID</label>
+                        <div class="input-group ">
+                            <input type="text" class="form-control" placeholder="Enter Device UID"
+                                formControlName="deviceuid" aria-describedby="button-addon2" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Description</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter Description"
+                                formControlName="description" aria-describedby="button-addon2" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Sim Operator</label>
+                        <ng-select placeholder="Select Sim" formControlName="simopr">
+                            <ng-option *ngFor="let item of operatorData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                        </ng-select>
+                        <div *ngIf="deviceForm.get('simopr')?.invalid && (deviceForm.get('simopr')?.dirty || deviceForm.get('simopr')?.touched)"
+                            class="text-danger">
+                            Sim Operator is required
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Sim Phone Number</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" formControlName="phn" placeholder="Enter Sim Number"
+                                aria-describedby="button-addon2" />
+                        </div>
+                        <div *ngIf="deviceForm.get('phn')?.invalid && (deviceForm.get('phn')?.dirty || deviceForm.get('phn')?.touched)"
+                            class="text-danger">
+                            <div *ngIf="deviceForm.get('phn')?.errors?.['required']">
+                                Sim Phone Number is required
+                            </div>
+                            <div *ngIf="deviceForm.get('phn')?.errors?.['pattern']">
+                                Please Fill 10 or 13 Digit
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Vehicle No.</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" formControlName="vehicle"
+                                placeholder="Enter Vehicle No." aria-describedby="button-addon2" maxlength="20"
+                                oninput="this.value = this.value.toUpperCase()" />
+                        </div>
+                        <div *ngIf="deviceForm.get('vehicle')?.errors?.['required'] && (deviceForm.get('vehicle')?.dirty || deviceForm.get('vehicle')?.touched)"
+                            class="text-danger">
+                            Vehicle No. is required
+                        </div>
+                        <div class="text-danger" *ngIf="checkaplpha(deviceForm.get('vehicle').value)">
+                            Only alphanumeric characters and spaces are allowed.
+                          </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Vehicle type</label>
+                        <ng-select placeholder="Select Vehicle Type" formControlName="vehicletype" (change)="selectedVehicle($event)">
+                            <ng-option *ngFor="let item of vehiclTypeData" [value]="item?.Id">{{ item?.Name
+                                }}</ng-option>
+                        </ng-select>
+                        <div *ngIf="deviceForm.get('vehicletype')?.invalid && (deviceForm.get('vehicletype')?.dirty || deviceForm.get('vehicletype')?.touched)"
+                            class="text-danger">
+                            Vehicle type is required
+                        </div>
+                    </div>                   
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="icon-container add">
+                            <div class="icon-detail" *ngFor="let item of iconList">
+                                <img src="{{item?.icon}}" alt="not available"
+                                    (click)="imageId(item?.id)" [ngClass]="{'selected': selectedColor == item?.id}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <br>
+                        <button class="btn btn-success" type="submit">
+                            Submit
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <br>
+                        <button class="btn btn-danger" (click)="cancel($event)">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-template>

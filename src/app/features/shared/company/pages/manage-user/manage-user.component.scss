@@ -1,0 +1,114 @@
+@import 'src/styles/mixins/breakpoints';
+@import "src/styles/mixins/box-shadow.mixin";
+@import "src/styles/mixins/breakpoints";
+.full-width {
+    width: 100%;
+}
+.banner-height {
+    img {
+      height: 125px;
+      object-fit: cover;
+      @include breakpoint-range($max: sm) {
+        height: 150px;
+      }
+    }
+  }
+
+.mt-6 {
+    margin-top: 30px;
+}
+.disable-user{
+    margin-right: 10px;
+}
+.offset-3 {
+    @include breakpoint-range($max : sm) {
+        margin-left: 0px;
+    }
+}
+.userqty {
+    padding-left: 40px;
+    @include breakpoint-range($max : sm) {
+        padding: 0px!important;
+        text-align: center;
+    }
+}
+.restore-btn {
+    @include breakpoint-range($max : xs) {
+        width: 100%!important;
+    }
+}
+.mt-4 {
+        @include breakpoint-range($max : sm) {
+            margin-top: 0px !important;
+        }
+
+}
+::ng-deep{
+    .mx-search-box {
+        display: flex;
+        position: relative;
+        max-width: 300px !important;
+        width: 100%;
+    }
+}
+
+/** ngx-pagination styling **/
+::ng-deep {
+    pagination-controls {
+      pagination-template {
+        ul {
+          border-radius: unset !important;
+          li {
+            border: none !important;
+            border-radius: 0 5px 5px 0;
+            box-shadow: inset 0px 5px 6px #00000014;
+            &:nth-child(3) {
+              &.current {
+                border-radius: 5px 0px 0px 5px;
+              }
+            }
+            &:nth-last-child(2) {
+              &.current {
+                border-radius: 0px 5px 5px 0px;
+              }
+            }
+            &.current {
+              display: flex !important;
+              box-shadow: unset;
+            }
+            a {
+              text-decoration: unset !important;
+              height: 100%;
+              display: flex !important;
+              align-items: center;
+              justify-content: center;
+            }
+            &.pagination-next,
+            &.pagination-previous {
+              a {
+                color: $color-teal;
+                font-size: 24px;
+                &::after,
+                &::before {
+                  margin-left: 0px !important;
+                  margin-bottom: 3px !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .first_img{
+    float: left;
+    height: 21px;
+    width: auto;
+    cursor: pointer;
+}
+.sec_img{
+    float: left;
+    height: 21px;
+    width: auto;
+    cursor: pointer;
+}

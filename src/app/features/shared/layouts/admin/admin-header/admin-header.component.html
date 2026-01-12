@@ -1,0 +1,161 @@
+<!-- Site Top Bar  -->
+<section class="top-bar-section">
+    <div class="container">
+      <div class="mobile-top-bar">
+        <div class="d-flex justify-content-center">
+          <ng-container >
+            <ng-container *ngIf="showSideNav === menuType">
+              <button
+                *ngIf="!menuState"
+                (click)="showMenu()"
+                class="skylabs-icon bars-icon menu-bars"
+              ></button>
+              <button
+                *ngIf="menuState"
+                (click)="hideMenu()"
+                class="skylabs-icon close-icon menu-bars"
+              ></button>
+            </ng-container>
+          </ng-container>
+        </div>
+        <div class="mobile-top-right-menu">
+          <button (click)="hideMenu()">
+            <div class="btn-group" dropdown placement="bottom right">
+              <span class="skylabs-icon document-icon" dropdownToggle></span>
+              <ul id="dropdown-alignment" *dropdownMenu class="dropdown-menu account-dropdown dropdown-menu-right"
+                role="menu" aria-labelledby="button-alignment">
+                <ng-container></ng-container>
+              </ul>
+            </div>
+          </button>
+          
+        </div>
+      </div>
+  
+      <ng-container *ngIf="header === 'admin'">
+        <div class="top-bar">
+         <div>
+          <ul class="top-bar-menu-right">
+            <li >
+              <i class="fa fa-search" aria-hidden="true"></i> 
+            </li>
+         
+          </ul>
+        </div>
+        </div>
+      </ng-container>
+    </div>
+  </section>
+  <!-- Header Part Logo, Search, Cart and Profile -->
+  
+  <section class="mobile-search-tempate" [collapse]="mobileSearchCollapse" [isAnimated]="true">
+    <div class="container">
+      <ng-container></ng-container>
+    </div>
+  </section>
+  <ng-template>
+    <div
+     
+    >
+      <sky-search-control
+        placeholder="Search Products"
+        title="Please fill out this field."
+        
+      ></sky-search-control>
+      <a
+        class="advance-search-link"
+        
+      >
+        Advanced Search
+        <img
+          src="/assets/images/icons/advance-search-help.svg"
+          title="Click for more Advanced Search"
+          alt=""
+        />
+      </a>
+    </div>
+  </ng-template>
+  
+  <!-- Site Navigation -->
+  
+  <nav class="navbar navbar-light navbar-expand-lg" >
+    <div class="container">
+      <ngx-navbar-collapse id="main-nav" #collapse="ngxNavbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item mobile-search">
+            <div class="site-header-search-container">
+              <a class="advance-search-link">
+                Advanced Search
+                <img style="
+                    filter: brightness(50%) sepia(100) saturate(100)
+                      hue-rotate(25deg);
+                  " src="/assets/images/icons/advance-search-help.svg" alt="" />
+              </a>
+            </div>
+          </li>
+  
+          <li class="nav-item" *ngFor="let item of menuList; let i = index">
+            <a href="javascript:void(0)" (click)="toggleDropdown('mainMenu' + i)" class="nav-link">{{ item.name }}
+              <fa-icon *ngIf="item.subMenus" [icon]="faAngleDown"> </fa-icon>
+            </a>
+            <ng-container *ngIf="item.subNav">
+              <ul class="dropdown-menu" [id]="'mainMenu' + i">
+                <li class="nav-item" *ngFor="let submenu of item.subNav; let subIndex = index">
+                  <a class="nav-link" [ngClass]="{ 'child-nav': submenu.subNav }"
+                    (click)="toggleDropdown('subMenu' + subIndex)" [routerLink]="submenu.path">
+                    {{ submenu.name }}
+                    <fa-icon *ngIf="submenu.subNav" [icon]="faAngleRight">
+                    </fa-icon>
+                  </a>
+                  <ul class="dropdown-menu" *ngIf="submenu.subNav" [id]="'subMenu' + i">
+                    <li class="nav-item" *ngFor="let submenu1 of submenu.subNav">
+                      <a class="nav-link" [routerLink]="submenu1.path">{{
+                        submenu1.name
+                        }}</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </ng-container>
+          </li>
+          <li class="nav-item mobile-search account-change">
+            <div>
+              <span></span>
+              <span>
+                <fa-icon [icon]="faAngleUp"></fa-icon> Logged in as Jhon Smith
+              </span>
+            </div>
+            <button>Sign Out <fa-icon [icon]="faAngleRight"></fa-icon></button>
+          </li>
+        </ul>
+      </ngx-navbar-collapse>
+    </div>
+  </nav>
+  <!-- <ng-template #accountDropdown>
+    <ng-container *ngFor="let item of accountDropdownItems">
+      <li role="menuitem" *ngIf="!item.divider">
+        <a class="dropdown-item" *ngIf="item.path" [routerLink]="item.path">
+          {{ item.name }}
+        </a>
+        <a
+          class="dropdown-item"
+          *ngIf="item.pageUrl"
+          [href]="item.url"
+          target="_blank"
+        >
+          {{ item.name }}
+        </a>
+        <a class="dropdown-item" *ngIf="item.logout" (click)="logout()">
+          {{ item.name }}
+        </a>
+        <a class="dropdown-item" *ngIf="item.popup" (click)="openSalesModal()">
+          {{ item.name }}
+        </a>
+        <a class="dropdown-item" *ngIf="item.accounts">
+          {{ item.name }}
+        </a>
+      </li>
+      <li *ngIf="item.divider" class="divider dropdown-divider"></li>
+      <li *ngIf="item.salesDivider" class="divider dropdown-divider"></li>
+    </ng-container>
+  </ng-template> -->

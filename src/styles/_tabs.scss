@@ -1,0 +1,168 @@
+// Tabs 
+
+@import './mixins/breakpoints';
+
+.tab-container.vertical {
+    display: flex;
+}
+@include breakpoint-range($max : xs) {
+    .nav-tabs{
+        border-radius: 30px !important;
+    }
+}
+.nav-tabs {
+    --mx-nav-tabs-border-width: 0;
+    --mx-nav-tabs-border-radius: 0;
+    --mx-nav-tabs-border-color: $color-gray;
+    --mx-nav-tabs-border-radius: 0;
+    --mx-nav-tabs-link-active-color: $color-red;
+    --mx-nav-tabs-link-active-bg: $color-white;
+    background-color: $color-dark-gray;
+    border-radius: 40px;
+    .nav-item {
+        // &:first-child {
+        //     .nav-link {
+        //         border-left: none;
+        //     }
+        // }
+
+        // &:last-child {
+        //     .nav-link {
+        //         border-right: none;
+        //     }
+        // }
+
+
+        .nav-link {
+            display: flex;
+            min-height: 45px;
+            padding: 0 25px;
+            justify-content: center;
+            align-items: center;
+            // border-top-left-radius: 0;
+            // border-top-right-radius: 0;
+            text-align: center;
+            // border: 1px solid $color-gray;
+            // border-left: none;
+            color: $color-white;
+            background: $color-dark-gray;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 40px;
+            &:hover{
+                color: $color-red;
+            }
+            img {
+                margin-right: 10px;
+            }
+        }
+
+        &.active {
+            .nav-link {
+                color: $color-white;
+                background: $color-red;
+                box-shadow: none;
+                position: relative;
+                border-radius: 40px;
+                
+                
+                // &::before {
+                //     border: solid $color-gray;
+                //     border-width: 0 1px 1px 0;
+                //     display: inline-block;
+                //     padding: 6px;
+                //     content: "";
+                //     bottom: -7px;
+                //     position: absolute;
+                //     background: $color-white;
+                //     transform: rotate(45deg);
+                // }
+            }
+
+        }
+    }
+
+    &.nav-stacked {
+        border-bottom: none;
+
+        .nav-item {
+            .nav-link {
+                border-radius: 0;
+
+                &:first-child {
+                    border-left: none;
+                }
+
+                &:last-child {
+                    border-right: none;
+                }
+            }
+        }
+    }
+
+    .responsive-tab-action {
+        display: none;
+    }
+
+    @include breakpoint-range($max : lg) {
+        &.open {
+            .responsive-tab-action {
+                &::before {
+                    content: '\e934';
+                }
+            }
+        }
+
+
+        .responsive-tab-action {
+            // border-top: 1px solid $color-gray;
+            // border-bottom: 1px solid $color-gray;
+            cursor: pointer;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            color: $color-white;
+            width: 100%;
+            justify-content: center;
+            position: relative;
+            background-color: $color-red;
+            border-radius: 30px;
+            &::before {
+                content: '\e900';
+                position: absolute;
+                // font-family: var(--mohawak-icon-font);
+                right: 10px;
+                color: $color-white;
+            }
+        }
+
+        .nav-item {
+            flex-basis: auto;
+            display: none;
+            width: 100%;
+
+            &.show-ele {
+                display: flex;
+                width: 100%;
+            }
+
+            &:first-child {
+                .nav-link {
+                    // border-top: 1px solid $color-gray;
+                }
+            }
+
+            .nav-link {
+                // border: none;
+                // border-bottom: 1px solid $color-gray;
+                &.active::before {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+.tab-content {
+    padding: 20px;
+}

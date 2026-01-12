@@ -1,0 +1,79 @@
+<div class="details">
+    <div class="report-part  mt-3">
+        <div class="card mb-3 " style="cursor: pointer;" *ngFor="let trip of tripReport?.Points; let i = index"
+            [class.selected]="selectedIndex === i && selectvalue">
+            <div class="card-body">
+                <div class="vehicle-data">
+                    <p class="vehicle-number">
+                        <span>AVG. SPEED</span>
+                        {{trip?.AvgSpeed}} Km/h
+                    </p>
+                    <p class="vehicle-number">
+                        <span>DURATION</span> {{trip?.Duration}}
+                    </p>
+                    <p class="vehicle-number">
+                        <span>MAX SPEED</span> {{trip?.MaxSpeed}} Km/h
+                    </p>
+                    <p class="vehicle-number">
+                        <span>DISTANCE</span> {{trip?.Distance}} Km
+                    </p>
+                </div>
+
+                <div class="vehicle-data" (click)="viewAddressemit(trip.Start, trip.End, i, trip)">
+                    <p class="vehicle-number">
+                        {{trip?.StartTime | date:'HH:mm:ss'}}</p>
+                    <p class="vehicle-number date">
+                        <i class="fa fa-map-marker" style="color: green;"></i>
+                        {{trip?.StartTime | date:'dd/MM/yyy' }} <i class="fa fa-flag" style="color: red;"></i>
+                    </p>
+                    <p class="vehicle-number">
+                        {{trip?.EndTime | date:'HH:mm:ss'}} </p>
+                </div>
+
+                <div class="vehicle-address">
+                    <p>
+                        Start Address :-
+                        <span class="start-address">
+    
+                            {{ viewAddress('start',trip.Start, i) }}
+
+                            <ng-container *ngIf="selectedStartIndexes.includes(i); else viewAddresss">
+                                <div *ngIf="startAddresses[i]; else loader">
+                                    {{ startAddresses[i] }}
+                                </div>
+                                <ng-template #loader>
+                                    <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+                                </ng-template>
+                            </ng-container>
+                            <ng-template #viewAddresss>
+                                View Address
+                            </ng-template>
+                        </span>
+                    </p>
+                    <p>
+                        End Address :-
+                        <span class="end-address">
+                 
+                            {{ viewAddress('end',trip.End, i) }}
+
+                            <ng-container *ngIf="selectedStartIndexes.includes(i); else viewAddresss">
+                                <div *ngIf="endAddresses[i]; else loader">
+                                    {{ endAddresses[i] }}
+                                </div>
+                                <ng-template #loader>
+                                    <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
+                                </ng-template>
+                            </ng-container>
+                            <ng-template #viewAddresss>
+                                View Address
+                            </ng-template>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>

@@ -1,0 +1,25 @@
+<div class="modal-header text-center">
+    <h4 class="modal-title f-w w-100">{{ title }}</h4>
+  </div>
+  <div class="modal-body p-20">
+    <div class="_card white-bg">
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <h2 class="text-center" [innerHTML]="content"></h2>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <ng-container *ngIf="secondaryActionLabel != ''">
+        <button class="btn btn-secondary" (click)="handleAction('secondary')">
+          {{ secondaryActionLabel }}
+        </button>
+      </ng-container>
+      <ng-container *ngIf="primaryActionLabel != ''">
+        <button class="btn btn-primary" (click)="handleAction('primary')">
+          {{ primaryActionLabel }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+  

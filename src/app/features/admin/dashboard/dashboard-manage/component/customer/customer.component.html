@@ -1,0 +1,73 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="customer-part">
+            <div class="card">
+                <div class="arrow-icon">
+                    <div class="arrow" (click)="toggleContent()"></div>
+                </div>
+                <div *ngIf="showContent">
+                    <div class="card-body">
+                        <div class="dealer-part mb-3">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <ng-select placeholder="Select Dealer" [ngModel]="selectedDealer" (change)="onItemSelect($event)"
+                                        (ngModelChange)="onDealerSelect($event)">
+                                        <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                                    </ng-select>
+                                </div> 
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary" (click)="openAllresellerDetails()"><i class="fa fa-file-text" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="customer-part">
+                            <ng-select placeholder="Select Customer" [ngModel]="selectedCustomer" (change)="onSelectCustomer($event)"
+                                (ngModelChange)="onCustomerSelect($event)">
+                                <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="card-content">        
+                        <div>
+                            <div>
+                                <swiper *ngIf="swiperData" [vehicleStauts]="swiperData" (onConfirm)="confirm($event)"></swiper>
+                            </div>
+                            <div class="vehicle-follow mt-3" [ngClass]="{'add-value': vehicleData && vehicleData.length > 7}">
+                                <ul class="vehicle-data" *ngIf="vehicleData && vehicleData.length > 0">
+                                    <li class="vehicle-value" *ngFor="let vehicle of vehicleData; let i = index" style="cursor: pointer;">
+                                        <span [class]="getVehicleColor(vehicle)">{{vehicle?.Device?.VehicleNo}}</span>
+                                        <span [class]="getVehicleColor(vehicle)">{{vehicle?.ResultMessage[0] == null ? checkDevice(vehicle?.StatusDuration) : vehicle?.ResultMessage[0]}}</span>
+                                        <button [class]="getVehicleColor(vehicle)" mat-icon-button (click)="onContextMenu($event, vehicle, i)">
+                                            <mat-icon>more_vert</mat-icon>
+                                        </button>
+                                    </li>
+                                </ul>
+                                <ul class="vehicle-data" *ngIf="!vehicleData || vehicleData.length == 0 || vehicleData== null">
+                                    <li class="vehicle-value" style="text-align: center;">
+                                        <span style="color: black; width: 100% !important;">No Data Available</span>
+                                    </li>                
+                                </ul>
+                            </div>
+                            <div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
+                            [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
+                          </div>
+                          <mat-menu #contextMenu="matMenu">
+                            <ng-template matMenuContent let-item="item">
+                              <button mat-menu-item *ngFor="let menuItem of urlPath" (click)="redirectTo(menuItem?.type)">
+                                {{ menuItem.name }}
+                              </button>
+              
+                            </ng-template>
+                          </mat-menu>
+                        </div>
+                    </div>
+                </div>
+            </div>          
+        </div>
+        
+    </div>
+</div>
+
+

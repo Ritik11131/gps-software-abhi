@@ -1,0 +1,20 @@
+<div class="modal-header text-center">
+    <span style="color: white;">Balance Point <span style="font-size: 16px;">({{selectDealerName}})</span> </span>
+    <div class="close-modal">
+        <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel()"></i>
+    </div>
+</div>
+<div class="modal-body p-20">
+    <div class="_card white-bg">
+        <div class="row">
+            <div class="col-md-6" style="text-align: center;">
+                <p>{{newPointCount ? newPointCount : 0}}</p>
+                <p>New Points</p>
+            </div>
+            <div class="col-md-6" style="text-align: center;">
+                <p>{{renewalPointCount ? renewalPointCount:0}}</p>
+                <p>Recharge Points</p>
+            </div>
+        </div>
+    </div>
+</div>

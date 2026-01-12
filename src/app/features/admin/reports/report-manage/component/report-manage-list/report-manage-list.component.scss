@@ -1,0 +1,427 @@
+.details-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  width: 100%;
+  .btngroup {
+    display: flex;
+    gap: 10px;
+    justify-content: end;
+  }
+  .report-heading {
+    margin: 0; 
+    flex: 1; 
+    font-size: 22px !important
+  }
+  .p-2.bd-highlight {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .button {
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 110px;
+    height: 35px;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+  }
+
+  .button:hover {
+    background-color: #3e8e41
+  }
+
+  .button:active {
+    background-color: #3e8e41;
+    transform: translateY(4px);
+  }
+
+  .button-red {
+    background-color: #f44336;
+  }
+
+  .button-red:hover {
+    background-color: #da190b
+  }
+
+  .button-blue {
+    background-color: #008CBA;
+  }
+
+  .button-blue:hover {
+    background-color: #005f73
+  }
+
+  button {
+    padding: 8px 20px;
+    font-size: 14px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  button i {
+    margin-right: 8px;
+    /* Space between icon and text */
+  }
+
+}
+
+.card-header.ng-star-inserted {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  background: #727272;
+  color: white !important;
+  height: 43px;
+
+}
+
+
+.card-body {
+  background-color: #F4F8FF !important;
+  box-shadow: 0 0.4rem 0.4rem rgba(0, 0, 0, 0.25) !important;
+  border-radius: 0.5rem !important;
+  border-bottom: 1px solid rgb(0 0 0 / 25%);
+
+  .vehicle-data {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .start-address,
+  .end-address {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .start-address:hover,
+  .end-address:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+.report-part.mt-3.ng-star-inserted {
+  height: 100%;
+  overflow: auto;
+  .total-section {
+    display: flex;
+    justify-content: flex-start; /* Align content to the right */
+    align-items: center;
+    gap: 20px; /* Space between elements */
+}
+  .total {
+    display: flex;
+    gap: 10px;
+}
+
+.pagination-data {
+    margin-left: auto; /* Push pagination to the right */
+}
+}
+
+.total-duration {
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+}
+
+.total-duration {
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+}
+
+// .main-content {
+//     height: 87vh;
+// }
+.scrollable-table {
+  overflow-x: auto;
+  /* Enables horizontal scrolling */
+  max-width: 100%;
+  /* Sets a max width for the scrollable area */
+  height: 65vh;
+}
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0px;
+  gap: 5px;
+  align-items: center;
+  border: none;
+  margin-left: 3px;
+  /* Adding a subtle shadow on hover */
+
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 4px 19px;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  margin-right: 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+  /* Indicates that the element is interactive */
+}
+
+.chip:hover {
+  transform: scale(1.05);
+  /* Slightly enlarges the chip on hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  /* Increases the shadow for a lifting effect */
+}
+
+.idle-background {
+  background-color: orange;
+  color: white;
+  font-weight: 500;
+}
+
+.idle-background:hover {
+  background-color: #ff8c00;
+  /* Darkens the orange a bit on hover */
+}
+
+.other-background {
+  background-color: blue;
+  color: white;
+  font-weight: 500;
+}
+
+.other-background:hover {
+  background-color: #0000ff;
+  /* Shifts the blue to a slightly different shade on hover */
+}
+
+
+.cssload-loading i {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  border-radius: 50%;
+  background: #b7b7b7;
+}
+
+.cssload-loading i:first-child {
+  opacity: 0;
+  animation: cssload-loading-ani2 0.5s linear infinite;
+  -o-animation: cssload-loading-ani2 0.5s linear infinite;
+  -ms-animation: cssload-loading-ani2 0.5s linear infinite;
+  -webkit-animation: cssload-loading-ani2 0.5s linear infinite;
+  -moz-animation: cssload-loading-ani2 0.5s linear infinite;
+  transform: translate(-8px);
+  -o-transform: translate(-8px);
+  -ms-transform: translate(-8px);
+  -webkit-transform: translate(-8px);
+  -moz-transform: translate(-8px);
+}
+
+.cssload-loading i:nth-child(2),
+.cssload-loading i:nth-child(3) {
+  animation: cssload-loading-ani3 0.5s linear infinite;
+  -o-animation: cssload-loading-ani3 0.5s linear infinite;
+  -ms-animation: cssload-loading-ani3 0.5s linear infinite;
+  -webkit-animation: cssload-loading-ani3 0.5s linear infinite;
+  -moz-animation: cssload-loading-ani3 0.5s linear infinite;
+}
+
+.cssload-loading i:last-child {
+  animation: cssload-loading-ani1 0.5s linear infinite;
+  -o-animation: cssload-loading-ani1 0.5s linear infinite;
+  -ms-animation: cssload-loading-ani1 0.5s linear infinite;
+  -webkit-animation: cssload-loading-ani1 0.5s linear infinite;
+  -moz-animation: cssload-loading-ani1 0.5s linear infinite;
+}
+
+@keyframes cssload-loading-ani1 {
+  100% {
+    transform: translate(17px);
+    opacity: 0;
+  }
+}
+
+@-o-keyframes cssload-loading-ani1 {
+  100% {
+    -o-transform: translate(17px);
+    opacity: 0;
+  }
+}
+
+@-ms-keyframes cssload-loading-ani1 {
+  100% {
+    -ms-transform: translate(17px);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes cssload-loading-ani1 {
+  100% {
+    -webkit-transform: translate(17px);
+    opacity: 0;
+  }
+}
+
+@-moz-keyframes cssload-loading-ani1 {
+  100% {
+    -moz-transform: translate(17px);
+    opacity: 0;
+  }
+}
+
+@keyframes cssload-loading-ani2 {
+  100% {
+    transform: translate(8px);
+    opacity: 1;
+  }
+}
+
+@-o-keyframes cssload-loading-ani2 {
+  100% {
+    -o-transform: translate(8px);
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes cssload-loading-ani2 {
+  100% {
+    -ms-transform: translate(8px);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes cssload-loading-ani2 {
+  100% {
+    -webkit-transform: translate(8px);
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes cssload-loading-ani2 {
+  100% {
+    -moz-transform: translate(8px);
+    opacity: 1;
+  }
+}
+
+@keyframes cssload-loading-ani3 {
+  100% {
+    transform: translate(8px);
+  }
+}
+
+@-o-keyframes cssload-loading-ani3 {
+  100% {
+    -o-transform: translate(8px);
+  }
+}
+
+@-ms-keyframes cssload-loading-ani3 {
+  100% {
+    -ms-transform: translate(8px);
+  }
+}
+
+@-webkit-keyframes cssload-loading-ani3 {
+  100% {
+    -webkit-transform: translate(8px);
+  }
+}
+
+@-moz-keyframes cssload-loading-ani3 {
+  100% {
+    -moz-transform: translate(8px);
+  }
+}
+
+
+.others {
+  ::ng-deep {
+    .table {
+      width: 100%;
+      /* Ensures the table fills the container */
+      min-width: 800px;
+
+      /* Minimum width of the table, adjust as needed */
+      ::ng-deep {
+        th {
+          padding: 7px !important;
+        }
+
+        td {
+          padding: 7px !important
+        }
+      }
+    }
+  }
+}
+
+.distance {
+  ::ng-deep {
+    .table {
+      width: 100%;
+      /* Ensures the table fills the container */
+      min-width: 800px;
+      /* Minimum width of the table, adjust as needed */
+
+      th {
+        min-width: 100px;
+        padding: 7px !important;
+      }
+
+      th:first-child {
+        min-width: 150px;
+        /* Increased min-width for the first th */
+      }
+
+      td {
+        padding: 7px !important
+      }
+    }
+
+    .sticky-col {
+      position: sticky;
+      right: 0;
+      background: #ffd6d6 !important;
+      // border: 1px solid #b1b1b1 !important;
+    }
+
+  }
+
+}
+
+.details {
+  position: relative;
+}
+
+select.custom-select {
+  border-radius: 16px;
+  height: 32px;
+}
+
+.bg-info {
+  cursor: pointer;
+  color: #fff;
+}

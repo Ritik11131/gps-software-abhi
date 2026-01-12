@@ -1,0 +1,89 @@
+<div class="card">
+    <div class="card-header">
+        {{labelName}} Subuser
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="subuserForm" (ngSubmit)="submit(subuserForm.value)">
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Login Id</label>
+                    <div class="input-group">
+                        <input formControlName="userName" placeholder="Enter Login Id" (input)="searchData($event)"
+                            aria-describedby="button-addon2" class="form-control ng-valid ng-dirty ng-touched"
+                            type="text" autocomplete="new-username">
+                    </div>
+                    <div class="text-danger" *ngIf="duplicateSubUser == true">
+                        Login Id already taken
+                    </div>
+                    <div *ngIf="subuserForm.get('userName')?.invalid && (subuserForm.get('userName')?.dirty || subuserForm.get('userName')?.touched)"
+                        class="text-danger">
+                        Login Id is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control"
+                            formControlName="password" placeholder="Enter Password" aria-describedby="button-addon2"
+                            autocomplete="new-password" />
+                        <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+                            <i class="fa" [ngClass]="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="subuserForm.get('password')?.invalid && (subuserForm.get('password')?.dirty || subuserForm.get('password')?.touched)"
+                        class="text-danger">
+                        Password is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" placeholder="Enter Email" formControlName="email"
+                        aria-describedby="button-addon2" />
+                    <div *ngIf="subuserForm.get('email')?.invalid && (subuserForm.get('email')?.dirty || subuserForm.get('email')?.touched)"
+                        class="text-danger">
+                        <div *ngIf="subuserForm.get('email')?.errors?.['required']">Email is required</div>
+                        <div *ngIf="subuserForm.get('email')?.errors?.['email']">Invalid email format</div>
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Contact No.</label>
+                    <input type="text" class="form-control" placeholder="Enter Contact No." formControlName="phn"
+                        aria-describedby="button-addon2" />
+                        <div
+                        *ngIf="subuserForm.get('phn')?.invalid && (subuserForm.get('phn')?.dirty || subuserForm.get('phn')?.touched)">
+                        <div  class="text-danger" *ngIf="subuserForm.get('phn')?.errors?.['required']">Contact no is required</div>
+                        <div class="text-danger" *ngIf="subuserForm.get('phn')?.errors?.['pattern']">Invalid phone
+                            number format.</div>
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Status</label>
+                    <ng-select placeholder="Select Status" formControlName="status">
+                        <ng-option *ngFor="let item of statusData" [value]="item?.id">{{ item?.staus }}</ng-option>
+                    </ng-select>
+                    <div *ngIf="subuserForm.get('status')?.invalid && (subuserForm.get('status')?.dirty || subuserForm.get('status')?.touched)"
+                        class="text-danger">
+                        Status is required
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-success" type="submit"
+                        >
+                        {{buttonValue}}
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <br>
+                    <button class="btn btn-danger" (click)="cancel($event)">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

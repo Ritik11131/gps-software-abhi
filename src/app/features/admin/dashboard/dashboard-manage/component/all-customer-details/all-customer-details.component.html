@@ -1,0 +1,168 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="modal-header text-center" style="color: #fff;">
+    Device ({{dealerName}})
+    <div class="close-modal">
+      <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel()"></i>
+  </div>
+</div>
+<div class="modal-body p-20">
+    <div class="card-weight">
+        <div class="widget" style="background-color: #0000ff;" (click)="getSelectReseller(1, 'All')">
+            <div class="margin-b-10">
+                <h2 class="margin-b-5 text-muted">{{resellerData?.All}}</h2>
+                <a class=" add-button">
+                    All
+                </a>
+            </div>
+        </div>
+        <div class="widget" style="background-color: red;" (click)="getSelectReseller(2, 'Stop')">
+            <div class="margin-b-10">
+                <h2 class="margin-b-5 text-muted">{{resellerData?.Stop}}</h2>
+                <a class=" add-button">
+                    Stop
+                </a>
+            </div>
+        </div>
+        <div class="widget" style="background-color: orange;" (click)="getSelectReseller(3, 'Idle')">
+            <div class="margin-b-10">
+                <h2 class="margin-b-5 text-muted">{{resellerData?.Idle}}</h2>
+                <a class=" add-button">
+                    Idle
+                </a>
+            </div>
+        </div>
+        <div class="widget" style="background-color: green;" (click)="getSelectReseller(4, 'Running')">
+            <div class="margin-b-10">
+                <h2 class="margin-b-5 text-muted">{{resellerData?.Running}}</h2>
+                <a class=" add-button">
+                    Running
+                </a>
+            </div>
+        </div>
+        <div class="widget" style="background-color: gray;" (click)="getSelectReseller(5, 'Offline')">
+            <div class="margin-b-10">
+                <h2 class="margin-b-5 text-muted">{{resellerData?.Offline}}</h2>
+                <a class=" add-button">
+                    Offline
+                </a>
+            </div>
+        </div>
+        <div class="widget" style="background-color: gray;" (click)="getSelectReseller(1, 'soon')">
+            <div class="margin-b-10">
+                <h2 class="margin-b-5 text-muted">{{expiredSoon?.length}}</h2>
+                <a class=" add-button">
+                   Exp. Soon
+                </a>
+            </div>
+        </div>
+        <div class="widget" style="background-color: gray;" (click)="getSelectReseller(1,'expired')">
+            <div class="margin-b-10">
+                <h2 class="margin-b-5 text-muted">{{expiredCount?.length}}</h2>
+                <!-- <h2 class="margin-b-5 text-muted">{{resellerData?.NoData}}</h2> -->
+                
+                <a class=" add-button">
+                   Expired
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card" [ngStyle]="{'height': resellerValue?.length > 4  ? '500px' : 'auto'}">
+        <div class="card-header device">
+            <div class="type">
+                {{type}}
+            </div>
+            <div class="excel-part">
+                <button class="btn btn-primary" (click)="exportToExcels()">Excel</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="p-2 bd-highlight">
+                        <span>Items per page: </span>
+                        <select [(ngModel)]="tableSize" (change)="onTableSizeChange($event)" class="custom-select">
+                          <option *ngFor="let size of tableSizes" [value]="size">
+                            {{ size }}
+                          </option>
+                        </select>
+                        <div class="pagination-data" *ngIf="resellerValue && resellerValue?.length > 0">
+                            <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                (pageChange)="onTableDataChange($event)">
+                            </pagination-controls>
+                        </div>
+                      </div>
+                      
+                    <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                        <div class="dataTables_scroll">
+                            <div class="dataTables_scrollBody">
+                                <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                    role="grid" aria-describedby="datatable_info" style="width: 100%" width="100%" #TABLE>
+                                    <thead>
+                                        <tr role="row">
+                                            <th *ngFor="let vehicleHeading of columns">
+                                                <strong>{{vehicleHeading?.title}}</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr *ngFor="let row of resellerValue |  paginate : {
+                                              itemsPerPage: tableSize,
+                                              currentPage: page,
+                                              totalItems: count} let i= index">
+                                              <td><img class="vehicle-image" [src]="onCheckVehicleDevice(row)" /></td>
+                                            <td>
+                                                <a>{{ row?.Customer?.CustomerName }}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Customer?.ContactNumber }}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Device?.InstallationDate | date : "dd-MM-yyyy"}}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.PointValidity?.NextRechargeDue | date : "dd-MM-yyyy"}}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.PointValidity?.CustomerRechargeDue | date : "dd-MM-yyyy"
+                                                    }}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Device?.VehicleNo}}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Device?.DeviceTypeMeta?.Name}}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Device?.DeviceId}}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Device?.DeviceImei}}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Device?.SimPhoneNumber}}</a>
+                                            </td>
+                                            <td>
+                                                <a>{{ row?.Eventdata?.Timestamp | date : 'dd-MM-yyyy'}}</a>
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="text-center"
+                                    *ngIf="resellerValue && resellerValue.length == 0 || resellerValue == null "
+                                    style="width: 100%;">No Data Available</div>
+                            </div>
+                            <div class="pagination-data" *ngIf="resellerValue && resellerValue?.length > 0">
+                                <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                    (pageChange)="onTableDataChange($event)">
+                                </pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

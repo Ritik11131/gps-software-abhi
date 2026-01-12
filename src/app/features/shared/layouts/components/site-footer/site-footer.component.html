@@ -1,0 +1,186 @@
+<footer class="footer-section">
+    <div class=" ">
+        <div class="footer-content">
+            <div>
+                <ul class=" footer-menu">
+                    <li> <a (click)="satellite('hybrid'); toggleBackground('satellite')" 
+                        [ngStyle]="{
+                            'background': isSatelliteActive ? '#ff860c' : 'transparent',
+                            'border-radius': isSatelliteActive ? '50%' : '0px',
+                            'padding': '2px 2px 6px 2px'
+                          }">
+                        <img src="../../../../../../assets/icons/f1.png" alt="" srcset=""></a></li>
+                    <li> <a (click)="toggleTraffic();  toggleBackground('traffic')"
+                        [ngStyle]="{
+                            'background': isTrafficActive ? '#ff860c' : 'transparent',
+                            'border-radius': isTrafficActive ? '50%' : '0px',
+                            'padding': '2px 2px 6px 2px'
+                          }" 
+                        >
+                        <img src="../../../../../../assets/icons/f2.png" alt="" srcset=""></a></li>
+                    <li class="search">
+                        <div>
+                            <img src="../../../../../../assets/icons/minus.png" alt="" srcset="" (click)="decreaseValue()">
+                        </div>
+
+                        <div class="slidecontainer">
+                            <input type="range" min="1" max="20" [value]="sliderValue" class="slider" id="myRange" (input)="sliderChange($event)">
+                        </div>
+                        <div>
+                            <img src="../../../../../../assets/icons/plus.png" alt="" srcset="" (click)="increaseValue()">
+                        </div>
+
+                    </li>
+                    <li>
+                        <div class="search-box-container">
+                            <div class="search-box">
+                                <input type="text" class="pl-2" id="search-input" (input)="change($event)" #searchInput placeholder="Search" />
+                                <span class="fa fa-search search-icon"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- <li *ngIf="selectedVehicleData">
+                        <div class="toggle-class">
+                            <i class="fa"
+                                [ngClass]="{'fa-angle-double-up': !showCardData, 'fa-angle-double-down': showCardData}"
+                                aria-hidden="true" (click)="toggleStatus()"></i>
+                        </div>
+
+                    </li> -->
+                </ul>
+
+            </div>
+            <!-- <img src="../../../../../../assets/icons/fl.png" alt="" srcset=""> -->
+        </div>
+    </div>
+</footer>
+
+<div class="card" [ngClass]="{'collapsed': !showCardData}">
+    <div class="card-content">
+        <div class="card-data" [ngClass]="{'hidden': !showCardData}">
+            <div class="card-value">
+                <div class="widget bg-light">
+                    <div class="row row-table ">
+                        <div class="status-data">
+                            <ul>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">Vehicle No</span>
+                                        <span class="status-value">{{this.selectedVehicleData?.Device?.VehicleNo}}
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">On Duration</span>
+                                        <span class="status-value">{{this.selectedVehicleData?.Eventdata?.Timestamp | date : "dd/MM/yyyy HH:mm:ss"}} </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">Vehicle
+                                            Status</span>
+                                        <span class="status-value">{{fromatTimeValue(this.selectedVehicleData)}} </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">Ododmeter</span>
+                                        <span class="status-value">NA</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-value">
+                <div class="widget bg-light">
+                    <div class="row row-table ">
+                        <div class="status-data">
+                            <ul>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">Today Km</span>
+                                        <span class="status-value">{{this.selectedVehicleData?.Eventdata?.DayDistance }}
+                                            KM </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">AC Status</span>
+                                        <span class="status-value">{{ this.selectedVehicleData?.Peripherial?.AC === null
+                                            ? 'NA' : this.selectedVehicleData?.Peripherial?.AC === 0 ? 'OFF' : 'ON'
+                                            }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">Temperature</span>
+                                        <span class="status-value">{{ this.selectedVehicleData?.Peripherial?.Temp ===
+                                            null ? 'NA' : this.selectedVehicleData?.Peripherial?.Temp === 0 ? 'OFF' :
+                                            'ON' }} </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">GPS Signal</span>
+                                        <span class="status-value">{{ this.selectedVehicleData?.Peripherial?.GpsStatus
+                                            === null ? 'NA' : this.selectedVehicleData?.Peripherial?.GpsStatus === 0 ?
+                                            'OFF' : 'ON' }}</span>
+                                    </a>
+
+
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-value">
+                <div class="widget bg-light">
+                    <div class="row row-table ">
+                        <div class="status-data">
+                            <ul>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">Main Battery</span>
+                                        <span class="status-value">{{this.selectedVehicleData?.Battery?.status}} </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">Internal
+                                            Battery</span>
+                                        <span class="status-value">NA </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">Internal Battery
+                                            Voltage</span>
+                                        <span class="status-value">NA </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="status" style="cursor: pointer;">
+                                        <span class="status-key" style="text-transform: capitalize;">Location</span>
+                                        <span class="status-value">{{this.selectedVehicleData?.Eventdata?.Latitude}},
+                                            {{this.selectedVehicleData?.Eventdata?.Latitude}}</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat this block for each card-value -->
+        </div>
+    </div>
+</div>

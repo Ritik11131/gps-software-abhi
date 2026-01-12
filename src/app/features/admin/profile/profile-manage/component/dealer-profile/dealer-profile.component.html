@@ -1,0 +1,75 @@
+    <div class="card">
+        <div class="card-header">
+            Dealer Profile
+        </div>
+        <div class="card-body">
+            <form [formGroup]="profileForm">
+            <div _ngcontent-ieg-c294="" fxflex="" fxlayout="column" fxlayoutgap="20px"
+                style="flex-direction: column; box-sizing: border-box; display: flex;">
+                <div _ngcontent-ieg-c294="" class="col d-flex justify-content-center"
+                    style="margin-bottom: 20px;">
+                    <img _ngcontent-ieg-c294="" src="assets/images/profile.png"
+                        alt="" class="img-fluid"></div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Name*</label>
+                    <input type="text" formControlName="name" class="form-control" placeholder="Enter Name*"
+                        aria-describedby="button-addon2" />
+                        <div class="text-danger" *ngIf="profileForm.get('name').invalid && profileForm.get('name').touched" >
+                            Name is required
+                          </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Orgnization Name*</label>
+                    <input type="text" formControlName="orgName" class="form-control" placeholder="Enter Org Name*"
+                        aria-describedby="button-addon2" />
+                        <div class="text-danger" *ngIf="profileForm.get('orgName').invalid && profileForm.get('orgName').touched" >
+                            Orgnization Name is required
+                          </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Mobile No.*</label>
+                    <input type="number" formControlName="phn" class="form-control" placeholder="Enter Mobile No.*"
+                        aria-describedby="button-addon2" />
+                          <div class="text-danger" *ngIf="profileForm.get('phn').invalid && profileForm.get('phn').touched" >
+                            Mobile No. is required
+                          </div>
+                    
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email*</label>
+                    <input type="email" formControlName="email" class="form-control" placeholder="Enter Email"
+                        aria-describedby="button-addon2" />
+                          <div class="text-danger" *ngIf="profileForm.get('email').invalid && profileForm.get('email').touched" >
+                            Email is required
+                          </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="form-label">Address</label>
+                    <textarea  formControlName="address" class="form-control" placeholder="Enter Address"
+                        id="exampleFormControlTextarea1" ></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-primary mt-2" (click)="submitProfile(profileForm.value)" type="submit" [disabled]="!profileForm.value.name || !profileForm.value.orgName || !profileForm.value.email || !profileForm.value.phn">
+                        Submit
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger mt-2" (click)="cancelProfile()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>

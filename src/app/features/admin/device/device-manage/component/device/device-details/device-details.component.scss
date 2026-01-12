@@ -1,0 +1,31 @@
+.icon-container {
+    display: grid;
+    grid-template-columns: repeat(14, 45px);
+    gap: 10px;
+
+    &.add {
+        grid-template-columns: repeat(7, 45px); 
+    }
+}
+
+.icon-detail img {
+    width: 50px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.icon-detail img.selected {
+    filter: brightness(0) saturate(100%) invert(65%) sepia(72%) saturate(558%) hue-rotate(356deg) brightness(96%) contrast(105%);
+}
+
+
+::ng-deep {
+    .mat-form-field-infix {
+        border-top: 7px solid rgba(0, 0, 0, 0);
+    }
+}
+
+.mat-form-field {
+    width: 100%;
+}

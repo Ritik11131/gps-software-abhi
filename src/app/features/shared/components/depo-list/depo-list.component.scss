@@ -1,0 +1,65 @@
+@import "src/styles/colors";
+@import "src/styles/mixins/breakpoints";
+
+::ng-deep {
+  .alert {
+    padding-left: 0px;
+  }
+  .tab-content {
+    padding: 0px !important;
+  }
+}
+
+.banner-height {
+  img {
+    height: 125px;
+    object-fit: cover;
+    @include breakpoint-range($max: sm) {
+      height: 150px;
+    }
+  }
+}
+a {
+  color: var(--mx-link-color) !important;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline !important;
+  }
+}
+.m-top {
+  @include breakpoint-range($min: md) {
+    margin-top: 15px;
+  }
+}
+// ._card-container {
+//   ::ng-deep {
+//     tabset {
+//       ul {
+//         li {
+//           &:nth-child(2) {
+//             border-left: 1px solid $color-gray;
+//           }
+//           &:nth-child(5) {
+//             border-right: 1px solid $color-gray;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+.form-control {
+  &.ng-invalid {
+    color: unset;
+    border-color: unset;
+    border: 1px solid #b1b1b1;
+    &.ng-touched {
+      color: #ce0e2d;
+      border-color: #ce0e2d;
+    }
+  }
+}
+@media (max-width: 766px) and (min-width: 578px) {
+  .search-button {
+    padding-top: 5%;
+  }
+}

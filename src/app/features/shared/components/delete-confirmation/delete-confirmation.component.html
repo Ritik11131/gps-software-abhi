@@ -1,0 +1,46 @@
+<div class="modal-header text-center" style="color: #fff;">
+  {{title}}
+  <div class="close-modal">
+    <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel()"></i>
+  </div>
+</div>
+<div class="modal-body p-20">
+  <div class="_card white-bg">
+    <div class="row">
+      <div class="col-md-12 mb-2">
+        <h2 class="text-center" [innerHTML]="content"></h2>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="form-label">Password</label>
+        <div class="input-group mb-3">
+          <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control" (keyup)="searchData($event)"
+            placeholder="Enter Password" aria-describedby="button-addon2"
+            autocomplete="new-password" />
+          <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+            <i class="fa" [ngClass]="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}"></i>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="validateMessage !== 'Success'" class="text-danger">
+        {{ validateMessage }}
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="row">
+      <div class="col-md-6">
+        <button class="btn btn-success" (click)="ok()" [disabled]="validateMessage !== 'Success'">
+          {{ primaryActionLabel }}
+        </button>
+      </div>
+      <div class="col-md-6">
+        <button class="btn btn-danger" (click)="cancel()">
+          {{ secondaryActionLabel }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+.main-content {
+  padding: 18px 13px 0px 13px;
+  height: 90vh;
+}
+
+img.vehicle-image {
+  max-width: 20px !important;
+}
+
+.icon-red {
+  color: red !important;
+}
+
+.icon-green {
+  color: green !important;
+}
+.card-header.device {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.search-form {
+  float: right;
+}
+
+.search-input {
+  border-color:#2f387c !important;
+}
+
+.search-form .btn-search {
+  color: #fff;
+}
+.search-form {
+   margin-left: 0px !important;
+}

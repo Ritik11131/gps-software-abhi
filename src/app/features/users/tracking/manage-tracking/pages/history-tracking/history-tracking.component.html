@@ -1,0 +1,132 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<section class="main-content history">
+  <div class="row">
+    <div class="col-md-3">
+      <form [formGroup]="historyForm">
+        <div class="row mb-2">
+          <div class="col-md-6 mb-2">
+            <label for="exampleInputEmail1" class="form-label">Device</label>
+            <ng-container>
+              <ng-select placeholder="Select Device" formControlName="deviceId" (change)="selectVehicle($event)">
+                <ng-option *ngFor="let item of vehicleData" [value]="item?.Device?.Id">{{
+                  item?.Device?.VehicleNo
+                  }}</ng-option>
+              </ng-select>
+            </ng-container>
+          </div>
+          <ng-container *ngIf="timeformate">
+            <div class="col-md-6 mb-2">
+              <label for="exampleInputEmail1" class="form-label">Time Format</label>
+              <ng-select placeholder="Select Time Duration" formControlName="timeformat" (change)="timecheck($event)">
+                <ng-option *ngFor="let item of selectDate" [value]="item?.dateValue">
+                  {{item?.dateValue}}
+                </ng-option>
+              </ng-select>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="isOverSpeed">
+            <div class="col-md-12 mb-2">
+              <input type="text" class="form-control" [(ngModel)]="overSpeedvalue" [ngModelOptions]="{standalone: true}"
+                placeholder="Speed value" />
+            </div>
+          </ng-container>
+          <ng-container *ngIf="customDate">
+            <div class="col-md-6 mb-2">
+              <label for="exampleInputEmail1" class="form-label">From Date</label>
+              <mat-form-field>
+                <input matInput [ngxMatDatetimePicker]="picker1" formControlName="fromDate">
+                <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>
+                <ngx-mat-datetime-picker [showSeconds]="true" [enableMeridian]="true" #picker1>
+                </ngx-mat-datetime-picker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6 mb-2">
+              <label for="exampleInputEmail1" class="form-label">To Date</label>
+              <mat-form-field>
+                <input matInput [ngxMatDatetimePicker]="picker2" formControlName="toDate">
+                <mat-datepicker-toggle matSuffix [for]="$any(picker2)"></mat-datepicker-toggle>
+                <ngx-mat-datetime-picker [showSeconds]="true" [enableMeridian]="true" #picker2>
+                </ngx-mat-datetime-picker>
+              </mat-form-field>
+            </div>
+          </ng-container>
+          <div class="col-md-12 mt-2">
+            <button class="btn btn-primary" [disabled]="!historyForm.valid || isPolylineUpdating" (click)="submit('history',historyForm.value)">Show
+              Map</button>
+          </div>
+        </div>
+        <div class="row row-data" *ngIf="historylist && historylist?.length> 0">
+          <div class="col-md-6">
+            <div class="widget total-data">
+              <div class="row row-table ">
+                <div class="margin-b-30" style=" display: grid;">
+                  <span class="margin-b-5" style="font-weight: 600;">Vehicle No</span>
+                  {{historyData?.Vehicle?.VehicleNo}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="widget total-data">
+              <div class="row row-table ">
+                <div class="margin-b-30" style="margin-bottom: 0px !important;">
+                  <span class="margin-b-2" style="font-weight: 600;">Top Speed (Km/H)</span>
+                  {{topSpeed || 0}}Km/h
+                
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="row">
+        <div *ngIf="isLoading" class="loading-spinner"></div>
+        <div class="col-md-12" *ngIf="!isLoading">
+          <trip-report [tripReport]="tripReport" [tripType]="tripType" (addressSelected)="handleAddressSelection($event)"></trip-report>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="card">
+        <div class="">
+          <div class="map-container">
+            <div id="histroyTrack" style="height: 626px !important;width: 100%;"></div>
+          </div>
+          <div class="row row-data mt-2" *ngIf="historylist && historylist?.length> 0">
+            <div class="col-md-12">
+              <div class="controls">
+                <div class="speed-select">
+                  <ng-select placeholder="Select Speed" [(ngModel)]="speedMultipliers"  (change)="changespeed($event)">
+                    <ng-option *ngFor="let item of speed" [value]="item?.id">{{
+                      item?.speed
+                      }}</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slider-part" *ngIf="historylist && historylist?.length > 0">
+        <div class="play-button">
+          <button (click)="togglePlayPause($event)" class="button-play">
+            <ng-container *ngIf="isPlaying; else playIcon">
+              <i class="fa fa-pause" aria-hidden="true"></i>
+            </ng-container>
+            <ng-template #playIcon>
+              <i class="fa fa-play" aria-hidden="true"></i>
+            </ng-template>
+          </button>
+        </div>
+        <div class="slider-vehicle">
+          <history-slider-control *ngIf="historylist && historylist?.length > 0" [isPlay]="isPlaying"
+            [sliderValue]="startIndex" (sliderValueevent)="getslidervalue($event)" (isPlayed)="togglePlayPause($event)">
+          </history-slider-control>
+        </div>
+        <div class="total-distance">
+        <span style="font-weight: bold;">Distance</span>:  {{totaldistanceValue}} Km
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

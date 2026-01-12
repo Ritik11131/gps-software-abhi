@@ -1,0 +1,32 @@
+@import '/src/styles/colors';
+@import '/src/styles/mixins/breakpoints';
+@import '/src/styles/card';
+@import '/src/styles/table';
+
+
+.buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.btn-transparent {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+.p-lr-0
+{
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+.footer {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+
+    .btn {
+        margin: 0 10px;
+    }
+}

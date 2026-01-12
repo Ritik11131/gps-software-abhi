@@ -1,0 +1,162 @@
+<!-- <app-loader *ngIf="spinnerLoading"></app-loader> -->
+<div class="container">
+
+
+  <!-- <xchange-breadcrumb [breadcrumbItems]="breadcrumbItems"></xchange-breadcrumb> -->
+  <div class="banner-height mt-4 mb-4">
+    <img class="rounded w-100" [src]="
+            '.././../../../../assets/images/1.jpg'
+          " alt="" />
+  </div>
+  <h2 class="text-center mb-4">Manage Company</h2>
+  <div class="mb-4">
+   
+  </div>
+  <div class="_card-container">
+    <div class="row mb-2">
+      <div class="col-md-12">
+        <app-alert [alertData]="alertData" [alertType]="alertType" *ngIf="alertTrigger ">
+        </app-alert>
+      </div>
+    </div>
+    <div class="row">
+      <h4>All Company</h4>
+      <div class="col-md-3 col-sm-6">
+        <ng-select placeholder="#Select By"   (change)="onSearchBY($event)">
+          <ng-option *ngFor="let item of searchByCompany" [value]="item?.id" >{{
+            item?.title
+          }}</ng-option>
+        </ng-select>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <sky-search-control [isGlobalSearchEnabled]="false"    (input)="onSearchQuotes($event)" placeholder="Search "></sky-search-control>
+
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <ng-select placeholder="#Search By Status"  (change)="onStatusChange($event)">
+          <ng-option *ngFor="let item of status" [value]="item?.id">{{
+            item?.title
+          }}</ng-option>
+        </ng-select>
+      </div>
+      <div class="col-md-3 col-sm-2">
+        <ng-select placeholder="#Search By filter">
+          <ng-option *ngFor="let item of limit" [value]="item?.id">{{
+            item?.title
+          }}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 col-lg-4 d-grid align-items-end mb-3 mt-2">
+      </div>
+      <div class="col-md-6 col-lg-6 d-grid align-items-right mb-3 userqty">
+        
+      </div>
+      <div class="col-md-2 col-lg-2 d-grid align-items-end mt-2">
+        <button class="btn btn-primary w-100" routerLink="/company/add-new-user">
+          ADD NEW COMPANY
+        </button>
+      </div>
+    </div>
+    <div class="mt-4">
+      <ngx-table [configuration]="configuration" [data]="
+          allquoteData
+            | paginate
+              : {
+                  id: 'pg1',
+                  itemsPerPage: tableItemsSize,
+                  currentPage: pageIndex,
+                  totalItems: totlRecords
+                }
+        "[columns]="columns">
+        <!-- [summaryTemplate]="summaryTemplateRef" -->
+        <ng-template let-row let-index="index">
+          <td>
+            <a [routerLink]="['/commercial/quotes/quote-detail/']">{{ row?.CompanyName }}</a>
+          </td>
+          <td>
+            {{ row?.MobileNumber }}
+          </td>
+          <td>
+            {{ row?.ContactPerson }}
+          </td>
+          <td>
+            {{ row?.Address }}
+          </td>
+          <td>
+            {{ row?.status }}
+            <!-- {{ row?.expirationTime | date : "MM/dd/yyyy" }} -->
+          </td>
+          <td>
+            <div class="row">
+              <div class="col-md-6"> 
+                <img class="first_img"  src="../../../../../assets/icons/edit.png" width="40px">
+              </div>
+              <div class="col-md-6 "> 
+                <img class="sec_img" (click)="deleteComp(row?.Company_id,row?.CompanyName)"
+                  src="../../../../../assets/icons/delete.png" width="40px"></div>
+            </div>
+          </td>
+        </ng-template>
+      </ngx-table>
+      <!-- <ng-template
+          #summaryTemplateRef
+          let-total="total"
+          let-limit="limit"
+          let-page="page"
+        >
+          <th colspan="8">
+            <span class="mb-2">showing:{{ page }} to {{ total }} </span>
+            <span class="mb-2"> of entries: {{ total }} </span>
+          </th>
+        </ng-template> -->
+    </div>
+  </div>
+  <div class="row mb-4 mt-4">
+    <div class="d-flex justify-content-center">
+      <pagination-controls *ngIf="totlRecords > 0" id="pg1" [maxSize]="10" [responsive]="true" [nextLabel]="''"
+        [previousLabel]="''" (pageChange)="onTablePageChange($event)">
+      </pagination-controls>
+    </div>
+    <div class="col-md-12">
+        <p class="text-center mb-4">
+          {{ startValue > 0 ? startValue : 0 }} -
+          {{
+            this.lastValue > this.allquoteData.length ? this.allquoteData.length : this.lastValue
+          }}
+          OF {{ allquoteData.length > 0 ? allquoteData.length : 0 }} Companies
+        </p>
+      </div>
+  </div>
+</div>
+
+<!-- Remove Document Popup -->
+<!-- <ng-template #template3>
+    <div class="modal-header text-center">
+      <h4 class="modal-title f-w w-100">{{ userStatus }} User</h4>
+      <button
+        type="button"
+        class="btn-close close pull-right"
+        aria-label="Close"
+        (click)="modalRef!.hide()"
+      >
+        <span aria-hidden="true" class="visually-hidden">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body p-20">
+      <div class="text-center">
+        <p>
+          Are you sure you want to {{ userStatus }} this user? {{ userEmail }}
+        </p>
+        <div class="mt-4 mb-4">
+          <button class="btn btn-primary disable-user" (click)="deleteUser()">
+            {{ userStatus }} User
+          </button>
+          <button class="btn btn-outline-secondary" (click)="modalRef!.hide()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template> -->

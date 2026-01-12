@@ -1,0 +1,312 @@
+<section class="admin-content">
+    <app-loader *ngIf="spinnerLoading"></app-loader>
+    <div class="card">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label class="form-label">Imei</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" [(ngModel)]="imei" #imeiField="ngModel" name="imei"
+                            placeholder="Enter Imei" aria-describedby="button-addon2" required />
+                    </div>
+                    <div *ngIf="isSubmitted && !imei" class="text-danger">
+                        Imei is required
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Date</label>
+                    <div class="input-group">
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="devicelog" [(ngModel)]="selectedDate" name="selectedDate" #dateField="ngModel" required>
+                            <mat-datepicker-toggle matSuffix [for]="devicelog"></mat-datepicker-toggle>
+                            <mat-datepicker #devicelog></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="isSubmitted && !selectedDate" class="text-danger">
+                        Date is required
+                    </div>
+                    
+                </div>
+
+                <div class="col-md-3 mt-2">
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button class="btn btn-success" type="submit" (click)="submit()"
+                               >
+                                Submit
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-danger" (click)="cancel()">
+                                reset
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    Heartbeat Data
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                                    <div class="dataTables_scroll">
+                                        <div class="dataTables_scrollBody">
+                                            <table id="datatable"
+                                                class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                                role="grid" aria-describedby="datatable_info" style="width: 100%"
+                                                width="100%">
+                                                <thead>
+                                                    <tr role="row">
+                                                        <th *ngFor="let vehicleHeading of heartData">
+                                                            <strong>{{vehicleHeading?.title}}</strong>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody *ngIf="heartBeatData">
+                                                    <tr>
+                                                        <td>
+                                                            <a>{{ heartBeatData?.creation_time | date : "dd/MM/yyyy
+                                                                HH:mm:ss" }}</a>
+                                                        </td>
+
+                                                        <td>
+                                                            <a>{{heartBeatData?.gps}}</a>
+                                                        </td>
+
+                                                        <td>
+                                                            <a>{{ heartBeatData?.power }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{heartBeatData?.acc}}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ heartBeatData?.voltage}}</a>
+
+                                                        </td>
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="text-center"
+                                                *ngIf="heartBeatData && heartBeatData.length == 0 || heartBeatData == null "
+                                                style="width: 100%;">No Data Available</div>
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    Current Device Data
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                                    <div class="dataTables_scroll">
+                                        <div class="dataTables_scrollBody">
+                                            <table id="datatable"
+                                                class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                                role="grid" aria-describedby="datatable_info" style="width: 100%"
+                                                width="100%">
+                                                <thead>
+                                                    <tr role="row">
+                                                        <th *ngFor="let vehicleHeading of currentData">
+                                                            <strong>{{vehicleHeading?.title}}</strong>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr *ngFor="let data of currentDeviceData |  paginate : {
+                                                            itemsPerPage: tableSize,
+                                                            currentPage: page,
+                                                            totalItems: count};">
+
+                                                        <td>
+                                                            <a>{{deviceLogList?.device_imei}}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{deviceLogList?.vehicle_no}}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.newcreationtime | date : "dd/MM/yyyy HH:mm:ss"
+                                                                }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.gps_status }}</a>
+                                                        </td>
+
+                                                        <td>
+                                                            <a>{{ data.speed}}</a>
+
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.di1 }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.di2 }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.epc }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.epv }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.ipv }}</a>
+                                                        </td>
+
+                                                        <td>
+                                                            <a>{{ data.sos }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.latitude }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.longitude }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a><i (click)="openDeviceLogMap(data)" class="fa fa-eye cursor-pointer" aria-hidden="true"></i></a>
+                                                        </td>
+
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="text-center"
+                                                *ngIf="currentDeviceData && currentDeviceData.length == 0 || currentDeviceData == null "
+                                                style="width: 100%;">No Data Available</div>
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    Device Log
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                                    <div class="dataTables_scroll">
+                                        <div class="dataTables_scrollBody">
+                                            <table id="datatable"
+                                                class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                                role="grid" aria-describedby="datatable_info" style="width: 100%"
+                                                width="100%">
+                                                <thead>
+                                                    <tr role="row">
+                                                        <th *ngFor="let vehicleHeading of columns">
+                                                            <strong>{{vehicleHeading?.title}}</strong>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr *ngFor="let data of deviceLogList?.subData |  paginate : {
+                                                            itemsPerPage: tableSize,
+                                                            currentPage: page,
+                                                            totalItems: count};">
+
+                                                        <td>
+                                                            <a>{{deviceLogList?.device_imei}}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{deviceLogList?.vehicle_no}}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.newcreationtime | date : "dd/MM/yyyy HH:mm:ss"
+                                                                }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.gps_status }}</a>
+                                                        </td>
+
+                                                        <td>
+                                                            <a>{{ data.speed}}</a>
+
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.di1 }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.di2 }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.epc }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.epv }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.ipv }}</a>
+                                                        </td>
+
+                                                        <td>
+                                                            <a>{{ data.sos }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.latitude }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a>{{ data.longitude }}</a>
+                                                        </td>
+                                                        <td>
+                                                            <a><i (click)="openDeviceLogMap(data)" class="fa fa-eye cursor-pointer" aria-hidden="true"></i></a>
+                                                        </td>
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="text-center"
+                                                *ngIf="deviceLogList?.subData && deviceLogList?.subData.length == 0 || deviceLogList?.subData == null "
+                                                style="width: 100%;">No Data Available</div>
+                                        </div>
+                                        <div class="pagination-data"
+                                            *ngIf="deviceLogList?.subData && deviceLogList?.subData?.length > 0">
+                                            <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                                (pageChange)="onTableDataChange($event)">
+                                            </pagination-controls>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

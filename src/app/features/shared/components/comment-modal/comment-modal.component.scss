@@ -1,0 +1,21 @@
+
+.full-btns{
+    justify-items: center;
+    justify-content: center;
+    .btn{
+        width: 100%;
+    }
+}
+
+.alert-close{
+    cursor: pointer;
+    float: right;
+    background: transparent; 
+    border: none; 
+    font-size: 21px ; 
+    font-weight: 600;
+    line-height: 1;
+    color: #000; 
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.2;
+}

@@ -1,0 +1,91 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="card">
+  <div class="card-header">
+    Add Geo Fance
+  </div>
+  <div class="card-body" style="width: 100%;">
+    <form [formGroup]="geoFanceForm">
+      <div class="row">
+        <div class="col-md-6  mb-3">
+          <label for="exampleInputEmail1" class="form-label">Select Vehicle</label>
+          <ng-select placeholder="Select Vehicle" formControlName="geofancename">
+            <ng-option *ngFor="let item of vehicleData" [value]="item?.text">{{ item?.text
+                }}</ng-option>
+        </ng-select>
+          <div
+            *ngIf="geoFanceForm.get('geofancename')?.invalid && (geoFanceForm.get('geofancename')?.dirty || geoFanceForm.get('geofancename')?.touched)"
+            class="text-danger">
+            Vehicle is required
+        </div>
+        </div>
+        <div class="col-md-6  mb-3">
+          <label for="exampleInputEmail1" class="form-label"> Latitude/Longitude</label>
+          <div class="input-group">
+            <textarea class="form-control" formControlName="cornerValue" placeholder="Enter Lat/lng"
+              id="exampleFormControlTextarea1" rows="4">{{ geoFanceForm.get('cornerValue')?.value }}</textarea>
+            </div>
+            <div
+            *ngIf="geoFanceForm.get('cornerValue')?.invalid && (geoFanceForm.get('cornerValue')?.dirty || geoFanceForm.get('cornerValue')?.touched)"
+            class="text-danger">
+            Latitude/Longitude is required
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <button class="btn btn-success" (click)="submit(geoFanceForm.value)">{{button}} Record</button>
+        </div>
+        <div class="col-md-6">
+          <button class="btn btn-danger" (click)="cancel()">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div class="card-header">
+    Geofance List
+  </div>
+  <div class="card-body geo-list">
+    <div class="row">
+      <div class="col-md-12">
+        <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+          <div class="dataTables_scroll">
+            <div class="dataTables_scrollBody"
+              [ngClass]="geofanceList && geofanceList?.length > 6 ? 'geofence-data' : ''">
+
+              <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                aria-describedby="datatable_info" style="width: 100%" width="100%">
+                <thead>
+                  <tr role="row">
+                    <th *ngFor="let vehicleHeading of columns">
+                      <strong>{{vehicleHeading?.title}}</strong>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let row of geofanceList">
+                    <td>
+                      <a style="cursor: pointer;color: rgb(140, 140, 238);" (click)="onEditPolygun(row)">{{ row?.Name
+                        }}</a>
+                    </td>
+                    <td>
+                      <a style="cursor: pointer;" (click)="deletePolygun(row)"><i class="fa fa-trash"
+                          aria-hidden="true"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="text-center" *ngIf="geofanceList && geofanceList.length == 0 || geofanceList == null"
+                style="width: 100%;">No Data Available</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

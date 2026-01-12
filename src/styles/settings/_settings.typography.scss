@@ -1,0 +1,131 @@
+/* ==========================================================================
+   #TYPOGRAPHY-VARIABLES
+   ========================================================================== */
+
+$base-font-size: 16px;
+$letter-spacing: 0.1em;
+$font-base-path: '/assets/fonts' !default;
+
+// Open Sans
+@font-face {
+	font-family: 'Open Sans';
+	src: url('#{$font-base-path}/open-sans/OpenSans-Regular.otf')
+			format('opentype'),
+		url('#{$font-base-path}/open-sans/OpenSans-Regular.otf') format('opentype');
+	font-weight: 400;
+	font-style: normal;
+	font-display: fallback;
+}
+@font-face {
+	font-family: 'Open Sans';
+	src: url('#{$font-base-path}/open-sans/OpenSans-SemiBold.otf')
+			format('opentype'),
+		url('#{$font-base-path}/open-sans/OpenSans-SemiBold.otf') format('opentype');
+	font-weight: 600;
+	font-style: normal;
+	font-display: fallback;
+}
+
+@font-face {
+	font-family: 'Open Sans';
+	src: url('#{$font-base-path}/open-sans/OpenSans-SemiBoldItalic.otf')
+			format('opentype'),
+		url('#{$font-base-path}/open-sans/OpenSans-SemiBoldItalic.otf')
+			format('opentype');
+	font-weight: 600;
+	font-style: italic;
+	font-display: fallback;
+}
+
+@font-face {
+	font-family: 'Open Sans';
+	src: url('#{$font-base-path}/open-sans/OpenSans-Bold.otf') format('opentype'),
+		url('#{$font-base-path}/open-sans/OpenSans-Bold.otf') format('opentype');
+	font-weight: 700;
+	font-style: normal;
+	font-display: fallback;
+}
+
+@font-face {
+	font-family: 'Open Sans';
+	src: url('#{$font-base-path}/open-sans/OpenSans-Light.otf') format('opentype'),
+		url('#{$font-base-path}/open-sans/OpenSans-Light.otf') format('opentype');
+	font-weight: 300;
+	font-style: normal;
+	font-display: fallback;
+}
+
+@font-face {
+	font-family: 'Open Sans';
+	src: url('#{$font-base-path}/open-sans/open-sans-light-italic.webfont.woff2')
+			format('woff2'),
+		url('#{$font-base-path}/open-sans/open-sans-light-italic.webfont.woff')
+			format('woff');
+	font-weight: 300;
+	font-style: italic;
+	font-display: fallback;
+}
+
+// Stilson
+
+@font-face {
+	font-family: 'Stilson';
+	src: url('#{$font-base-path}/stilson/Stilson-Italic.otf') format('opentype'),
+		url('#{$font-base-path}/stilson/Stilson-Italic.otf') format('opentype');
+	font-weight: 400;
+	font-style: italic;
+	font-display: fallback;
+}
+
+@font-face {
+	font-family: 'Stilson';
+	src: url('#{$font-base-path}/stilson/Stilson-Regular.otf') format('opentype'),
+		url('#{$font-base-path}/stilson/Stilson-Regular.otf') format('opentype');
+	font-weight: 400;
+	font-style: normal;
+	font-display: fallback;
+}
+
+@font-face {
+	font-family: 'Stilson';
+	src: url('#{$font-base-path}/stilson/Stilson-BoldItalic.otf')
+			format('opentype'),
+		url('#{$font-base-path}/stilson/Stilson-BoldItalic.otf') format('opentype');
+	font-weight: 700;
+	font-style: italic;
+	font-display: fallback;
+}
+
+@font-face {
+	font-family: 'Stilson';
+	src: url('#{$font-base-path}/stilson/Stilson-Bold.otf') format('opentype'),
+		url('#{$font-base-path}/stilson/Stilson-Bold.otf') format('opentype');
+	font-weight: 700;
+	font-style: normal;
+	font-display: fallback;
+}
+
+// Current Version: 1.0
+// update version number in query string
+
+@font-face {
+	font-family: 'karastan-icon';
+	src: url('#{$font-base-path}/icon/karastan-icon-.woff2?v1.0.2')
+			format('woff2'),
+		url('#{$font-base-path}/icon/karastan-icon-.woff?v1.0.2') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+
+$font-open-sans: 'Open Sans', Helvetica, sans-serif;
+$font-stilson: 'Stilson', serif;
+$font-helvetica: Helvetica, sans-serif;
+$font-karastan-icons: 'karastan-icon';
+
+$font-families: (
+	'open-sans': $font-open-sans,
+	'stilson': $font-stilson,
+	'helvetica': $font-helvetica,
+);
+$font-karastan-icons: 'karastan-icon';

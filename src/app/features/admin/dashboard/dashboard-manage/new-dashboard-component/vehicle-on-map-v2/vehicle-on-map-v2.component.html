@@ -1,0 +1,63 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+
+<section class="dashboard-page">
+    <div class="map-container">
+        <div class="scrollable-container">
+            <div id="admin_canvas"></div>
+            <div class="live">
+                <div id="over_map" class="live-details" *ngIf="liveTime">
+                   <div fxflex="33" fxlayoutalign="start center"
+                      style="margin-right: 1px; flex: 1 1 33%; box-sizing: border-box; place-content: center flex-start; align-items: center; flex-direction: row; display: flex; max-width: 33%;">
+                      <b>Refresh In: </b> {{counter}}s</div>
+                   <div fxflex="33" fxlayoutalign="center end"
+                      style="margin-right: 1px; flex: 1 1 33%; box-sizing: border-box; place-content: flex-end center; align-items: flex-end; flex-direction: row; display: flex; max-width: 33%;">
+                      <b>{{liveData?.Device?.VehicleNo}}</b>
+                   </div>
+                   <div fxflex="33" fxlayoutalign="end end"
+                      style="flex: 1 1 33%; box-sizing: border-box; place-content: flex-end; align-items: flex-end; flex-direction: row; display: flex; max-width: 33%;">
+                      <a (click)="closeTab($event)"  style="cursor: pointer;"><i class="fa fa-close"></i></a>
+                   </div>
+                </div>
+             </div>
+            <div class="middle-part" [ngStyle]="{'display': vehicleListshow ? 'block' : 'none'}">
+                <div class="vehicle-list">
+                    <new-vehicle-list [vehicleData]="vehicleData" [vehicleDatacount]="vehicleDatacount" (onSelectCustomer)="selectCustomer($event)" (selectVehicle)="selectVehicle($event)" (selectVehicleConfirm)="selectVehiclesPlot($event)"></new-vehicle-list>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- <app-loader *ngIf="spinnerLoading"></app-loader> -->
+<!-- 
+<section class="dashboard-page">
+   <div class="map-container">
+      <div id="map_canvas"></div>
+      <div class="live">
+         <div id="over_map" class="live-details" *ngIf="liveTime">
+            <div fxflex="33" fxlayoutalign="start center"
+               style="margin-right: 1px; flex: 1 1 33%; box-sizing: border-box; place-content: center flex-start; align-items: center; flex-direction: row; display: flex; max-width: 33%;">
+               <b>Refresh In: </b> {{counter}}s
+            </div>
+            <div fxflex="33" fxlayoutalign="center end"
+               style="margin-right: 1px; flex: 1 1 33%; box-sizing: border-box; place-content: flex-end center; align-items: flex-end; flex-direction: row; display: flex; max-width: 33%;">
+               <b>{{liveData?.Device?.VehicleNo}}</b>
+            </div>
+            <div fxflex="33" fxlayoutalign="end end"
+               style="flex: 1 1 33%; box-sizing: border-box; place-content: flex-end; align-items: flex-end; flex-direction: row; display: flex; max-width: 33%;">
+               <a  style="cursor: pointer;"><i class="fa fa-close"></i></a>
+            </div>
+         </div>
+      </div>
+      <div class="main-content">
+         <div class="vehicle-list" *ngIf="vehicleListshow">
+            <vehicle-list  [vehicleData]="vehicleData" [vehicleDatacount]="vehicleDatacount"
+            (onSelectCustomer)="selectCustomer($event)" (selectVehicle)="selectVehicle($event)" (selectVehicleConfirm)="selectVehiclesPlot($event)"
+               (selectVehicleConfirm)="selectVehiclesPlot($event)"></vehicle-list>
+         </div>        
+      </div>
+   </div>
+</section> -->
+<!-- <site-footer class="mt-2" #footerData (sliderValueevent)="setZoom($event)" (changeMap)="changeMapType($event)"
+   (trafficeValue)="toggleTrafficMap($event)" (addressValue)="getAddressData($event)"></site-footer> -->

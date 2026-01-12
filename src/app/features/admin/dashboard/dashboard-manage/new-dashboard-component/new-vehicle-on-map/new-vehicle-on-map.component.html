@@ -1,0 +1,29 @@
+<section class="dashboard-page">
+    <div class="map-container">
+        <div class="scrollable-container">
+            <div id="new-map"></div>
+            <div class="live">
+
+                <div id="over_map" class="live-details" *ngIf="liveTime">
+                   <div fxflex="33" fxlayoutalign="start center"
+                      style="margin-right: 1px; flex: 1 1 33%; box-sizing: border-box; place-content: center flex-start; align-items: center; flex-direction: row; display: flex; max-width: 33%;">
+                      <b>Refresh In: </b> {{counter}}s</div>
+                   <div fxflex="33" fxlayoutalign="center end"
+                      style="margin-right: 1px; flex: 1 1 33%; box-sizing: border-box; place-content: flex-end center; align-items: flex-end; flex-direction: row; display: flex; max-width: 33%;">
+                      <b>{{liveData?.Device?.VehicleNo}}</b>
+                   </div>
+                   <div fxflex="33" fxlayoutalign="end end"
+                      style="flex: 1 1 33%; box-sizing: border-box; place-content: flex-end; align-items: flex-end; flex-direction: row; display: flex; max-width: 33%;">
+                      <a (click)="closeTab($event)"  style="cursor: pointer;"><i class="fa fa-close"></i></a>
+                   </div>
+                </div>
+             </div>
+            <div class="middle-part" [ngStyle]="{'display': vehicleListshow ? 'block' : 'none'}">
+                <div class="vehicle-list">
+                    <!-- <customer (onConfirm)="confirm($event)"></customer> -->
+                    <new-vehicle-list [vehicleData]="vehicleData" [vehicleDatacount]="vehicleDatacount" (onSelectCustomer)="selectCustomer($event)" (selectVehicle)="selectVehicle($event)" (selectVehicleConfirm)="selectVehiclesPlot($event)"></new-vehicle-list>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

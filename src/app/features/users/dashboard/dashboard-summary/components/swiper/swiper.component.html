@@ -1,0 +1,26 @@
+<div class="customer-messages-carousel mb-1">
+    <owl-carousel-o
+      [options]="sliderOptionsForStatus"
+      #owlCarousel
+    >
+      <ng-template
+        carouselSlide
+        *ngFor="let alert of status"
+      >
+      <div class="alert-content" (click)="filterData(alert)">
+        <ul style="text-align: center;">
+          <li class="swiper-part">
+            <div class="alert-img"  [style.color]="alert.color">
+              {{alert.label}}
+            </div>
+            <div class="count" [style.background-color]="alert.class">
+              <span class="vehicle-status">{{alert?.status}}</span>
+            </div>
+          </li>
+          <!-- <li>
+          </li> -->
+        </ul>
+      </div>
+      </ng-template>
+    </owl-carousel-o>
+  </div>

@@ -1,0 +1,154 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="filter-part">
+    <form [formGroup]="reportForm">
+        <div class="row">
+            <div class="col-md-2">
+                <label class="form-label">Dealer/Reseller</label>
+                <ng-select placeholder="Select Dealer" formControlName="dealer" (change)="onDealerSelect($event)">
+                    <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                </ng-select>
+                <div *ngIf="reportForm.get('dealer')?.invalid && (reportForm.get('dealer')?.dirty || reportForm.get('dealer')?.touched)"
+                    class="text-danger">
+                    Dealer/Reseller is required
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Customer</label>
+                <ng-select placeholder="Select Customer" formControlName="customer" (change)="onCustomerSelect($event)">
+                    <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
+                </ng-select>
+                <div *ngIf="reportForm.get('customer')?.invalid && (reportForm.get('customer')?.dirty || reportForm.get('customer')?.touched)"
+                    class="text-danger">
+                    Customer is required
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Report</label>
+                <ng-select placeholder="Select Report" (change)="onItemSelect($event)" formControlName="filtername">
+                    <ng-option *ngFor="let item of bulk" [value]=" item?.title">{{
+                        item?.title
+                        }}</ng-option>
+                </ng-select>
+                <div *ngIf="reportForm.get('filtername')?.invalid && (reportForm.get('filtername')?.dirty || reportForm.get('filtername')?.touched)"
+                    class="text-danger">
+                    Report is required
+                </div>
+            </div>
+            <div class="col-md-2" *ngIf="movementcontrol">
+                <label class="form-label">Vehicle</label>
+                <ng-select placeholder="Select Vehicle" formControlName="vehicledata"
+                    (change)="onVehicleSelect($event)">
+                    <ng-option *ngFor="let item of vehicleData" [value]="item?.value">{{ item?.text
+                        }}</ng-option>
+                </ng-select>
+                <div *ngIf="reportForm.get('vehicledata')?.invalid && (reportForm.get('vehicledata')?.dirty || reportForm.get('vehicledata')?.touched)"
+                    class="text-danger">
+                    Vehicle is required
+                </div>
+            </div>
+            <div class="col-md-2" *ngIf="movementcontrol">
+                <label class="form-label">Movement Duration</label>
+                <input type="text" placeholder="Movement Duration" class="form-control" formControlName="movement">
+                <div *ngIf="reportForm.get('movement')?.invalid && (reportForm.get('movement')?.dirty || reportForm.get('movement')?.touched)"
+                    class="text-danger">
+                    <span *ngIf="reportForm.get('movement')?.hasError('required')">Movement is required</span>
+                    <span *ngIf="reportForm.get('movement')?.hasError('min')">Movement must be greater than 0</span>
+                </div>
+            </div>
+            <div class="col-md-2" *ngIf="!movementcontrol">
+                <label class="form-label">Vehicle</label>
+                <ng-select [items]="vehicleData" [clearSearchOnAdd]="true" [closeOnSelect]="false" labelForId="state"
+                    [multiple]="true" placeholder="Select Vehicle" clearAllText="Clear" formControlName="vehicle"
+                    [bindLabel]="'text'">
+                    <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                        <div class=" ">
+                            <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                                [ngModelOptions]="{standalone: true}" />
+                            {{item['text']}}
+                        </div>
+                    </ng-template>
+                    <ng-template ng-multi-label-tmp let-items="items">
+
+                    </ng-template>
+                </ng-select>
+                <div *ngIf="reportForm.get('vehicle')?.invalid && (reportForm.get('vehicle')?.dirty || reportForm.get('vehicle')?.touched)"
+                    class="text-danger">
+                    Vehicle is required
+                </div>
+            </div>
+
+            <div class="col-md-2" *ngIf="durationcontrol">
+                <label class="form-label">Speed Limit</label>
+                <input type="text" placeholder="Speed Limit" class="form-control" formControlName="speed">
+                <div *ngIf="reportForm.get('speed')?.invalid && (reportForm.get('speed')?.dirty || reportForm.get('speed')?.touched)"
+                    class="text-danger">
+                    <span *ngIf="reportForm.get('speed')?.hasError('required')">Speed Limit is required</span>
+                    <span *ngIf="reportForm.get('speed')?.hasError('min')">Speed must be greater than 0</span>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <label for="exampleInputEmail1" class="form-label">Time Format</label>
+                <ng-select placeholder="Select Time Duration" formControlName="timeformat" (change)="timecheck($event)">
+                    <ng-option *ngFor="let item of selectDate" [value]="item?.dateValue">
+                        {{item?.dateValue}}
+                    </ng-option>
+                </ng-select>
+            </div>
+            <div class="col-md-2" *ngIf="isLocation">
+                <label for="exampleInputEmail1" class="form-label">Location</label>
+                <ng-select placeholder="Select Location" formControlName="locationType">
+                    <ng-option *ngFor="let item of selectLocation" [value]="item?.id">
+                        {{item?.value}}
+                    </ng-option>
+                </ng-select>
+
+            </div>
+
+            <div class="col-md-2" *ngIf="customDate">
+                <label class="form-label">From Date</label>
+                <mat-form-field>
+                    <input matInput [ngxMatDatetimePicker]="reportsfrom" formControlName="fromDate">
+                    <mat-datepicker-toggle matSuffix [for]="$any(reportsfrom)"></mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker [showSeconds]="true" [enableMeridian]="true" #reportsfrom>
+                    </ngx-mat-datetime-picker>
+                </mat-form-field>
+                <div *ngIf="reportForm.get('fromDate')?.invalid && (reportForm.get('fromDate')?.dirty || reportForm.get('fromDate')?.touched)"
+                    class="text-danger">
+                    From Date is required
+                </div>
+            </div>
+            <div class="col-md-2" *ngIf="customDate">
+                <label class="form-label">To Date</label>
+                <mat-form-field>
+                    <input matInput [ngxMatDatetimePicker]="reports" formControlName="toDate">
+                    <mat-datepicker-toggle matSuffix [for]="$any(reports)"></mat-datepicker-toggle>
+                    <ngx-mat-datetime-picker [showSeconds]="true" [enableMeridian]="true" #reports>
+                    </ngx-mat-datetime-picker>
+                </mat-form-field>
+                <div *ngIf="reportForm.get('toDate')?.invalid && (reportForm.get('toDate')?.dirty || reportForm.get('toDate')?.touched)"
+                    class="text-danger">
+                    To Date is required
+                </div>
+            </div>
+            <div class="col-md-2 mt-2">
+                <br>
+                <button class="btn btn-primary" (click)="submit(reportForm.value, 'Report')">Submit</button>
+            </div>
+
+        </div>
+    </form>
+    <div class="chips-container mt-2">
+        <div class="chip" *ngFor="let vehicle of selectedVehicles">
+            {{ vehicle?.text }}
+            <span class="close-btn" (click)="removeVehicle(vehicle)">×</span>
+        </div>
+    </div>
+    <div class="alert-message mt-2" *ngIf="data">
+        <app-alert [alertData]="alertData" [alertType]="messageAlert" *ngIf="alertTrigger "></app-alert>
+    </div>
+</div>
+
+<div class="mt-2">
+    <app-report-manage-list #ReportsDetails (filterPagination)="Confirm($event)"></app-report-manage-list>
+</div>

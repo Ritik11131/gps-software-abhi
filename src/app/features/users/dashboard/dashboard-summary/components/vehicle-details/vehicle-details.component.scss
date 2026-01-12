@@ -1,0 +1,42 @@
+.vehicle-summary {
+    width: 326px;
+    height: 174.95px;
+    position: relative;
+    top: 20px;
+    padding: 4px;
+    background-color: rgba(101, 101, 101, 0.5);
+    /* Transparent gray color */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    .detail {
+        width: 100%;
+        height: 119.42px;
+
+        .content {
+            display: grid;
+            row-gap: 7px;
+
+            .label {
+                color: white;
+                // font-family: DM Sans;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: 16px;
+                letter-spacing: 0em;
+                text-align: left;
+
+            }
+
+        }
+    }
+
+    .action {
+        background-color: white;
+        width: 100%;
+        height: 32px;
+        border-radius: 10px;
+
+    }
+}
+

@@ -1,0 +1,105 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="row">
+    <div class="col-md-8">
+
+        <div class="card">
+            <div class="card-header">
+                Device Command List
+            </div>
+            <div class="card-body">
+              
+
+                <div class="row">
+                    <div class="row">
+                        <div class="fiter-data mb-3">
+                            <div class="filter-part">
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3">
+                                        <div class="middle-part">
+                                            <ng-select placeholder="Select Maker" [ngModel]="selectedMaker" (change)="onMakerSelect($event)">
+                                                <ng-option *ngFor="let item of deviceMakerData" [value]="item?.id">{{ item?.name }}</ng-option>
+                                              </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="customer-part">
+                                            <ng-select placeholder="Select Device" [ngModel]="selectedDeviceType" (change)="ondeviceTypeSelect($event)">
+                                                <ng-option *ngFor="let item of deviceTypeData" [value]="item?.id">{{ item?.name }}</ng-option>
+                                              </ng-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button class="btn btn-primary" (click)="redirectTo()">
+                                            <i class="fa fa-plus" aria-hidden="true"></i> Add Device Command
+                                        </button>
+                                      
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                                <div class="dataTables_scroll">
+                                    <div class="dataTables_scrollBody">
+                                        <table id="datatable"
+                                            class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                            role="grid" aria-describedby="datatable_info" style="width: 100%"
+                                            width="100%">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th *ngFor="let vehicleHeading of columns">
+                                                        <strong>{{vehicleHeading?.title}}</strong>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr *ngFor="let row of deviceCommandList |  paginate : {
+                                                          itemsPerPage: tableSize,
+                                                          currentPage: page,
+                                                          totalItems: count} let i= index"
+                                                          >
+                                                   
+                                                    <td>
+                                                        <a>{{ row?.maker_name}}</a>
+                        
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ row?.device_type_name }}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ row?.command_text}}</a>
+                                                      </td>
+                                                    <td>
+                                                        <a>{{ row?.command_string}}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ row?.comment}}</a>
+                                                    </td>                                                    
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="text-center"
+                                            *ngIf="deviceCommandList && deviceCommandList.length == 0 || deviceCommandList == null "
+                                            style="width: 100%;">No Data Available</div>
+                                    </div>
+                                    <div class="pagination-data" *ngIf="deviceCommandList && deviceCommandList?.length > 0">
+                                        <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                            (pageChange)="onTableDataChange($event)">
+                                        </pagination-controls>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <router-outlet></router-outlet>
+    </div>
+</div>

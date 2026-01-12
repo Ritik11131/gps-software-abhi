@@ -1,0 +1,95 @@
+<div class="card-data">
+    <div class="card-value">
+        <div class="widget bg-light">
+            <div class="inner-part">
+                <h2 class="margin-b-5">All Users</h2>
+                <h2 class="ani-image mb-4">{{dealerData ? dealerData?.length : 0}}</h2>
+            </div>
+            <div class="footer-part">
+                <div class="user-part" (click)="onRedirectCustomer()">
+                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                    <span>New</span>
+                </div>
+                <div class="user-part" (click)="onOpenEditProfile()">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    <span>Edit</span>
+                </div>
+                <div class="user-part" (click)="onOpenChangePassword()">
+                    <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                    <span>Password</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-value">
+        <div class="widget bg-light">
+            <div class="inner-part">
+                <h2 class="margin-b-5">Device Quantity</h2>
+                <h2 class="ani-image">Total : {{DeviceList ? DeviceList?.length : 0}}</h2>
+            </div>
+            <div class="status-part">
+                <ul>
+                    <li>
+                        <div class="status">
+                            <span>{{totalActivateCount ? totalActivateCount : 0}}</span>
+                            <span>Activate</span>
+                        </div>
+                    </li>
+                    <!-- <li>
+                        <span>{{totalRechargeCount ? totalRechargeCount : 0}}</span>
+                        <span>Recharged</span>
+                    </li> -->
+                    <!-- <li>
+                        <span>{{totalRechargeCount}}</span>
+                        <span>Recharged</span>
+                    </li> -->
+                    <li>
+                        <span>{{expiredSoon ? expiredSoon?.length : 0}}</span>
+                        <span>Expired Soon</span>
+                    </li>
+                 
+                </ul>
+            </div>
+            <div class="list-part">
+                <ul>
+                    <li>
+                        <i class="fa fa-print" tooltip="Print" aria-hidden="true"></i>
+                    </li>
+                    <li>
+                        <i class="fa fa-car" tooltip="Device" aria-hidden="true" (click)="openAllresellerDetails()"></i>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="card-value">
+        <div class="widget bg-light">
+            <div class="inner-part">
+                <h2 class="margin-b-5">Card Balance</h2>
+                <h2 class="ani-image"></h2>
+            </div>
+            <div class="footer-part balance">
+                <div class="new-card">
+                    <span>New Card : {{newPointCount}}</span>
+                </div>
+                <div class="renew-card">
+
+                    <span>Renew Balance : {{renewalPointCount}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-value">
+        <div class="widget bg-light">
+            <div class="inner-part">
+                <h2 class="margin-b-5">Billing Section</h2>
+                <h2 class="ani-image"></h2>
+            </div>
+            <div class="footer-part">
+                <span>Device Recharge <br />Card Histroy </span>
+            </div>
+
+        </div>
+    </div>
+</div>

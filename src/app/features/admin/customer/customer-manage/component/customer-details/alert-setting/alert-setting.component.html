@@ -1,0 +1,59 @@
+
+<div class="card">
+    <div class="card-header">
+       Alert Setting
+        <app-close-routes [route]="routePath"></app-close-routes>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+              <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                <div class="dataTables_scroll">
+                  <div class="dataTables_scrollBody">
+                    <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                      aria-describedby="datatable_info" style="width: 100%" width="100%">
+                      <thead>
+                        <tr role="row">
+                          <th *ngFor="let vehicleHeading of tableData">
+                            <strong>{{vehicleHeading?.value}}</strong>
+                          </th>
+                        </tr>
+                      </thead>
+  
+                      <tbody>
+                        <tr *ngFor="let alert of alertData; let i = index">
+                          <td>
+                            <a>
+                                {{alert?.AlertType}}
+                            </a>
+                          </td>
+                          <td>
+                            <input className="form-control" type="checkbox"  [ngModel]="alert.status === 1" (change)="onCheckboxChange($event, alert)">
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="text-center"
+                      *ngIf="alertData && alertData.length == 0 || alertData == null"
+                      style="width: 100%;">No Data Available</div>
+                  </div>                 
+                </div>              
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+                <br>
+                <button class="btn btn-success" type="submit" (click)="submit()">
+                    Submit
+                </button>
+            </div>
+            <div class="col-md-6">
+                <br>
+                <button class="btn btn-danger" >
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

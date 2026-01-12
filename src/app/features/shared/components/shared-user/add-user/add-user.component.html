@@ -1,0 +1,75 @@
+<div class="row">
+    <form [formGroup]="userForm" (ngSubmit)="submit(userForm.value)">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">User Name</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" formControlName="userName" placeholder="Enter User Name"
+                        aria-describedby="button-addon2" />
+                </div>
+                <div *ngIf="userForm?.get('userName')?.invalid && 
+                    (userForm?.get('userName')?.dirty || userForm?.get('userName')?.touched)"
+                        class="text-danger">
+                        User Name is required
+                    </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Password</label>
+                <div class="input-group">
+                    <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control" style="width: 0%;"
+                        placeholder="Enter Password" formControlName="password" aria-describedby="button-addon2" />
+                    <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+                        <i class="fa" [ngClass]="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}"></i>
+                    </button>
+                </div>
+                <div *ngIf="userForm.get('password')?.invalid && (userForm.get('password')?.dirty || userForm.get('password')?.touched)"
+                    class="text-danger">
+                    Password is required
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Contact No.</label>
+                <div class="input-group">
+                <input type="text" class="form-control" formControlName="phn" placeholder="Enter Contact No."
+                    aria-describedby="button-addon2" />
+                </div>
+                <div *ngIf="(userForm?.get('phn')?.invalid && (userForm?.get('phn')?.dirty || userForm?.get('phn')?.touched))
+                ">
+                 <div class="text-danger" *ngIf="userForm.get('phn')?.errors?.['required']">
+                     Phone number is required.
+                 </div>
+                 <div class="text-danger" *ngIf="userForm.get('phn')?.errors?.['pattern']">
+                     Invalid phone number format.
+                 </div>
+             </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Status</label>
+                <ng-select placeholder="Select Status" formControlName="status" (click)="$event.stopPropagation()">
+                    <ng-option *ngFor="let item of dealerData" [value]="item?.id">{{ item?.staus }}</ng-option>
+                </ng-select>
+                <div *ngIf="userForm.get('status')?.invalid && (userForm.get('status')?.dirty || userForm.get('status')?.touched)"
+                class="text-danger">
+                Status is required
+            </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <br>
+                <button class="btn btn-success" type="submit"
+                    >
+                    Submit
+                </button>
+            </div>
+            <div class="col-md-6">
+                <br>
+                <button class="btn btn-danger" (click)="cancel($event)">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,94 @@
+<!-- <div class="modal-header" style="margin-bottom: 0 !important;">
+    <h4 class="modal-title f-w w-100">
+        {{user?.Name}}
+    </h4>
+</div> -->
+<div class="modal-header text-center" style="color: #fff;">
+    {{user?.Name}}
+    <div class="close-modal">
+      <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel()"></i>
+  </div>
+</div>
+<div class="modal-body">
+    <form [formGroup]="userForm">
+        <div class="_card white-bg">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Name <span style="color: red;">*</span></label>
+                    <div class="input-group ">
+                        <input type="text" class="form-control" formControlName="name" placeholder="Enter Name" aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="userForm?.get('name')?.invalid && 
+                    (userForm?.get('name')?.dirty || userForm?.get('name')?.touched)"
+                                class="text-danger">
+                                 Name is required
+                            </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Org Name <span style="color: red;">*</span></label>
+                    <div class="input-group ">
+                        <input type="text" class="form-control" formControlName="orgName" placeholder="Enter Org Name"
+                            aria-describedby="button-addon2" />
+                    </div>
+                    <div *ngIf="userForm?.get('orgName')?.invalid && 
+                    (userForm?.get('orgName')?.dirty || userForm?.get('orgName')?.touched)"
+                                class="text-danger">
+                                Org Name is required
+                            </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Email <span style="color: red;">*</span></label>
+                    <input type="email" class="form-control" formControlName="email" placeholder="Enter Email" aria-describedby="button-addon2" />
+                    <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)" class="text-danger">
+                        <div *ngIf="userForm.get('email')?.errors?.['required']">Email is required</div>
+                        <div *ngIf="userForm.get('email')?.errors?.['email']">Invalid email format</div>
+                    </div>
+                   
+                </div>
+    
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Contact No. <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" formControlName="phn" placeholder="Enter Contact No."
+                        aria-describedby="button-addon2" />
+                        <div *ngIf="(userForm?.get('phn')?.invalid && (userForm?.get('phn')?.dirty || userForm?.get('phn')?.touched))
+                        ">
+                         <div class="text-danger" *ngIf="userForm.get('phn')?.errors?.['required']">
+                             Phone number is required.
+                         </div>
+                         <div class="text-danger" *ngIf="userForm.get('phn')?.errors?.['pattern']">
+                             Invalid phone number format.
+                         </div>
+                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="form-label">Address</label>
+                    <div class="input-group mb-3">
+                        <textarea class="form-control" formControlName="add" placeholder="Enter Address" id="exampleFormControlTextarea1"
+                            rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+    
+        </div>
+        <div class="footer">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-success"  (click)="submit(userForm.value)" type="submit"
+                    
+                    >
+                        Submit
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger" (click)="cancel()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

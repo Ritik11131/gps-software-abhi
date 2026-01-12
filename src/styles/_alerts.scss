@@ -1,0 +1,46 @@
+@import 'src/styles/colors';
+
+// Alert Element
+.alert {
+    --mx-alert-padding-x: 30px;
+    --mx-alert-padding-y: 10px;
+    border-radius: 8px;
+}
+
+.alert-danger {
+    --mx-alert-color: $color-dark-gray
+}
+
+.alert-info {
+    --mx-alert-color: #{$color-light-black};
+    --mx-alert-bg: #{$color-light-sea-green};
+    --mx-alert-border-color: #{$color-light-sea-green};
+
+    strong {
+        color: #{$color-teal};
+        padding-right: 5px;
+        border-right: 1px solid #fff;
+    }
+}
+
+.alert-dismissible .btn-close {
+    right: 20px;
+    top: 14px;
+    padding: 0;
+    font-size: 14px;
+}
+
+.alert-info-v1 {
+    .alert-info {
+        --mx-alert-color: #{$color-light-black};
+        --mx-alert-bg: #eaf6ff;
+        --mx-alert-border-color: #eaf6ff;
+
+        strong {
+            color: #{$color-teal};
+            padding-right: 5px;
+            border-right: 1px solid #fff;
+        }
+    }
+
+}

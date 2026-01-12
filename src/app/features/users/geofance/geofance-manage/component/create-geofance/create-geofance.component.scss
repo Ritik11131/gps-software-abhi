@@ -1,0 +1,63 @@
+
+@import "src/styles/mixins/box-shadow.mixin";
+@import "src/styles/mixins/breakpoints";
+
+.geofance-part {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px; /* Adjust gap as needed */
+
+    @include breakpoint-range($max : sm){
+      display: unset;
+    }
+}
+::ng-deep{
+  .list-part{
+    .ngx-table {
+ display: inline-table;
+
+    }
+  }
+}
+
+
+#geomap {
+    width: 100%;
+    height: 78vh;
+    border-radius: 11px;
+}
+
+  .map-container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 11px;
+  }
+
+  .search-box {
+    position: relative;   
+
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      right: 5px;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+::ng-deep{
+  .geofance-part {
+    .pac-container {
+      position: absolute !important;
+      left: 0px !important;
+      top: 0px !important;
+    }
+  }
+}

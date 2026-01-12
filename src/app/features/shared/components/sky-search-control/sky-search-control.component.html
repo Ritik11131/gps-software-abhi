@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="search-container">
+        <div class="mx-search-box" [ngClass]="{'active' : searchDefaultValue}">
+            <input [disabled]="disabled" [placeholder]="placeholder" [value]="searchDefaultValue" type="text" #searchBoxInput
+           (keypress)="onKeypress($event)" [(ngModel)]="searchKey"
+                (keydown)="onKeydown($event)" (keyup)="onKeyup($event)" (blur)="onBlurEvent($event)" class="form-control"
+                (keyup.enter)="onEnter()" (keydown.backspace)="onKeypress($event)">
+            <button [disabled]="disabled" class="mx-search-btn" style="color: #ff9934;">
+                <i class="fa fa-sliders" aria-hidden="true"></i>
+            </button>
+            <button [disabled]="disabled" class="mx-clear-input-brn" *ngIf="searchDefaultValue" (click)="onClearInput()">
+                <img src="/assets/images/icons/close-primary.svg" alt="Search Input Clear">
+            </button>
+        
+        </div>
+    </div>
+    <div class="card-container" id="card-container" *ngIf="searchDefaultValue">
+      <search-info #serachInfo [searchDefaultValue]="searchDefaultValue"></search-info>
+    </div>
+  </div>

@@ -1,0 +1,12 @@
+<div class="nav-data">
+    <ul class="details-data">
+        <li class="nav-item" routerLinkActive="active" *ngFor="let nav of navigation">
+            <a class="nav-link" routerLink="{{nav.path}}">
+                {{ nav.name }}
+            </a>
+        </li>
+    </ul>
+    <div class="details-middle-part">
+        <router-outlet></router-outlet>
+    </div>
+</div>

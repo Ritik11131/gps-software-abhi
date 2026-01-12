@@ -1,0 +1,83 @@
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<section class="admin-content">
+  <div class="card">
+    <div class="card-header">
+      Sim Status List
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
+        
+        <div class="col-md-3 mb-2">
+          <div class="search-form">
+            <input placeholder="Search for..." [(ngModel)]="searchKeyword" type="text"
+              class="form-control search-input"><button type="button" class="btn-search"><i class="fa fa-search"
+                aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div class="col-md-3 mt-2 mb-1">
+          <ng-select placeholder="Select Sim Status" [ngModel]="selecteStatus" (change)="onselected($event)">
+            <ng-option *ngFor="let item of statusData" [value]="item?.value">{{ item?.text }}</ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <!-- <div class="sim-search ">
+           
+            <div class="status">
+             
+            </div>
+
+
+          </div> -->
+          <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+            <div class="dataTables_scroll">
+              <div class="dataTables_scrollBody">
+                <table id="datatable" class="table table-striped nowrap dataTable no-footer dtr-inline" role="grid"
+                  aria-describedby="datatable_info" style="width: 100%" width="100%">
+                  <thead>
+                    <tr role="row">
+                      <th *ngFor="let vehicleHeading of columns">
+                        <strong>{{vehicleHeading?.title}}</strong>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let item of simStatusList | searchFilter: searchKeyword |  paginate : {
+                              itemsPerPage: tableSize,
+                              currentPage: page,
+                              totalItems: count} let i= index">
+
+                      <td>{{item?.mobileNo}}</td>
+                      <td>{{item?.simId}}</td>
+                      <td>{{item?.imsi}}</td>
+                      <td>{{item?.basketId}}</td>
+                      <td>{{item?.circleName}}</td>
+                      <td>{{item?.planCode}}</td>
+                      <td>{{item?.dataType}}</td>
+                      <td>{{item?.dataUnits}}</td>
+                      <td>{{ formatOnboardingDate(item.onboardingDate) }}</td>
+                      <td> {{ formatOnboardingDate(item.activationDate) }}</td>
+                      <td>{{item?.operatorName}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-center"
+                  *ngIf="simStatusList && simStatusList.length == 0 || simStatusList == null || !(simStatusList | searchFilter: searchKeyword)?.length"
+                  style="width: 100%;">No Data Available</div>
+              </div>
+              <div class="pagination-data"
+                *ngIf="simStatusList && simStatusList?.length > 0 && (simStatusList | searchFilter:searchKeyword)?.length">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

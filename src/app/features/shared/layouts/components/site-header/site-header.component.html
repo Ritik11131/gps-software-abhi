@@ -1,0 +1,102 @@
+<!-- Site Top Bar  -->
+<section class="top-bar-section">
+  <div class="">
+    <div class="mobile-top-bar">
+      <div class="d-flex justify-content-center">
+        <ng-container >
+          <ng-container *ngIf="showSideNav === menuType">
+            <button
+              *ngIf="!menuState"
+              (click)="showMenu()"
+              class="skylabs-icon bars-icon menu-bars"
+            ></button>
+            <button
+              *ngIf="menuState"
+              (click)="hideMenu()"
+              class="skylabs-icon close-icon menu-bars"
+            ></button>
+          </ng-container>
+        </ng-container>
+      </div>
+      <div class="mobile-top-right-menu">
+        <button (click)="hideMenu()">
+          <div class="btn-group" dropdown placement="bottom right">
+            <span class="skylabs-icon document-icon" dropdownToggle></span>
+            <ul id="dropdown-alignment" *dropdownMenu class="dropdown-menu account-dropdown dropdown-menu-right"
+              role="menu" aria-labelledby="button-alignment">
+              <ng-container (click)="logout()"> Logout</ng-container>
+            </ul>
+          </div>
+        </button>
+        
+      </div>
+    </div>
+
+      <div class="top-bar">
+       <div class="menu-icon">
+        <ul class="top-bar-menu-right">
+          <li>
+            <!-- <button (click)="hideMenu()" class="dropdown-button">
+              <div class="btn-group" dropdown placement="bottom right">
+                <span class="skylabs-icon document-icon" dropdownToggle></span>
+                <ul id="dropdown-alignment" *dropdownMenu class="dropdown-menu account-dropdown dropdown-menu-right"
+                  role="menu" aria-labelledby="button-alignment">
+                  <li  role="menuitem">
+                    <a class="dropdown-item" (click)="onOpenProfile()">
+                      My Profile
+                    </a>
+                  </li>
+                  <li (click)="logout()" role="menuitem">
+                    <a class="dropdown-item">
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </button> -->
+            <span class="logout-section" (click)="logout()">Logout</span>
+            <!-- <i class="fa fa-sign-out" aria-hidden="true" (click)="logout()"></i> -->
+          </li>
+       
+        </ul>
+      </div>
+      </div>
+
+
+
+  </div>
+</section>
+<!-- Header Part Logo, Search, Cart and Profile -->
+
+
+<!-- Site Navigation -->
+
+
+<!-- <ng-template #accountDropdown>
+  <ng-container *ngFor="let item of accountDropdownItems">
+    <li role="menuitem" *ngIf="!item.divider">
+      <a class="dropdown-item" *ngIf="item.path" [routerLink]="item.path">
+        {{ item.name }}
+      </a>
+      <a
+        class="dropdown-item"
+        *ngIf="item.pageUrl"
+        [href]="item.url"
+        target="_blank"
+      >
+        {{ item.name }}
+      </a>
+      <a class="dropdown-item" *ngIf="item.logout" (click)="logout()">
+        {{ item.name }}
+      </a>
+      <a class="dropdown-item" *ngIf="item.popup" (click)="openSalesModal()">
+        {{ item.name }}
+      </a>
+      <a class="dropdown-item" *ngIf="item.accounts">
+        {{ item.name }}
+      </a>
+    </li>
+    <li *ngIf="item.divider" class="divider dropdown-divider"></li>
+    <li *ngIf="item.salesDivider" class="divider dropdown-divider"></li>
+  </ng-container>
+</ng-template> -->

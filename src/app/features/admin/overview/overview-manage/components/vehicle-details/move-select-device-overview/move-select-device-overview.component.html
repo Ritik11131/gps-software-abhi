@@ -1,0 +1,42 @@
+
+<div class="modal-header text-center" style="color: #fff;">
+    {{deviceName}}
+    <div class="close-modal">
+      <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel($event)"></i>
+  </div>
+</div>
+<div class="modal-body p-20">
+    <div class="_card white-bg">
+
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Dealer/Reseller</label>
+                <ng-select placeholder="Select Dealer" [ngModel]="selectedDealer" (change)="onDealerSelect($event)">
+                    <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                </ng-select>
+                <div *ngIf="!selectedDealer" class="text-danger">Please select a Dealer/Reseller.</div>   
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Customer</label>
+                <ng-select placeholder="Select Customer" [ngModel]="selectedCustomer"
+                    (change)="onCustomerSelect($event)">
+                    <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
+                </ng-select>
+                <div *ngIf="!selectedCustomer" class="text-danger">Please select a Customer.</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-success" type="submit"
+                    (click)="submitMoveDevice()">
+                    Move
+                </button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-danger" (click)="cancel($event)">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+.details-data {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #f8fcf9;
+}
+.details-middle-part {
+    padding: 10px 20px;
+}
+
+.nav-item {
+    width: 100%;
+    text-align: center;
+    .nav-link {
+        color: black;
+        font-size: 15px;
+        font-weight: 400;
+        padding: 10px 15px;
+        border-radius: 5px;
+    }
+
+    &.active {
+        .nav-link {
+            background: #ff9934;
+            color: white;
+        }
+    }
+}

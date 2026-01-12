@@ -1,0 +1,73 @@
+
+<app-loader *ngIf="spinnerLoading"></app-loader>
+<div class="filter-part">
+    <form [formGroup]="deviceDetailForm">
+        <div class="row">
+
+            <div class="col-md-2">
+                <label class="form-label">Dealer/Reseller</label>
+                <ng-select placeholder="Select Dealer" formControlName="dealer" (change)="onDealerSelect($event)">
+                    <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
+                </ng-select>
+                <div *ngIf="deviceDetailForm.get('dealer')?.invalid && (deviceDetailForm.get('dealer')?.dirty || deviceDetailForm.get('dealer')?.touched)"
+                    class="text-danger mt-3">
+                    Dealer/Reseller is required
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Customer</label>
+                <ng-select placeholder="Select Customer" formControlName="customer" (change)="onCustomerSelect($event)">
+                    <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
+                </ng-select>
+                <div *ngIf="deviceDetailForm.get('customer')?.invalid && (deviceDetailForm.get('customer')?.dirty || deviceDetailForm.get('customer')?.touched)"
+                    class="text-danger mt-3">
+                    Customer is required
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Vehicle</label>
+                <ng-select placeholder="Select Vehicle" formControlName="vehicle">
+                    <ng-option *ngFor="let item of vehicleData" [value]="item?.Device?.Id">{{ item?.Device?.VehicleNo
+                        }}</ng-option>
+                </ng-select>
+                <div *ngIf="deviceDetailForm.get('vehicle')?.invalid && (deviceDetailForm.get('vehicle')?.dirty || deviceDetailForm.get('vehicle')?.touched)"
+                    class="text-danger mt-3">
+                    Vehicle is required
+                </div>
+            </div>
+
+
+            <div class="col-md-2">
+                <label class="form-label">From Date</label>
+                <div class="input-group mb-3">
+                    <input type="text" placeholder="From Date" class="form-control" formControlName="fromDate"
+                        [bsConfig]="{ withTimepicker: true, keepDatepickerOpened: true, rangeInputFormat: 'MMMM Do YYYY, HH:mm:ss', dateInputFormat: 'MMMM Do YYYY, HH:mm:ss' }"
+                        bsDatepicker>
+                </div>
+                <div *ngIf="deviceDetailForm.get('fromDate')?.invalid && (deviceDetailForm.get('fromDate')?.dirty || deviceDetailForm.get('fromDate')?.touched)"
+                    class="text-danger">
+                    From Date is required
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">To Date</label>
+                <div class="input-group mb-3">
+                    <input type="text" formControlName="toDate" placeholder="To Date" class="form-control"
+                        [bsConfig]="{ withTimepicker: true, keepDatepickerOpened: true, rangeInputFormat: 'MMMM Do YYYY, HH:mm:ss', dateInputFormat: 'MMMM Do YYYY, HH:mm:ss' }"
+                        bsDatepicker>
+                </div>
+                <div *ngIf="deviceDetailForm.get('toDate')?.invalid && (deviceDetailForm.get('toDate')?.dirty || deviceDetailForm.get('toDate')?.touched)"
+                    class="text-danger">
+                    To Date is required
+                </div>
+            </div>
+            <div class="col-md-2 mt-2">
+                <br>
+                <button class="btn btn-primary" (click)="submit(deviceDetailForm.value)"
+                    [disabled]="!deviceDetailForm.valid">Submit</button>
+            </div>
+
+        </div>
+    </form>
+
+</div>

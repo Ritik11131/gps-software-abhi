@@ -1,0 +1,37 @@
+<div class="main">
+    <!-- Container for sidebar(s) + page content *ngIf="userType == 'admin'"-->
+    <div #appHeader><site-header (exitEvent)="closeSidebar($event)" ></site-header></div>
+    <ng-sidebar-container
+    [allowSidebarBackdropControl]="true"
+    (onBackdropClicked)="hideSidebar()"
+    [backdropClass]="sidenavConfig.backdropClass"
+    class="main-side-bar-container"
+    [style.height.px]="calculateMinHeight(appHeader)"
+    >
+      <!-- A sidebar -->
+      <ng-sidebar
+      #sidebar
+      [(opened)]="_opened"
+      [showBackdrop]="sidenavConfig.showBackdrop"
+      [mode]="sidenavConfig.mode"
+      *ngIf="!hideSideBar"
+    
+      [sidebarClass]="sidenavConfig.sidebarClass"
+      [dockedSize]="sidenavConfig.dockedSize"
+      [dock]="sidenavConfig.dock"
+      >
+        <aside class="layout-side-bar" >
+          <xchange-sidenav class="overflow-x-axis"></xchange-sidenav>
+        </aside>
+      </ng-sidebar>
+      <!-- Page content -->
+      <div ng-sidebar-content  class="page  mainPage" #mainPage id="mainPage">
+        <div class="w-100" >
+           
+          <router-outlet></router-outlet>
+        </div>
+        <!-- <site-footer></site-footer> -->
+      </div>
+    </ng-sidebar-container>
+  </div>
+  

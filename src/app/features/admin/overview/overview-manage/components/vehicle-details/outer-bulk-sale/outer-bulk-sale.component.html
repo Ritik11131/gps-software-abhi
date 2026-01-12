@@ -1,0 +1,54 @@
+<form [formGroup]="customerForm" (ngSubmit)="submit(customerForm.value)">
+    <div class="row">
+        <div class="col-md-6">
+            <label class="form-label">Customer Name</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Enter Customer Name"
+                    formControlName="customerName" aria-describedby="button-addon2" />
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" placeholder="Enter Email" formControlName="email"
+                aria-describedby="button-addon2" />
+            <div
+                *ngIf="customerForm.get('email')?.invalid && (customerForm.get('email')?.dirty || customerForm.get('email')?.touched)">
+                <div class="text-danger" *ngIf="customerForm.get('email')?.errors?.['pattern']">Invalid email
+                    format.</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">            
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Contact No.</label>
+            <input type="text" class="form-control" placeholder="Enter Contact No." formControlName="phn"
+                aria-describedby="button-addon2" />
+            <div
+                *ngIf="customerForm.get('phn')?.invalid && (customerForm.get('phn')?.dirty || customerForm.get('phn')?.touched)">
+                <div class="text-danger" *ngIf="customerForm.get('phn')?.errors?.['pattern']">Invalid phone
+                    number format.</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Address</label>
+            <div class="input-group mb-3">
+                <textarea class="form-control" placeholder="Enter Address" formControlName="Address"
+                    id="exampleFormControlTextarea1" rows="4"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <br>
+            <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none"
+            (change)="uploadExcel($event)">
+        <button class="btn btn-primary" (click)="selectFile($event)">Bulk Sale</button>
+        </div>
+        <div class="col-md-6">
+            <br>
+            <button class="btn btn-danger">
+                Cancel
+            </button>
+        </div>
+    </div>
+</form>

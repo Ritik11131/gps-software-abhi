@@ -1,0 +1,178 @@
+<section class="main-content">
+    <div class="reprt-part mt-3">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Dealer Profile's
+                    </div>
+                    <div class="card-body">
+                        <div _ngcontent-ieg-c294="" fxflex="" fxlayout="column" fxlayoutgap="20px"
+                            style="flex-direction: column; box-sizing: border-box; display: flex;">
+                            <div _ngcontent-ieg-c294="" class="col d-flex justify-content-center"
+                                style="margin-bottom: 20px;">
+                                <img _ngcontent-ieg-c294="" src="assets/images/profile.png" alt="" class="img-fluid">
+                            </div>
+                            <div _ngcontent-ieg-c294="" fxflex="20"
+                                style="margin-bottom: 20px; flex: 1 1 100%; box-sizing: border-box; max-height: 20%;">
+                            </div>
+                            <div _ngcontent-ieg-c294="" fxflex="5" fxlayout="row" fxlayoutgap="20px"
+                                style="margin-bottom: 20px; flex-direction: row; box-sizing: border-box; display: flex; flex: 1 1 100%; max-height: 5%;">
+                                <div _ngcontent-ieg-c294="" style="margin-right: 20px;"><b _ngcontent-ieg-c294="">Dealer
+                                        Name:</b></div>
+                                <div _ngcontent-ieg-c294="">{{dealerDetails?.OrgName}}</div>
+                            </div>
+                            <div _ngcontent-ieg-c294="" fxflex="5" fxlayout="row" fxlayoutgap="20px"
+                                style="margin-bottom: 20px; flex-direction: row; box-sizing: border-box; display: flex; flex: 1 1 100%; max-height: 5%;">
+                                <div _ngcontent-ieg-c294="" style="margin-right: 20px;"><b _ngcontent-ieg-c294="">Dealer
+                                        Contact:</b></div>
+                                <div _ngcontent-ieg-c294="">{{dealerDetails?.MobileNo}}</div>
+                            </div>
+                            <div _ngcontent-ieg-c294="" fxflex="5" fxlayout="row" fxlayoutgap="20px"
+                                style="flex-direction: row; box-sizing: border-box; display: flex; flex: 1 1 100%; max-height: 5%;">
+                                <div _ngcontent-ieg-c294="" style="margin-right: 20px;"><b _ngcontent-ieg-c294="">Dealer
+                                        EmailId:</b></div>
+                                <div _ngcontent-ieg-c294="">{{dealerDetails?.EmailId}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Modify Password
+                    </div>
+                    <div class="card-body">
+
+                        <form [formGroup]="changeForm" (ngSubmit)="submit()">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <div>
+                                        <label class="form-label">Old Password*</label>
+                                        <input type="password" formControlName="oldPwd" placeholder="Enter Old Password"
+                                            class="form-control" id="oldPwd">
+                                        <div class="text-danger"
+                                            *ngIf="changeForm.get('oldPwd').invalid && changeForm.get('oldPwd').touched">
+                                            Old Password is required
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <div>
+                                        <label class="form-label">New Password*</label>
+                                        <input type="password" formControlName="newPwd" placeholder="Enter New Password"
+                                            class="form-control" id="newPwd">
+                                        <div class="text-danger"
+                                            *ngIf="changeForm.get('newPwd').invalid && changeForm.get('newPwd').touched">
+                                            New Password is required
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <div>
+                                        <label class="form-label">Retype New Password*</label>
+                                        <input type="password" formControlName="reNewPwd"
+                                            placeholder="Retype New Password" class="form-control" id="reNewPwd">
+                                        <div
+                                            *ngIf="changeForm.get('reNewPwd').invalid && changeForm.get('reNewPwd').touched">
+                                            <div class="text-danger"
+                                                *ngIf="changeForm.get('reNewPwd').errors?.required">
+                                                Retype New Password is required
+                                            </div>
+                                            <div class="text-danger"
+                                                *ngIf="changeForm.get('newPwd').value !== changeForm.get('reNewPwd').value">
+                                                Passwords do not match
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary"
+                                        [disabled]="!changeForm.valid">Submit</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-danger" (click)="cancel()">Cancel</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        Customer Profile
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="profileForm">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Name <span style="color: red;">*</span></label>
+                                    <input type="text" formControlName="name" class="form-control"
+                                        placeholder="Enter Name*" aria-describedby="button-addon2" />
+
+
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Email <span style="color: red;">*</span></label>
+                                    <input type="email" formControlName="email" class="form-control"
+                                        placeholder="Enter Email*" aria-describedby="button-addon2" />
+                                    <!-- <div *ngIf="profileForm.get('email').invalid && profileForm.get('email').touched" class="error-message">
+                                            <div class="text-danger" *ngIf="profileForm.get('email').errors.email">Invalid email format</div>
+                                          </div> -->
+                                    <div
+                                        *ngIf="profileForm.get('email')?.invalid && (profileForm.get('email')?.dirty || profileForm.get('email')?.touched)">
+                                        <div class="text-danger" *ngIf="profileForm.get('email')?.errors?.['pattern']">
+                                            Invalid email
+                                            format.</div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Mobile No. <span style="color: red;">*</span></label>
+                                    <input type="number" formControlName="phn" class="form-control"
+                                        placeholder="Enter Mobile No.*" aria-describedby="button-addon2" />
+                                    <!-- <div *ngIf="profileForm.get('phn').invalid && profileForm.get('phn').touched"
+                                        class="error-message">
+                                        <div class="text-danger" *ngIf="profileForm.get('phn').errors.pattern">Invalid
+                                            phone number format</div>
+                                    </div> -->
+                                    <div
+                                        *ngIf="profileForm.get('phn')?.invalid && (profileForm.get('phn')?.dirty || profileForm.get('phn')?.touched)">
+                                        <div class="text-danger" *ngIf="profileForm.get('phn')?.errors?.['pattern']">
+                                            Invalid phone
+                                            number format.</div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Adress</label>
+                                    <textarea formControlName="address" class="form-control" placeholder="Enter Adress"
+                                        id="exampleFormControlTextarea1"></textarea>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button class="btn btn-primary mt-2" type="submit" [disabled]="!profileForm.value.name || profileForm.get('phn')?.invalid || profileForm.get('email')?.invalid"
+                                        (click)="submitProfile()">
+                                        Submit
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-danger mt-2" (click)="cancelProfile()">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

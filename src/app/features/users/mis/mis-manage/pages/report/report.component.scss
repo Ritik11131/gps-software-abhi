@@ -1,0 +1,20 @@
+@import "/src/styles/mixins/breakpoints";
+
+.report-heading{
+        font-size: 22px !important;
+}
+.reprt-part{
+        padding: 2px 0px 0px 10px;  
+        height: 89vh;
+}
+
+@include breakpoint-range($max: lg) {
+        .main-content {
+                margin-right: unset;
+        }
+} 
+
+span.heading {
+        font-weight: bold;
+        color: #4c4d4b;
+    }

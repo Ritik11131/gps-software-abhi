@@ -1,0 +1,70 @@
+<div class="modal-header text-center" style="color: #fff;">
+    Device Details
+    <div class="close-modal">
+        <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel()"></i>
+    </div>
+</div>
+<div class="modal-body p-20">
+    <div class="_card white-bg">
+        <form [formGroup]="deviceForm">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Device Maker</label>
+                    <input type="text" formControlName="deviceMaker" class="form-control" placeholder="Enter Device Maker" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Device Type</label>
+                    <input type="text" formControlName="deviceName"  class="form-control" placeholder="Enter Device Type" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Device Id / IMEI</label>
+                    <div class="input-group ">
+                        <input type="text" formControlName="imei"  class="form-control" placeholder="Enter Device Id" />
+                    </div>
+                </div>
+                <div class="col-md-6  mb-3">
+                    <label class="form-label">Installation Date</label>
+                    <div class="input-group">
+                        <input type="text" formControlName="installationDate"  class="form-control" placeholder="dd/MM/yyyy" />
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Device UID</label>
+                    <div class="input-group mb-3">
+                        <input type="text" formControlName="deviceUid"  class="form-control" placeholder="Enter Device UID" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Description</label>
+                    <div class="input-group mb-3">
+                        <input type="text" formControlName="description"  class="form-control" placeholder="Enter Description" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Sim Phone Number</label>
+                    <div class="input-group">
+                        <input type="text" formControlName="simNo"  class="form-control" placeholder="Enter Sim Number" />
+                    </div>
+
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Vehicle No.</label>
+                    <div class="input-group">
+                        <input type="text" formControlName="vehicleNo"  class="form-control" placeholder="Enter Vehicle No." />
+                    </div>
+
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,175 @@
+@import 'src/styles/mixins/breakpoints';
+// Buttons
+.btn {
+    // height: 45px;
+    border-radius: 5px;
+    box-shadow: none;
+    // min-width: 140px;
+    --mx-btn-box-shadow: none;
+    font-weight: 500;
+    outline: none !important;
+    text-transform: uppercase;
+    font-size: 14px;
+    @include breakpoint-range($max : sm){
+        margin-bottom: 15px;
+    }
+}
+
+// Primary Button
+.btn-primary {
+    --mx-btn-color: #{$color-white};
+    --mx-btn-bg: #{$color-red};
+    --mx-btn-border-color: #{$color-red};
+    --mx-btn-hover-color: #{$color-red};
+    --mx-btn-hover-bg: #{$color-white};
+    --mx-btn-hover-border-color: #{$color-red};
+    --mx-btn-active-color: #{$color-white};
+    --mx-btn-active-bg: #{$color-red};
+    --mx-btn-active-border-color: ${$color-red};
+    --mx-btn-active-shadow: var(--innerShadow);
+    --mx-btn-disabled-color: #{$color-gray};
+    --mx-btn-disabled-bg: #{$color-medium-gray};
+    --mx-btn-focus-shadow-rgb: none;
+
+    &:hover {
+        @include box-shadow();
+    }
+
+    &:focus {
+        background: $color-red;
+        color: $color-white;
+        background-image: var(--primaryGradient);
+        @include box-shadow();
+    }
+
+    --mx-btn-disabled-border-color: $color-medium-gray;
+}
+
+// Secondary Button
+.btn-secondary {
+    --mx-btn-color: #{$color-white};
+    --mx-btn-bg: #{$color-dark-gray};
+    --mx-btn-border-color: #{$color-dark-gray};
+    --mx-btn-hover-color: #{$color-dark-gray};
+    --mx-btn-hover-bg: #{$color-white};
+    --mx-btn-hover-border-color: #{$color-dark-gray};
+    --mx-btn-active-color: #{$color-white};
+    --mx-btn-active-bg: #{$color-dark-gray};
+    --mx-btn-active-border-color: #{$color-dark-gray};
+    --mx-btn-active-shadow: var(--innerShadow);
+    --mx-btn-disabled-color: #{$color-gray};
+    --mx-btn-disabled-bg: #{$color-medium-gray};
+    --mx-btn-focus-shadow-rgb: none;
+
+    &:hover {
+        @include box-shadow();
+    }
+
+    &:focus {
+        background: $color-dark-gray;
+        color: $color-white;
+        background-image: var(--secondaryGradient);
+        box-shadow: var(--innerShadow);
+    }
+
+    --mx-btn-disabled-border-color: $color-medium-gray;
+}
+
+// Primary Outline Button
+
+.btn-outline-primary {
+    --mx-btn-color: #{$color-red};
+    --mx-btn-border-color: #{$color-red};
+    --mx-btn-hover-color: #{$color-white};
+    --mx-btn-hover-bg: #{$color-red};
+    --mx-btn-hover-border-color: #{$color-red};
+    --mx-btn-active-color: #{$color-white};
+    --mx-btn-active-bg: #{$color-red};
+    --mx-btn-active-border-color: #{$color-red};
+    --mx-btn-active-shadow: var(--innerShadow);
+    --mx-btn-disabled-color: #{$color-gray};
+    --mx-btn-disabled-bg: #{$color-medium-gray};
+    --mx-btn-focus-shadow-rgb: none;
+    --mx-gradient: none;
+
+    &:hover {
+        @include box-shadow();
+    }
+
+    --mx-btn-disabled-border-color: #{$color-medium-gray};
+}
+
+// Secondary Outline Button
+
+.btn-outline-secondary {
+    --mx-btn-color: #{$color-dark-gray};
+    --mx-btn-border-color: #{$color-dark-gray};
+    --mx-btn-hover-color: #{$color-white};
+    --mx-btn-hover-bg: #{$color-dark-gray};
+    --mx-btn-hover-border-color: #{$color-dark-gray};
+    --mx-btn-active-color: #{$color-white};
+    --mx-btn-active-bg: #{$color-dark-gray};
+    --mx-btn-active-border-color: #{$color-dark-gray};
+    --mx-btn-active-shadow: var(--innerShadow);
+    --mx-btn-disabled-color: #{ $color-gray};
+    --mx-btn-disabled-bg: #{$color-medium-gray};
+    --mx-btn-focus-shadow-rgb: none;
+    --mx-gradient: none;
+
+    &:hover {
+        @include box-shadow();
+    }
+
+    --mx-btn-disabled-border-color: #{$color-medium-gray};
+}
+
+// Table Primary Outline Button
+
+.btn-tbl-outline-primary {
+    --mx-btn-color: #{$color-red};
+    --mx-btn-border-color: #{$color-red};
+    --mx-btn-hover-color: #{$color-white};
+    --mx-btn-hover-bg: #{$color-red};
+    --mx-btn-hover-border-color: #{$color-red};
+    --mx-btn-active-color: #{$color-white};
+    --mx-btn-active-bg: #{$color-red};
+    --mx-btn-active-border-color: #{$color-red};
+    --mx-btn-active-shadow: var(--innerShadow);
+    --mx-btn-disabled-color: #{$color-gray};
+    --mx-btn-disabled-bg: #{$color-medium-gray};
+    --mx-btn-focus-shadow-rgb: none;
+    --mx-gradient: none;
+    height: 34px;
+    min-width: 85px;
+
+    &:hover {
+        @include box-shadow();
+    }
+
+    --mx-btn-disabled-border-color: #{$color-medium-gray};
+}
+
+// Table Secondary Outline Button
+
+.btn-tbl-outline-secondary {
+    --mx-btn-color: #{$color-dark-gray};
+    --mx-btn-border-color: #{$color-dark-gray};
+    --mx-btn-hover-color: #{$color-white};
+    --mx-btn-hover-bg: #{$color-dark-gray};
+    --mx-btn-hover-border-color: #{$color-dark-gray};
+    --mx-btn-active-color: #{$color-white};
+    --mx-btn-active-bg: #{$color-dark-gray};
+    --mx-btn-active-border-color: #{$color-dark-gray};
+    --mx-btn-active-shadow: var(--innerShadow);
+    --mx-btn-disabled-color: #{ $color-gray};
+    --mx-btn-disabled-bg: #{$color-medium-gray};
+    --mx-btn-focus-shadow-rgb: none;
+    --mx-gradient: none;
+    height: 34px;
+    min-width: 85px;
+    &:hover {
+        @include box-shadow();
+    }
+
+    --mx-btn-disabled-border-color: #{$color-medium-gray};
+}

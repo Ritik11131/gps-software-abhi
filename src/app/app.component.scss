@@ -1,0 +1,12 @@
+@import "src/styles/colors";
+
+.seconds {
+    color: $color-red;
+    sub {
+        color: $color-black;
+        font-size: 10px;
+        position: relative;
+        bottom: 0px;
+        left: 5px;
+    }
+}

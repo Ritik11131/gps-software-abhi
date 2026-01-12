@@ -1,0 +1,25 @@
+/* ==========================================================================
+   #LAYOUT
+   ========================================================================== */
+
+$full-width: 100%;
+$full-height: 100%;
+
+$flex: flex;
+$left-align: flex-start;
+$center-align: center;
+$right-align: flex-end;
+$vertical-top-align: flex-start;
+$vertical-middle-align: center;
+$vertical-bottom-align: flex-end;
+
+$component-margin-top: 0;
+$component-margin-bottom: 0;
+
+$content-margin-bottom-small: 10px;
+$content-margin-bottom-large: 5px;
+
+@mixin full-width-height {
+	width: $full-width;
+	height: $full-height;
+}

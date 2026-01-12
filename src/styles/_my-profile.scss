@@ -1,0 +1,133 @@
+@import '/src/styles/colors';
+@import '/src/styles/mixins/breakpoints';
+.profile-section {
+    display: flex;
+    width: 100%;
+    padding: 30px 15px;
+    flex-wrap: wrap;
+    min-height: 100%;
+
+    @include breakpoint-range($max : sm) {
+        padding: 25px 0;
+    }
+}
+
+.page-header {
+    margin-bottom: 30px;
+
+    @include breakpoint-range($max : sm) {
+        margin-bottom: 15px;
+    }
+
+    h2 {
+        font-size: 25px;
+        margin: 0;
+
+        @include breakpoint-range($max : sm) {
+            font-size: 20px;
+        }
+    }
+
+    display: flex;
+
+
+    .edit-profile-btn {
+        background: transparent;
+        color: $color-red;
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+        margin-left: 30px;
+        padding: 0;
+    }
+}
+
+.profile-content-section {
+    header {
+        background: $color-medium-gray;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 7px 20px;
+        border-radius: 5px;
+        position: relative;
+
+        @include breakpoint-range($max : sm) {
+            border-radius: 0;
+
+            &::before {
+                width: 200px;
+                height: 100%;
+                top: 0;
+                left: -200px;
+                position: absolute;
+                content: '';
+                background: $color-medium-gray;
+            }
+
+            &::after {
+                width: 200px;
+                height: 100%;
+                top: 0;
+                right: -200px;
+                position: absolute;
+                content: '';
+                background: $color-medium-gray;
+            }
+        }
+
+    }
+
+    margin-bottom: 30px;
+}
+
+.fields-container {
+    padding: 15px 20px;
+
+    @include breakpoint-range($max : sm) {
+        padding: 20px 15px;
+    }
+}
+
+.data-input {
+    border: none;
+    padding: 0;
+    background: transparent;
+    font-size: 16px;
+
+    &:focus {
+        border: none;
+        outline: none;
+        box-shadow: none;
+    }
+}
+
+.save-btn {
+    width: 275px;
+    max-width: 100%;
+
+    @include breakpoint-range($max : sm) {
+        width: 100%;
+    }
+}
+
+.address-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+
+    &>li {
+        width: 100%;
+        margin-bottom: 20px;
+        // background: $color-white 0% 0% no-repeat padding-box;
+        box-shadow: 0px 3px 6px #00000012;
+        border: 1px solid $color-medium-gray;
+        border-radius: 5px;
+        width: 100%;
+        padding: 16px 20px;
+
+        p {
+            font-size: 12px;
+            margin: 0;
+        }
+    }
+}

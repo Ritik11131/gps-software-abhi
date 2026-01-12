@@ -1,0 +1,115 @@
+<div class="main-content">
+    <app-loader *ngIf="spinnerLoading"></app-loader>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">Record Count</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" [(ngModel)]="recordCount"
+                            placeholder="Enter Record Count" aria-describedby="button-addon2" />
+                    </div>
+                </div>
+
+                <div class="col-md-3 mt-3">
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button class="btn btn-success" type="submit" (click)="deviceList()">
+                                Submit
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-danger" (click)="cancel()">
+                                reset
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="device-data">
+        <div class="card" *ngFor="let item of deviceListData">
+            <div class="card-header">
+                <p><b>Details :- {{item?.vehicle_no || 'NA'}} / {{item?.sim_phone_number || 'NA'}} / {{item?.device_id
+                        || 'NA'}}</b></p>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                                <div class="dataTables_scroll">
+                                    <div class="dataTables_scrollBody"
+                                        [ngStyle]="{'height': item.subData && item.subData?.length > 5 ? '400px': 'auto'}">
+                                        <table id="datatable"
+                                            class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                            role="grid" aria-describedby="datatable_info" style="width: 100%"
+                                            width="100%">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th *ngFor="let vehicleHeading of columns">
+                                                        <strong>{{vehicleHeading?.title}}</strong>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr *ngFor="let data of item.subData">
+                                                    <td>
+                                                        <a>{{ data.newtimestamp | date : "yyyy-MM-dd HH:mm:ss" }}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a>{{data.newlastupdateon | date :
+                                                            "yyyy-MM-dd HH:mm:ss"}}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ data.gps_status }}</a>
+                                                    </td>
+
+                                                    <td>
+                                                        <a>{{ data.speed}}</a>
+
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ data.di1 }}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ data.di2 }}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ data.epc }}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ data.epv }}</a>
+                                                    </td>
+                                                    <td>
+                                                        <a>{{ data.ipv }}</a>
+                                                    </td>
+
+                                                    <td>
+                                                        <a>{{ data.sos }}</a>
+                                                    </td>
+
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="text-center"
+                                            *ngIf="item.subData && item.subData.length == 0 || item.subData == null "
+                                            style="width: 100%;">No Data Available</div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

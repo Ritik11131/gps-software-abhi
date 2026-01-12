@@ -1,0 +1,110 @@
+@import "src/styles/colors";
+
+.mx-search-box {
+  display: flex;
+  position: relative;
+  max-width: 350px;
+  width: 100%;
+
+  .form-control {
+    border-radius: 5px;
+    padding: 0 20px;
+
+    &:focus {
+      & + .mx-search-btn {
+        border: solid 1px $color-blue;
+      }
+    }
+
+    &:disabled {
+      & + .mx-search-btn {
+        img {
+          filter: grayscale(1);
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+
+  .mx-search-btn {
+    width: 35px;
+    height: 35px;
+    background: transparent;
+    border: 1px solid $color-gray;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -1px;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+
+
+  .mx-clear-input-brn {
+    position: absolute;
+    right: 48px;
+    background: transparent;
+    border: none;
+    padding: 0 5px;
+    top: 8px;
+
+    img {
+      width: 10px;
+    }
+  }
+}
+.mx-search-suggestions {
+  position: absolute;
+  background: white;
+  width: 100%;
+  max-width: 350px;
+  padding-left: 10px;
+  cursor: pointer;
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+.text-center.suggestion-p {
+  margin-bottom: 0rem;
+}
+
+i.fa.fa-sliders {
+  font-size: 15px;
+}
+    
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+  }
+  .search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-icon {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+  }
+  .card-container {
+    display: block;
+    width: max(60vw, 330px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    position: absolute;
+    top: calc(100% - 0px);
+    background-color: #fff;
+    z-index: 999;
+  }
+  .card-container.show {
+    display: block;
+  }
+

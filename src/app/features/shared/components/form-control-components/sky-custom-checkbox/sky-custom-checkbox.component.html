@@ -1,0 +1,19 @@
+<div class="xchange-checkbox">
+    <label class="xchange-checkbox-label" [ngClass]="{ 'right-control': rtl }">
+      <input
+        [type]="type"
+        class="xchange-checkbox-input"
+        [id]="id"
+        [value]="value"
+        [name]="name"
+        [disabled]="disabled"
+        [checked]="checked"
+        ngModel
+        (ngModelChange)="onControlChange($event)"
+        tabindex="0"
+      />
+      <div class="checkbox"></div>
+      {{ label }}
+    </label>
+  </div>
+  

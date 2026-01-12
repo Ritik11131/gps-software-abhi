@@ -1,0 +1,125 @@
+
+
+<div class="card" [ngClass]="{'collapsed': !showCardData}">
+    <div class="card-content">
+      <div class="first-part">
+        <div class="toggle-class">
+          <i class="fa" [ngClass]="{'fa-angle-double-up': !showCardData, 'fa-angle-double-down': showCardData}" aria-hidden="true" (click)="toggleStatus()"></i>
+        </div>
+        <div class="address">
+          <span><i class="fa fa-map-marker" aria-hidden="true"></i> Address :- Noida Sec 15</span>
+        </div>
+      </div>
+      <div class="card-data" [ngClass]="{'hidden': !showCardData}">
+        <div class="card-value">
+            <div class="widget bg-light">
+              <div class="row row-table ">
+                <div class="status-data">
+                  <ul>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">Vehicle No</span>
+                            <span class="status-value">1228 </span>
+                          </a>
+                    </li>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">On Duration</span>
+                            <span class="status-value">17min </span>
+                          </a>
+                    </li>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">Vehicle Status</span>
+                            <span class="status-value">OFF </span>
+                          </a>
+                    </li>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">Ododmeter</span>
+                            <span class="status-value">100050 </span>
+                          </a>
+                    </li>
+      
+                  </ul>
+                </div>
+      
+              </div>
+            </div>
+          </div>
+          <div class="card-value">
+            <div class="widget bg-light">
+              <div class="row row-table ">
+                <div class="status-data">
+                  <ul>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">Vehicle No</span>
+                            <span class="status-value">1228 </span>
+                          </a>
+                    </li>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">On Duration</span>
+                            <span class="status-value">17min </span>
+                          </a>
+                    </li>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">Vehicle Status</span>
+                            <span class="status-value">OFF </span>
+                          </a>
+                    </li>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">Ododmeter</span>
+                            <span class="status-value">100050 </span>
+                          </a>
+                    </li>
+      
+                  </ul>
+                </div>
+      
+              </div>
+            </div>
+          </div>
+          <div class="card-value">
+            <div class="widget bg-light">
+              <div class="row row-table ">
+                <div class="status-data">
+                  <ul>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">Vehicle No</span>
+                            <span class="status-value">1228 </span>
+                          </a>
+                    </li>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">On Duration</span>
+                            <span class="status-value">17min </span>
+                          </a>
+                    </li>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">Vehicle Status</span>
+                            <span class="status-value">OFF </span>
+                          </a>
+                    </li>
+                    <li>
+                        <a class="status" style="cursor: pointer;">
+                            <span class="status-key" style="text-transform: capitalize;">Ododmeter</span>
+                            <span class="status-value">100050 </span>
+                          </a>
+                    </li>
+      
+                  </ul>
+                </div>
+      
+              </div>
+            </div>
+          </div>
+        <!-- Repeat this block for each card-value -->
+      </div>
+    </div>
+  </div>

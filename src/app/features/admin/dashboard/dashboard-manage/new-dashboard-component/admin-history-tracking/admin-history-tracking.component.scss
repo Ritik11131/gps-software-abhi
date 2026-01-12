@@ -1,0 +1,211 @@
+agm-map {
+    height: 600px !important;
+  }
+  
+  .main-content {
+    padding: 20px 24px 6px 25px;
+    height: 90vh;
+  
+  }
+  #histroyTrack{
+    position: relative;
+  }
+  .loading-spinner {
+    border: 6px solid #f3f3f3; /* Light grey background */
+    border-top: 6px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: 20px auto; /* Center the spinner horizontally */
+  }
+  
+  .history {
+    ::ng-deep {
+      .gm-style-iw.gm-style-iw-c {
+        width: 400px !important;
+        background-color: white !important;
+        ;
+        border-radius: 10px;
+  
+        .live-data {
+          a {
+            text-decoration: none;
+          }
+  
+          li:last-child {
+            border-left: none !important;
+          }
+        }
+      }
+      .gm-style-iw-d {
+        overflow: hidden !important;
+        max-height: none !important;
+      }
+  
+      .gm-style .gm-style-iw-tc::after {
+        background-color: white !important;
+      }
+  
+      .live-data {
+        padding: 4px;
+  
+        span {
+          font-size: 13px;
+          color: #fff;
+          font-weight: 500;
+        }
+      }
+  
+      .icon-part {
+        border-top: 1px solid;
+        padding: 4px;
+        background: #fff;
+        border-radius: 4px;
+      }
+  
+      ul.icon {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(3px, 1fr));
+        gap: 7px;
+        align-items: center;
+        text-align: center;
+  
+        li {
+          // border-right: 1px solid black;
+  
+          a {
+            color: black;
+            font-size: 17px;
+          }
+        }
+      }
+      .gm-style-iw-chr {
+        button.gm-ui-hover-effect {
+          width: 29px !important;
+          height: 14px !important;
+          top: 0px !important;
+          font-size: 7px !important;
+          left: 11px !important;
+        }
+    
+        span {
+          margin: 0 !important;
+          width: 20px !important;
+          height: 20px !important;
+    
+        }
+      }
+  
+    }
+  }
+  
+  .widget h2 {
+    font-size: 13px !important;
+    font-weight: 400;
+    color: #000 !important;
+  }
+  
+  
+  .widget {
+    border-radius: 3px;
+    padding: 0px;
+    border: 0;
+    margin-bottom: 0px;
+    box-shadow: 0 1px 15px 1px #3e396b12;
+  }
+  
+  .widget.total-data {
+    // height: 103px;
+    cursor: auto;
+  }
+  
+  p.margin-b-5 {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  
+  .margin-b-30 {
+    text-align: center;
+  }
+  
+  button.btn.btn-outline-secondary.mb-3 {
+    height: 45px;
+  }
+  
+  .controls {
+    display: flex;
+    position: absolute;
+    z-index: 222;
+    top: -623px;
+    /* bottom: 58px; */
+    left: 202px;
+    gap: 8px;
+  }
+  
+  .controls button {
+    height: 35px !important;
+    border-radius: 4px;
+    width: 162px !important;
+    font-size: 16px;
+    background: #727272;
+    color: #fff;
+    border: none;
+    padding: 0;
+    width: auto;
+    margin-right: 2px;
+    height: auto;
+  }
+  
+  .form-control:disabled {
+    background: #e8e8e8;
+    color: black !important;
+  }
+  
+  .mat-form-field {
+    height: 0px;
+  }
+  
+  .mat-form-field {
+    position: relative;
+    text-align: left;
+    display: inline;
+  }
+  
+ 
+  .slider-part {
+    position: absolute;
+    width: 80%;
+    background: black;
+    top: 556px;
+    left: 95px;
+    padding: 13px;
+    background-color: #fff;
+    border: 1px solid grey;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+  
+    .button-play {
+      background: none;
+      border: none;
+    }
+  
+    .fa.fa-play {
+      font-size: 16px;
+    }
+  
+    .fa.fa-pause {
+      font-size: 16px;
+    }
+  
+    .slider-vehicle {
+      width: 80%;
+    }
+  }
+
+  ::ng-deep {
+    .mat-form-field-infix {
+        border-top: 7px solid rgba(0, 0, 0, 0);
+    }
+}

@@ -1,0 +1,26 @@
+<div class="modal-header text-center" style="color: #fff;">
+    Odometer Setting
+    <div class="close-modal">
+        <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel()"></i>
+    </div>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" [(ngModel)]="selectedvalue" placeholder="Enter Odometer" 
+                    aria-describedby="button-addon2" />
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-primary" (click)="submit()" [disabled]="!selectedvalue">Submit</button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-danger" (click)="cancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

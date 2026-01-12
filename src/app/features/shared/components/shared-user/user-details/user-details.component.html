@@ -1,0 +1,100 @@
+<div class="row">
+    <form [formGroup]="customerForm" (ngSubmit)="submit(customerForm.value)">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Customer Name</label>
+                <div class="input-group ">
+                    <input type="text" class="form-control" placeholder="Enter Customer Name"
+                        formControlName="customerName" aria-describedby="button-addon2" />
+                </div>
+                <div *ngIf="customerForm.get('customerName')?.invalid && (customerForm.get('customerName')?.dirty || customerForm.get('customerName')?.touched)"
+                        class="text-danger">
+                        Customer Name is required
+                    </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Login Id</label>
+                <div class="input-group ">
+                    <input type="text" class="form-control" placeholder="Enter Login Id" formControlName="userName"
+                        aria-describedby="button-addon2" autocomplete="new-Login" />
+                </div>
+                <div *ngIf="customerForm?.get('userName')?.invalid && 
+                (customerForm?.get('userName')?.dirty || customerForm?.get('userName')?.touched)"
+                    class="text-danger">
+                    Login Id is required
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Password</label>
+                <div class="input-group ">
+                    <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control" style="width: 0%;"
+                        placeholder="Enter Password" formControlName="password" aria-describedby="button-addon2"
+                        autocomplete="new-password" />
+                        <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+                            <i class="fa" [ngClass]="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}"></i>
+                        </button>
+                </div>
+                <div *ngIf="customerForm?.get('password')?.invalid && 
+                (customerForm?.get('password')?.dirty || customerForm?.get('password')?.touched)"
+                    class="text-danger">
+                    Password is required
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Email</label>
+                <div class="input-group">
+                    <input type="email" class="form-control" placeholder="Enter Email" formControlName="email"
+                        aria-describedby="button-addon2" />
+                </div>
+                <div *ngIf="customerForm.get('email')?.invalid && (customerForm.get('email')?.dirty || customerForm.get('email')?.touched)" class="text-danger">
+                    <div *ngIf="customerForm.get('email')?.errors?.['required']">Email is required</div>
+                    <div *ngIf="customerForm.get('email')?.errors?.['email']">Invalid email format</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Contact No.</label>
+                <div class="input-group ">
+                    <input type="text" class="form-control" placeholder="Enter Contact No." formControlName="phn"
+                        aria-describedby="button-addon2" />
+                       
+                </div>
+                <div *ngIf="(customerForm?.get('phn')?.invalid && (customerForm?.get('phn')?.dirty || customerForm?.get('phn')?.touched))
+                ">
+                 <div class="text-danger" *ngIf="customerForm.get('phn')?.errors?.['required']">
+                     Phone number is required.
+                 </div>
+                 <div class="text-danger" *ngIf="customerForm.get('phn')?.errors?.['pattern']">
+                     Invalid phone number format.
+                 </div>
+             </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Address</label>
+                <div class="input-group ">
+                    <textarea class="form-control" placeholder="Enter Address" formControlName="Address"
+                        id="exampleFormControlTextarea1" rows="4"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <br>
+                <button class="btn btn-success" type="submit"
+                    >
+                    Submit
+                </button>
+            </div>
+            <div class="col-md-6">
+                <br>
+                <button class="btn btn-danger" (click)="cancel($event)">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

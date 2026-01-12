@@ -1,0 +1,89 @@
+<section class="admin-section">
+ 
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="card">
+                <div class="card-header">
+                    Device Detail
+                </div>
+                <div class="card-body">
+                    <div class="fiter-data mb-3">
+                        <admin-device-filter [pagination]="{page:pagination.page,tableSize:pagination.tableSize}" (filterValue)="confirm($event)"></admin-device-filter>
+                    </div>
+                    <div class="total-section" *ngIf="deviceDetail && deviceDetail?.length > 0">
+                        <div class="total-paging">
+                            <div class="p-2 bd-highlight">
+                                <select [(ngModel)]="pagination.tableSize" (change)="onTableSizeChange($event)" class="custom-select">
+                                  <option *ngFor="let size of pagination.tableSizes" [value]="size">
+                                    {{ size }}
+                                  </option>
+                                </select>
+                              </div>
+                        </div>
+                        <div class="total">
+                            
+                            <div class="chips-container">
+                                <div class="Distance chip other-background">
+                                    Total Distance: {{totalDistance}}
+                                  
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                                <div class="dataTables_scroll">
+                                    <div class="dataTables_scrollBody">
+                                        <table id="datatable"
+                                            class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                            role="grid" aria-describedby="datatable_info" style="width: 100%"
+                                            width="100%">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th *ngFor="let vehicleHeading of columns">
+                                                        <strong>{{vehicleHeading?.title}}</strong>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <tr *ngFor="let row of deviceDetail |  paginate : {
+                                                          itemsPerPage: pagination.tableSize,
+                                                          currentPage: pagination.page,
+                                                          totalItems: pagination.count} let i= index">
+
+                                                          <td><a >{{row?.newtimestamp}}</a></td>
+                                                          <td><a >{{row?.fk_device_id}}</a></td>
+                                                          <td><a >{{row?.speed}}</a></td>
+                                                          <td><a >{{row?.di1}}</a></td>
+                                                          <td><a >{{row?.latitude}}</a></td>
+                                                          <td><a >{{row?.longitude}}</a></td>
+                                                          <td><a >{{row?.distance}}</a></td>
+                                                         
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="text-center"
+                                            *ngIf="deviceDetail && deviceDetail.length == 0 || deviceDetail == null "
+                                            style="width: 100%;">No Data Available</div>
+                                    </div>
+                                    <div class="pagination-data" *ngIf="deviceDetail && deviceDetail?.length > 0">
+                                        <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                            (pageChange)="onTableDataChange($event)">
+                                        </pagination-controls>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

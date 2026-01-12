@@ -1,0 +1,13 @@
+.filter-part {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: end;
+    gap: 10px;
+    // margin-left: 50%;
+  }
+  
+  .middle-part, .select-part, .date-part, .from-date, .to-date,.button-part {
+    flex: 1;
+    max-width: 220px;
+  }

@@ -1,0 +1,338 @@
+@import "/src/styles/colors";
+@import "src/styles/mixins/breakpoints";
+
+:host {
+  width: 100%;
+  height: 100%;
+}
+
+.site-main-nav {
+  user-select: none !important;
+  width: 100%;
+  background: #727272;
+  height: 100%;
+  display: inline-table;
+  .navbar-nav {
+    width: 100%;
+    height: 501px;
+    .nav-item {
+      color: $color-white;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 10px 0;
+      position: relative;
+      border-bottom: 1px dashed #383838;
+
+      .icon-nav-link {
+        width: calc(100% - 20px);
+        display: flex;
+        align-items: center;
+
+        .menu-icon {
+          margin-right: 25px;
+          font-size: 21px;
+          width: 30px;
+          cursor: pointer;
+          text-align: center;
+        }
+      }
+
+      .nav-link-container {
+        padding-left: 20px;
+        padding-right: 15px;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        .nav-arrow {
+          transform: rotate(90deg);
+          cursor: pointer;
+
+          &.rotate90 {
+            transform: rotate(-90deg);
+          }
+        }
+      }
+
+      .nav-link {
+        color: $color-white;
+        outline: none !important;
+        font-size: 14px;
+        width: 100%;
+        white-space: pre-wrap;
+        cursor: pointer;
+      }
+    }
+  }
+}
+ul.level2-nav{
+  overflow-x: hidden;
+}
+
+// .submenu-css{
+//   height: 70px;
+// }
+
+.level2-nav .nav-item .nav-link-container {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  display: block; /* ensures the entire area is clickable */
+  cursor: pointer;
+  background-color: #383B3E; /* default background */
+}
+
+.level2-nav .nav-item .nav-link-container:hover {
+  background-color: #8f8c8c; /* darker shade on hover */
+  transform: scale(1.05); /* subtle grow effect */
+}
+
+/* Optional: Change icon color on hover */
+.level2-nav .nav-item .nav-link-container:hover .skylabs-icon {
+  color: #fff; /* Change icon color on hover */
+}
+
+/* You can also add a transition for the text color if desired */
+.level2-nav .nav-item .nav-link-container .nav-link {
+  transition: color 0.3s ease;
+  color: #ececec; /* default text color */
+}
+
+.level2-nav .nav-item .nav-link-container:hover .nav-link {
+  color: #ffffff; /* text color on hover */
+}
+
+.level2-nav {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+
+  .nav-item {
+    width: 100%;
+    margin: 0 0 1px 0 !important;
+    padding: 0 !important;
+
+
+  }
+}
+
+.level3-nav {
+  width: 100%;
+  background: $color-medium-black;
+
+  &>.nav-item {
+    background: $color-medium-black;
+    padding: 0 20px !important;
+
+    .nav-link {
+      padding: 5px 0;
+      border-bottom: 1px solid $color-dark-gray;
+      width: 100%;
+      display: block;
+
+      &:last-child {
+        border-bottom: unset;
+      }
+    }
+  }
+}
+
+.toggle-menu-container {
+  display: flex;
+  align-items: center;
+
+  .toggle-icon {
+    cursor: pointer;
+  }
+}
+
+.logout {
+  padding: 0 20px 15px 20px !important;
+  white-space: break-spaces;
+  width: 152px;
+  // height: 168px;
+  border-radius: 10px;
+  background: #383B3E;
+  position: relative;
+  left: 58px;
+@include breakpoint-range($max : sm){
+ margin-top: 31px;;
+}
+  .detail {
+    // display: ruby;
+    text-align: center;
+  }
+
+  .username {
+    font-size: 14px;
+    color: white;
+    font-weight: 700;
+  }
+
+  .signout {
+    background-color: black;
+    font-size: 14px;
+    color: white;
+    font-weight: 700;
+    border-radius: 29px;
+    padding: 3px 16px 3px 12px;
+  }
+
+  .logoutlogo {
+    img {
+
+      width: 60px;
+      height: auto;
+      object-fit: cover;
+      border-radius: 38px;
+    }
+  }
+}
+
+.account-infoo {
+  color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 15px 0;
+  position: relative;
+  margin-top: 20px;
+@include breakpoint-range($max:lg){
+  display: none;
+}
+
+  h6,
+  p {
+    color: $color-white;
+    font-size: 14px;
+    line-height: 16px;
+    margin-bottom: 5px;
+  }
+
+  .change-account-btn {
+    padding: 0 23px 15px 20px !important;
+
+    img {
+      width: 32px;
+      height: auto;
+      object-fit: cover;
+      border-radius: 24px;
+    }
+
+    background: transparent;
+    border: none;
+    color: $color-white;
+    font-weight: 700;
+    margin-top: 5px;
+    margin-left: -3px;
+    padding: 0;
+    cursor: pointer;
+    font-size: 14px;
+    // display: flex;
+    align-items: center;
+
+    span {
+      font-size: 12px;
+    }
+  }
+
+  // @include breakpoint-range($max: lg) {
+  //   display: block !important;
+  // }
+}
+
+.icon-nav-link {
+  position: relative;
+  display: inline-block;
+}
+
+.icon-nav-link .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  border: black;
+  background-color:black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 110%;
+}
+
+.icon-nav-link .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+
+.icon-nav-link:hover .tooltiptext {
+  visibility: visible;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hidescroll::-webkit-scrollbar {
+  width: 0px;
+
+}
+
+.level-name {
+  font-size: 12px;
+}
+
+// .profile {
+//   font-family: "skylabs icons" !important
+// }
+.toggle-icon {
+  cursor: pointer;
+  cursor: pointer;
+  /* left: 150px; */
+  right: -29px;
+  position: absolute;
+  z-index: 9999;
+  top: 8px;
+  img{
+    height: 30px;
+    cursor: pointer;
+    transform: rotate(180deg);
+
+  }
+
+}
+.toggle-icon-close {
+  cursor: pointer;
+  cursor: pointer;
+  /* left: 150px; */
+  right: 12px;
+  position: absolute;
+  z-index: 9999;
+  top: 0px !important;
+}
+.admin-only{
+  ::ng-deep{
+    .main-side-nav.ng-sidebar--closed .site-main-nav .toggle-menu-container .toggle-icon {
+      cursor: pointer;
+      transform: rotate(180deg);
+      margin-right: 10px !important;
+  
+  }
+  }
+}
+
+// ngx-navbar-collapse#level1-collapse-0 {
+//   background: #727272;
+// }
+
+a.level-name{
+  margin-left: -4px;
+}

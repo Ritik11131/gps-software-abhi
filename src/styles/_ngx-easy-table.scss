@@ -1,0 +1,122 @@
+@import './fonts';
+@import "src/styles/mixins/breakpoints";
+
+.ngx-table {
+    font-size: 14px;
+    color: $color-dark-gray;
+    // font-family: "Montserrat", sans-serif !important;;
+    @include breakpoint-range($max : sm){
+        overflow-y: auto;
+        display: block;
+    }
+    @include breakpoint-range($max : lg){
+        overflow-y: auto;
+        display: block;
+    }
+   // @include breakpoint-range($max : lg){
+    //     overflow-y: auto;
+    //     display: block;
+    // }
+    a{
+        text-decoration: none;
+    }
+    a:hover{
+        text-decoration: underline;
+    }
+}
+
+.ngx-table__table--striped>tbody {
+    tr:nth-of-type(odd) {
+        background-color: $color-white;
+    }
+
+    tr:nth-of-type(even) {
+        background-color: $color-light-gray;
+    }
+}
+
+.ngx-table__table--hoverable>tbody tr:hover {
+    background-color: $color-medium-gray;
+}
+
+.ngx-table__table--normal>tbody>tr>td,
+.ngx-table__table--normal>thead>tr>th {
+    padding: 6px 15px;
+    border-right: 0.5px solid $color-gray;
+
+    &:last-child {
+        border-right: none;
+    }
+}
+
+.ngx-form-icon {
+    border-color: $color-gray;
+    width: 20px;
+    height: 20px;
+}
+
+.ngx-form-checkbox input:checked+.ngx-form-icon {
+    background-color: $color-dark-gray;
+    border-color: $color-dark-gray;
+}
+
+.ngx-table__table--normal>thead>tr>th {
+    background: $color-medium-gray;
+    font-weight: 600;
+
+    &:first-child {
+        border-radius: 5px 0 0 0;
+    }
+
+    &:last-child {
+        border-radius: 0 5px 0 0;
+    }
+}
+
+// .ngx-pagination {
+//     // font-family: $font-proxima-nova;
+//     display: flex;
+
+//     a,
+//     button {
+//         padding: 0;
+//     }
+
+//     li {
+//         &.disabled {
+//             display: none;
+//         }
+
+//         display: flex;
+//         align-items: center;
+//         justify-content: center;
+//         border: 1px solid $color-gray;
+//         height: 45px;
+//         min-width: 45px;
+//         padding: 0 !important;
+//         text-align: center;
+//         margin: 0 0 0 -1px;
+//         background: $color-light-gray;
+
+//         &:last-child {
+//             border: 1px solid $color-gray;
+//         }
+
+//         &.current {
+//             background-color: $color-white;
+//             color: $color-red;
+//             font-weight: 500;
+//             padding: 0 !important;
+//             border-color: $color-gray;
+//         }
+
+//         &:first-child {
+//             border-radius: 5px 0 0 5px;
+//         }
+
+//         &:last-child {
+//             border-radius: 0 5px 5px 0;
+
+//         }
+//     }
+// }
