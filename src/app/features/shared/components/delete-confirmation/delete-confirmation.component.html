@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class="row mb-3">
+    <div class="row mb-3" *ngIf="confirmationType === 'password'">
       <div class="col-md-12">
         <label class="form-label">Password</label>
         <div class="input-group mb-3">
@@ -28,16 +28,30 @@
         {{ validateMessage }}
       </div>
     </div>
+
+    <div class="row mb-3" *ngIf="confirmationType === 'delete'">
+      <div class="col-md-12">
+        <label class="form-label">Type <strong>DELETE</strong> to confirm</label>
+        <input type="text" class="form-control" (keyup)="searchData($event)"
+          placeholder="Type DELETE here" aria-describedby="button-addon2"
+          autocomplete="off" />
+        <small class="text-muted mt-2 d-block">Please type <strong>DELETE</strong> in the field above to confirm deletion.</small>
+      </div>
+      <div *ngIf="validateMessage && validateMessage !== 'Success'" class="text-danger mt-2">
+        {{ validateMessage }}
+      </div>
+    </div>
   </div>
   <div class="footer">
     <div class="row">
       <div class="col-md-6">
-        <button class="btn btn-success" (click)="ok()" [disabled]="validateMessage !== 'Success'">
+        <button class="btn" [ngClass]="{'btn-danger': confirmationType === 'delete', 'btn-success': confirmationType === 'password'}" 
+                (click)="ok()" [disabled]="validateMessage !== 'Success'">
           {{ primaryActionLabel }}
         </button>
       </div>
       <div class="col-md-6">
-        <button class="btn btn-danger" (click)="cancel()">
+        <button class="btn btn-secondary" (click)="cancel()">
           {{ secondaryActionLabel }}
         </button>
       </div>

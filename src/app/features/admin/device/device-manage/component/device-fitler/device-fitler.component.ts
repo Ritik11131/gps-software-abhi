@@ -27,8 +27,9 @@ export class DeviceFitlerComponent {
     private storageService: StorageService,
   ) {}
   ngOnInit() {
-    this.getDealerlist()
-    this.checkDealerCustomer()
+    // Commented out - no longer using dealer/customer filters
+    // this.getDealerlist()
+    // this.checkDealerCustomer()
   }
 
   toggleOptions() {
@@ -41,50 +42,48 @@ export class DeviceFitlerComponent {
     })
   }
 
-  getDealerlist() {
-    this.sharedService.getDealerData().subscribe((res: any) => {
-      this.dealerData = res?.body?.Result?.Data;
-      if (this.dealerData && this.dealerData.length > 0) {
-        this.selectedDealer = this.selectDealerCustomer && this.selectDealerCustomer?.dealer ? this.selectDealerCustomer?.dealer: this.dealerData[0].Id;
-        this.getCustomerData(this.selectedDealer);
-      }
-    })
-  }
-  onDealerSelect(dealerId: any) {
-    this.selectedCustomer = null;
-    this.selectDealerCustomer = null;
-    this.filterValue.emit({
-      dealerId : this.selectedDealerId,
-      customerId : this.selectedCustomer
-    })
-    this.getCustomerData(dealerId);
-    // this.router.navigateByUrl('admin/customer/customer-manage')
-  }
+  // Commented out - no longer using dealer/customer filters
+  // getDealerlist() {
+  //   this.sharedService.getDealerData().subscribe((res: any) => {
+  //     this.dealerData = res?.body?.Result?.Data;
+  //     if (this.dealerData && this.dealerData.length > 0) {
+  //       this.selectedDealer = this.selectDealerCustomer && this.selectDealerCustomer?.dealer ? this.selectDealerCustomer?.dealer: this.dealerData[0].Id;
+  //       this.getCustomerData(this.selectedDealer);
+  //     }
+  //   })
+  // }
+  // onDealerSelect(dealerId: any) {
+  //   this.selectedCustomer = null;
+  //   this.selectDealerCustomer = null;
+  //   this.filterValue.emit({
+  //     dealerId : this.selectedDealerId,
+  //     customerId : this.selectedCustomer
+  //   })
+  //   this.getCustomerData(dealerId);
+  // }
 
-  getCustomerData(id: any) {
-    this.selectedDealerId = id;
-    // this.spinnerLoading = true;
-    this.dashboardService.customer(id).subscribe((res: any) => {
-      // this.spinnerLoading = false;
-      this.customerData = res?.body?.Result?.Data;
-      if (this.customerData && this.customerData.length > 0) {
-        this.selectedCustomer = this.selectDealerCustomer && this.selectDealerCustomer?.customer ? this.selectDealerCustomer?.customer : this.customerData[0].Id;
-        this.filterValue.emit({
-          dealerId : this.selectedDealerId,
-          customerId : this.selectedCustomer
-        })
-      }
-    });
-  }
+  // getCustomerData(id: any) {
+  //   this.selectedDealerId = id;
+  //   this.dashboardService.customer(id).subscribe((res: any) => {
+  //     this.customerData = res?.body?.Result?.Data;
+  //     if (this.customerData && this.customerData.length > 0) {
+  //       this.selectedCustomer = this.selectDealerCustomer && this.selectDealerCustomer?.customer ? this.selectDealerCustomer?.customer : this.customerData[0].Id;
+  //       this.filterValue.emit({
+  //         dealerId : this.selectedDealerId,
+  //         customerId : this.selectedCustomer
+  //       })
+  //     }
+  //   });
+  // }
 
-  onCustomerSelect(customerId:any) {    
-    this.selectedCustomer = null;
-    this.selectedCustomer = customerId;    
-    this.filterValue.emit({
-      dealerId : this.selectedDealerId,
-      customerId : this.selectedCustomer
-    })
-  }
+  // onCustomerSelect(customerId:any) {    
+  //   this.selectedCustomer = null;
+  //   this.selectedCustomer = customerId;    
+  //   this.filterValue.emit({
+  //     dealerId : this.selectedDealerId,
+  //     customerId : this.selectedCustomer
+  //   })
+  // }
 
   redirectTo(path: any, subUser: any) {
    this.addDevice.emit(path)

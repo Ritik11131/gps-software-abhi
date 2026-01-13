@@ -1,0 +1,101 @@
+<div class="modal-header text-center" style="color: #fff;">
+    Link Users to Device
+    <div class="close-modal">
+        <i class="fa fa-close" style="color: white;cursor: pointer;" (click)="cancel()"></i>
+    </div>
+</div>
+<div class="modal-body p-20">
+    <div class="_card white-bg">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h5 class="mb-3">Select users to link to this device:</h5>
+            </div>
+        </div>
+        
+        <div class="row" *ngIf="isLoadingUsers">
+            <div class="col-md-12 text-center py-4">
+                <i class="fa fa-spinner fa-spin fa-2x"></i>
+                <p class="mt-2">Loading users...</p>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="!isLoadingUsers && userList.length === 0">
+            <div class="col-md-12 text-center py-4">
+                <p class="text-muted">No users available</p>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="!isLoadingUsers && userList.length > 0">
+            <div class="col-md-12">
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 10;">
+                            <tr>
+                                <th width="50px" style="text-align: center;">
+                                    <input type="checkbox" 
+                                        [checked]="isAllCurrentPageSelected()"
+                                        (change)="selectAllUsers($event)"
+                                        title="Select All">
+                                </th>
+                                <th>Login ID</th>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Mobile No</th>
+                                <th>User Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of userList | paginate: { itemsPerPage: tableSize, currentPage: page, totalItems: count }" 
+                                [ngClass]="{'table-active': isUserSelected(user.id)}">
+                                <td style="text-align: center;">
+                                    <input type="checkbox" 
+                                        [checked]="isUserSelected(user.id)"
+                                        (change)="onUserSelect($event, user.id)">
+                                </td>
+                                <td>{{ user.loginId || 'N/A' }}</td>
+                                <td>{{ user.userName || 'N/A' }}</td>
+                                <td>{{ user.email || 'N/A' }}</td>
+                                <td>{{ user.mobileNo || 'N/A' }}</td>
+                                <td>
+                                    <span [ngClass]="{'badge bg-primary': user.userType === 1, 'badge bg-info': user.userType === 2}">
+                                        {{ user.userType === 1 ? 'Dealer' : user.userType === 2 ? 'Customer' : 'N/A' }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination-data text-center p-2" *ngIf="userList && userList.length > 0">
+                    <pagination-controls previousLabel="Prev" nextLabel="Next"
+                        (pageChange)="onTableDataChange($event)">
+                    </pagination-controls>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3" *ngIf="selectedUserIds.length > 0">
+            <div class="col-md-12">
+                <div class="alert alert-info mb-0">
+                    <i class="fa fa-info-circle"></i>
+                    <strong>{{ selectedUserIds.length }}</strong> user(s) selected
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-success" (click)="submit()" [disabled]="selectedUserIds.length === 0 || spinnerLoading">
+                    <span *ngIf="spinnerLoading" class="spinner-border spinner-border-sm me-2"></span>
+                    Link Users
+                </button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-secondary" (click)="cancel()" [disabled]="spinnerLoading">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

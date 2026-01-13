@@ -38,14 +38,14 @@ export class ApiService {
   // const formatedURl = 'http://103.89.44.154:20002/api/' + url
   //  const formatedURl = 'http://103.109.7.173:5501/api/' + url
   // const formatedURl = 'http://103.178.248.110:8201/api/' + url
-    const formatedURl = 'https://itmparampara.co.in/api/' + url
+    const formatedURl = 'https://api.baliniot.in/api/' + url
     // const formatedURl = 'http://103.109.7.173:6602/api/' + url
 
     return formatedURl;
   }
 
   setBaseurl(url: string) {
-    const formatedURl = 'https://skygpstrack.shop/api/' + url
+    const formatedURl = 'https://api.baliniot.in/api/' + url
 
     //  const formatedURl = 'http://103.109.7.173:20003/api/' + url
     //  const formatedURl = 'https://gpsvts.in:20005/api/' + url

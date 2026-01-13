@@ -22,6 +22,9 @@ const routes: Routes = [
     path: 'device-manage', component: DeviceManageComponent,
     children: [
       {
+        path: ':id/:CustomerId/:deviceId/add-device', component: DeviceDetailsComponent
+      },
+      {
         path: ':id/:CustomerId/add-device', component: DeviceDetailsComponent
       },
       {

@@ -136,56 +136,48 @@ export class TokenService {
     let payload: any;
     let service: any;
   
-    if (data?.filterBy === "Customer") {
-      payload = {
-        "userName": data.username,
-        "password": data.password,
-        "fcmToken": "token",
-        "phoneModel": "model",
-        "PhoneType": 3,
-        "os": "os",
-        "appVersion": "1.0",
-        "status": 1
-      };
-      service = this.userService.userLogin(payload);
-    } else if (data?.filterBy === "Dealer/Reseller") {
-      payload = {
-        "userName": data.username,
-        "password": data.password,
-        "phoneType": 3,
-        "selectedUserType": "3"
-      };
-      service = this.userService.dealerLogin(payload);
-    }
+    // Both Customer and Dealer/Reseller use the same payload format
+    payload = {
+      "loginId": data.username,
+      "password": data.password,
+      "loginDevice": "web"
+    };
+    
+    // Both use the same login endpoint
+    service = this.userService.userLogin(payload);
   
     // Store the payload for future use in refreshToken
     sessionStorage.setItem('loginPayload', JSON.stringify(payload));
   
     return service.pipe(
       tap((res: any) => {
-        const userDetail = res.body;
+        const response = res.body;
         this.isLoginClick = false;
   
-        if (userDetail?.ResponseMessage === "Success") {
-          const token = res?.body?.Result.Data;
-          this.storageService.setItem("token", token);
-          sessionStorage.setItem("token", token);
-          sessionStorage.setItem("refresh_token", token);
+        if (response?.result === true && response?.data) {
+          // Token already includes "Bearer " prefix from the API
+          const token = response.data;
+          // Extract just the token part (remove "Bearer " prefix) for storage
+          const tokenOnly = token.startsWith('Bearer ') ? token.substring(7) : token;
+          
+          this.storageService.setItem("token", tokenOnly);
+          sessionStorage.setItem("token", tokenOnly);
+          sessionStorage.setItem("refresh_token", tokenOnly);
           this.setExpiration(5000);
           this.tokenGenerated.next(true);
           this.activityService.continueSession();
-          localStorage.setItem('token', token);
+          localStorage.setItem('token', tokenOnly);
           localStorage.setItem('userName', data.username);
   
           if (data?.filterBy === 'Customer') {
             localStorage.setItem('userType', 'customer');
-            const decodedToken = this.jwtService.decodeToken(token);
+            const decodedToken = this.jwtService.decodeToken(tokenOnly);
             this.storageService.setItem('userDetail', decodedToken);
             this.NotificationService.showSuccess('Login Successfully');
             this.router.navigateByUrl('user/dashboard/summary');
           } else {
             localStorage.setItem('userType', 'admin');
-            const decodedToken = this.jwtService.decodeToken(token);
+            const decodedToken = this.jwtService.decodeToken(tokenOnly);
             this.storageService.setItem('userDetail', decodedToken);
             this.jwtService.removeToken();
   
@@ -242,7 +234,17 @@ export class TokenService {
   
       // Use the dealerLogin service with the stored payload
       this.userService.userLogin(payload).subscribe((res: any) => {
-        const token = res?.body?.Result?.Data;
+        const response = res?.body;
+        let token = null;
+        
+        // Handle new response format
+        if (response?.result === true && response?.data) {
+          const tokenWithBearer = response.data;
+          token = tokenWithBearer.startsWith('Bearer ') ? tokenWithBearer.substring(7) : tokenWithBearer;
+        } else if (response?.ResponseMessage === "Success") {
+          // Fallback to old format for backward compatibility
+          token = res?.body?.Result?.Data;
+        }
   
         if (token) {
           sessionStorage.setItem("token", token);

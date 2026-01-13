@@ -1,21 +1,6 @@
 <div class="filter-part">
     <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-3">
-            <div class="middle-part">
-                <ng-select placeholder="Select Dealer" [ngModel]="selectedDealer" (change)="onDealerSelect($event)">
-                    <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
-                  </ng-select>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="customer-part">
-                <ng-select placeholder="Select Customer" [ngModel]="selectedCustomer" (change)="onCustomerSelect($event)">
-                    <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
-                  </ng-select>
-            </div>
-        </div>
-        <div class="col-md-3">
+        <div class="col-md-12 text-end">
             <div class="first-part">
                 <button class="btn btn-primary" (click)="toggleOptions()">
                     <i class="fa fa-plus" aria-hidden="true"></i> Add new Device
@@ -25,10 +10,6 @@
                     <button class="option-btn" (click)="redirectTo('bulk-upload', '')">Bulk Upload</button>
                 </div>
             </div>
-            <!-- <div class="first-part">
-                <button class="btn btn-primary" (click)="redirectTo('add-device', '')"><i class="fa fa-plus" aria-hidden="true"></i>Add new Device</button>     
-            </div> -->
-           
         </div>
     </div>
 </div>

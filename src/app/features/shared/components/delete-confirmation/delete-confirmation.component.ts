@@ -14,10 +14,12 @@ export class DeleteConfirmationComponent {
   primaryActionLabel: any;
   secondaryActionLabel: any;
   service: any
+  confirmationType: string = 'password'; // 'password' or 'delete'
   @Output() mapdata = new EventEmitter<string>();
   userDetail: any;
   validateMessage: any;
   showPassword:boolean = false
+  deleteText: string = '';
 
   constructor(
     private bsmodalservice: BsModalService,
@@ -26,7 +28,18 @@ export class DeleteConfirmationComponent {
   ) { }
 
   ngOnInit() {
-    this.getUserDetail()
+    // confirmationType is set via modal initialState
+    // Default to 'password' if not provided
+    if (!this.confirmationType || this.confirmationType === undefined) {
+      this.confirmationType = 'password';
+    }
+    
+    if (this.confirmationType === 'password') {
+      this.getUserDetail()
+    } else if (this.confirmationType === 'delete') {
+      // Initialize for delete mode
+      this.validateMessage = 'Please type DELETE to confirm';
+    }
   }
 
   ok() {
@@ -46,8 +59,24 @@ export class DeleteConfirmationComponent {
     this.showPassword = !this.showPassword
   }
 
+  onDeleteTextChange(event: any) {
+    this.deleteText = event?.target?.value || '';
+    if (this.deleteText.trim().toUpperCase() === 'DELETE') {
+      this.validateMessage = 'Success';
+    } else if (this.deleteText.trim().length === 0) {
+      this.validateMessage = 'Please type DELETE to confirm';
+    } else {
+      this.validateMessage = 'Please type DELETE exactly (case-insensitive) to confirm';
+    }
+  }
 
   searchData(event: any) {
+    if (this.confirmationType === 'delete') {
+      this.onDeleteTextChange(event);
+      return;
+    }
+    
+    // Original password validation logic
     let payload = {
      "role_id": Number(this.userDetail?.role),
     "user_id": Number(this.userDetail?.dealerId),
@@ -57,7 +86,6 @@ export class DeleteConfirmationComponent {
     this.dashboardService?.checkUserDetail(payload)?.subscribe((res: any) => {
       this.validateMessage = res?.body?.responseMessage
     })
-
   }
 
   cancel() {

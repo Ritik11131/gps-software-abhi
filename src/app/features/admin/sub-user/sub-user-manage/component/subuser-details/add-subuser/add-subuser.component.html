@@ -7,22 +7,34 @@
         <form [formGroup]="subuserForm" (ngSubmit)="submit(subuserForm.value)">
             <div class="row">
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Login Id</label>
+                    <label class="form-label">Login Id <span class="text-danger">*</span></label>
                     <div class="input-group">
-                        <input formControlName="userName" placeholder="Enter Login Id" (input)="searchData($event)"
-                            aria-describedby="button-addon2" class="form-control ng-valid ng-dirty ng-touched"
+                        <input formControlName="loginId" placeholder="Enter Login Id" 
+                            (input)="onLoginIdChange($any($event.target).value)"
+                            class="form-control" 
+                            [class.is-invalid]="(subuserForm.get('loginId')?.invalid && (subuserForm.get('loginId')?.dirty || subuserForm.get('loginId')?.touched)) || isLoginIdDuplicate"
                             type="text" autocomplete="new-username">
+                        <span *ngIf="isCheckingLoginId" class="input-group-text">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </span>
                     </div>
-                    <div class="text-danger" *ngIf="duplicateSubUser == true">
-                        Login Id already taken
-                    </div>
-                    <div *ngIf="subuserForm.get('userName')?.invalid && (subuserForm.get('userName')?.dirty || subuserForm.get('userName')?.touched)"
+                    <div *ngIf="subuserForm.get('loginId')?.invalid && (subuserForm.get('loginId')?.dirty || subuserForm.get('loginId')?.touched)"
                         class="text-danger">
-                        Login Id is required
+                        <div *ngIf="subuserForm.get('loginId')?.errors?.['required']">Login Id is required</div>
+                        <div *ngIf="subuserForm.get('loginId')?.errors?.['duplicate']">Login Id is already taken</div>
                     </div>
                 </div>
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Password</label>
+                    <label class="form-label">User Name <span class="text-danger">*</span></label>
+                    <input formControlName="userName" placeholder="Enter User Name" 
+                        class="form-control" type="text" autocomplete="name">
+                    <div *ngIf="subuserForm.get('userName')?.invalid && (subuserForm.get('userName')?.dirty || subuserForm.get('userName')?.touched)"
+                        class="text-danger">
+                        User Name is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Password <span class="text-danger" *ngIf="!subUserId">*</span></label>
                     <div class="input-group">
                         <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control"
                             formControlName="password" placeholder="Enter Password" aria-describedby="button-addon2"
@@ -35,9 +47,10 @@
                         class="text-danger">
                         Password is required
                     </div>
+                    <small class="text-muted" *ngIf="subUserId">Leave blank to keep existing password</small>
                 </div>
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">Email <span class="text-danger">*</span></label>
                     <input type="email" class="form-control" placeholder="Enter Email" formControlName="email"
                         aria-describedby="button-addon2" />
                     <div *ngIf="subuserForm.get('email')?.invalid && (subuserForm.get('email')?.dirty || subuserForm.get('email')?.touched)"
@@ -47,39 +60,51 @@
                     </div>
                 </div>
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Contact No.</label>
-                    <input type="text" class="form-control" placeholder="Enter Contact No." formControlName="phn"
+                    <label class="form-label">Mobile No. <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" placeholder="Enter Mobile No." formControlName="mobileNo"
                         aria-describedby="button-addon2" />
-                        <div
-                        *ngIf="subuserForm.get('phn')?.invalid && (subuserForm.get('phn')?.dirty || subuserForm.get('phn')?.touched)">
-                        <div  class="text-danger" *ngIf="subuserForm.get('phn')?.errors?.['required']">Contact no is required</div>
-                        <div class="text-danger" *ngIf="subuserForm.get('phn')?.errors?.['pattern']">Invalid phone
-                            number format.</div>
+                    <div *ngIf="subuserForm.get('mobileNo')?.invalid && (subuserForm.get('mobileNo')?.dirty || subuserForm.get('mobileNo')?.touched)"
+                        class="text-danger">
+                        <div *ngIf="subuserForm.get('mobileNo')?.errors?.['required']">Mobile no is required</div>
+                        <div *ngIf="subuserForm.get('mobileNo')?.errors?.['pattern']">Invalid phone number format (10 digits required)</div>
                     </div>
                 </div>
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Status</label>
-                    <ng-select placeholder="Select Status" formControlName="status">
+                    <label class="form-label">User Type <span class="text-danger">*</span></label>
+                    <ng-select placeholder="Select User Type" formControlName="userType">
+                        <ng-option *ngFor="let item of userTypeData" [value]="item?.id">{{ item?.name }}</ng-option>
+                    </ng-select>
+                    <div *ngIf="subuserForm.get('userType')?.invalid && (subuserForm.get('userType')?.dirty || subuserForm.get('userType')?.touched)"
+                        class="text-danger">
+                        User Type is required
+                    </div>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control" formControlName="address" placeholder="Enter Address" rows="3"></textarea>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                    <ng-select placeholder="Select Status" formControlName="isActive">
                         <ng-option *ngFor="let item of statusData" [value]="item?.id">{{ item?.staus }}</ng-option>
                     </ng-select>
-                    <div *ngIf="subuserForm.get('status')?.invalid && (subuserForm.get('status')?.dirty || subuserForm.get('status')?.touched)"
+                    <div *ngIf="subuserForm.get('isActive')?.invalid && (subuserForm.get('isActive')?.dirty || subuserForm.get('isActive')?.touched)"
                         class="text-danger">
                         Status is required
                     </div>
-
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <br>
-                    <button class="btn btn-success" type="submit"
-                        >
+                    <button class="btn btn-success" type="submit" [disabled]="spinnerLoading || isLoginIdDuplicate || subuserForm.invalid || isCheckingLoginId">
+                        <span *ngIf="spinnerLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                         {{buttonValue}}
                     </button>
                 </div>
                 <div class="col-md-6">
                     <br>
-                    <button class="btn btn-danger" (click)="cancel($event)">
+                    <button class="btn btn-danger" type="button" (click)="cancel($event)" [disabled]="spinnerLoading">
                         Cancel
                     </button>
                 </div>

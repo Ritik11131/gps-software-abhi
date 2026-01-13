@@ -14,7 +14,7 @@ export class SubUserService {
   ) { }
 
   userList(dealerId:any, cusotmerId:any): Observable<any> {
-    let url = API_CONSTANTS.userList.replace('{dealerId}',dealerId).replace('{cusotmerId}', cusotmerId)
+    let url = API_CONSTANTS.userList;
     return this.apiService
       .get(url)
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
@@ -60,6 +60,41 @@ export class SubUserService {
     let url = API_CONSTANTS.duplicateSubUser.replace('{searchId}', searchId)
     return this.apiService
       .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  validateLoginId(loginId: string, id: number = 0): Observable<any> {
+    let url = `${API_CONSTANTS.validateLoginId}?loginId=${loginId}&id=${id}`;
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  addUser(payload: any): Observable<any> {
+    let url = API_CONSTANTS.addUser;
+    return this.apiService
+      .post(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  getUserById(userId: number): Observable<any> {
+    let url = API_CONSTANTS.getUserById.replace('{id}', userId.toString());
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  updateUser(userId: number, payload: any): Observable<any> {
+    let url = API_CONSTANTS.updateUser.replace('{id}', userId.toString());
+    return this.apiService
+      .put(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  deleteUser(userId: number): Observable<any> {
+    let url = API_CONSTANTS.deleteUser.replace('{id}', userId.toString());
+    return this.apiService
+      .delete(url)
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
 }

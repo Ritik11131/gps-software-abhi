@@ -18,6 +18,7 @@ import { ModifiedRechargeComponent } from '../device/modified-recharge/modified-
 import { StorageService } from 'src/app/features/http-services/storage.service';
 import { ShowFitmentComponent } from '../device/show-fitment/show-fitment.component';
 import { RefreshpageService } from 'src/app/features/http-services/refreshpage.service';
+import { LinkUserComponent } from '../device/link-user/link-user.component';
 
 
 @Component({
@@ -38,46 +39,55 @@ export class DeviceListComponent {
   tableSizes = [25, 50, 100];
   urlPath = [
     {
-      name: 'Device Details',
-      path: 'device-details'
+      name: 'Update',
+      path: 'update-device',
     },
     {
-      name: 'Advance Settings',
-      path: 'advance-settings',
-    },
-    {
-      name: 'Recharge Point',
-      path: 'recharge-point',
-    },
-    {
-      name: 'Modify Recharge Due',
-      path: 'modify',
+      name: 'Link User',
+      path: 'link-user',
     },
     {
       name: 'Delete Device',
       path: 'delete-device',
     },
-    {
-      name: 'Move Device ',
-      path: 'move',
-    },
-
+    // Commented out - keeping only Update and Delete
+    // {
+    //   name: 'Device Details',
+    //   path: 'device-details'
+    // },
+    // {
+    //   name: 'Advance Settings',
+    //   path: 'advance-settings',
+    // },
+    // {
+    //   name: 'Recharge Point',
+    //   path: 'recharge-point',
+    // },
+    // {
+    //   name: 'Modify Recharge Due',
+    //   path: 'modify',
+    // },
+    // {
+    //   name: 'Move Device ',
+    //   path: 'move',
+    // },
   ];
 
-  fitmentUrlPath = [
-    {
-      name: 'Create ',
-      path: 'create-fitment',
-    },
-    {
-      name: 'Delete',
-      path: 'delete-fitment',
-    },
-    {
-      name: 'Show ',
-      path: 'show-fitment',
-    },
-  ]
+  // Commented out - fitment actions
+  // fitmentUrlPath = [
+  //   {
+  //     name: 'Create ',
+  //     path: 'create-fitment',
+  //   },
+  //   {
+  //     name: 'Delete',
+  //     path: 'delete-fitment',
+  //   },
+  //   {
+  //     name: 'Show ',
+  //     path: 'show-fitment',
+  //   },
+  // ]
   bsModelRef!: BsModalRef
   deviceData: any;
   rechargeData: any;
@@ -112,6 +122,8 @@ export class DeviceListComponent {
 
     this.getuserDetail()
     this.setInitialValue();
+    // Call getDeviceList by default when page loads
+    this.getDeviceList();
     this.refreshCustomerService.customerAdded$.subscribe(() => {
       this.getDeviceList()
     });
@@ -152,21 +164,24 @@ export class DeviceListComponent {
     });
   }
 
-  confirm(event: any) {
-    this.selectedDealerId = event?.dealerId;
-    this.selectedCustomerId = event?.customerId
-
-    this.getDeviceList()
-  }
+  // Commented out - no longer using filter dropdowns
+  // confirm(event: any) {
+  //   this.selectedDealerId = event?.dealerId;
+  //   this.selectedCustomerId = event?.customerId
+  //   this.getDeviceList()
+  // }
 
   getDeviceList() {
     this.spinnerLoading = true
-    this.subUserService.customerDevice(this.selectedDealerId, this.selectedCustomerId).subscribe((res: any) => {
+    // Use new API to get all devices
+    this.deviceManageService.getDeviceList().subscribe((res: any) => {
       this.spinnerLoading = false;
-      if (res?.status == 200) {
-        this.deviceData = res?.body?.Result?.Data
+      if (res?.status == 200 && res?.body?.result === true) {
+        this.deviceData = res?.body?.data || []
+        this.count = this.deviceData.length;
       } else {
         this.deviceData = []
+        this.count = 0;
       }
     })
   }
@@ -213,30 +228,44 @@ export class DeviceListComponent {
       this.selectColor = null;
       url = `/admin/device/device-manage`
       this.deletDevice(this.selectedDeviceValue)
+      return; // Return early for delete
+    } else if (path == 'update-device') {
+      // Use device ID directly for update - route format: :id/:CustomerId/:deviceId/add-device
+      const deviceId = this.selectedDeviceValue.id || this.selectedDeviceValue.Id;
+      url = `/admin/device/device-manage/0/0/${deviceId}/add-device`;
+    } else if (path == 'link-user') {
+      // Open modal to link users to device
+      this.linkUserToDevice(this.selectedDeviceValue);
+      return;
     } else if (path == 'recharge-point') {
       url = `/admin/device/device-manage`
       this.getRechargeDetail(this.selectedDeviceValue)
+      return;
     } else if (path == 'activate-point') {
       url = `/admin/device/device-manage`
       this.activatePoint(this.selectedDeviceValue)
+      return;
     } else if (path == 'modify') {
       url = `/admin/device/device-manage`
       this.modifiedRecharge(this.selectedDeviceValue)
+      return;
     } else if (path == 'create-fitment') {
-      url = `/admin/device/device-manage/${this.selectedDealerId}/${this.selectedDeviceValue.CustomerId}/${this.selectedDeviceValue.Id}/${path}`;
+      url = `/admin/device/device-manage/0/0/${this.selectedDeviceValue.id || this.selectedDeviceValue.Id}/${path}`;
     } else if (path == 'delete-fitment') {
       url = `/admin/device/device-manage`
       this.deleteFitment(this.selectedDeviceValue)
+      return;
     } else if (path == 'show-fitment') {
       url = `/admin/device/device-manage`
       this.showFitmentDetails(this.selectedDeviceValue)
+      return;
     } else {
-      url = `/admin/device/device-manage/${this.selectedDealerId}/${this.selectedDeviceValue.CustomerId}/${this.selectedDeviceValue.Id}/${path}`;
+      // For other paths, use device ID
+      url = `/admin/device/device-manage/0/0/${this.selectedDeviceValue.id || this.selectedDeviceValue.Id}/${path}`;
     }
 
+    // Don't call announceCustomerAdded() when navigating - only call it after successful save/update
     this.router.navigateByUrl(url);
-    this.refreshCustomerService.announceCustomerAdded();
-
   }
 
   addDevice(event: any) {
@@ -244,17 +273,20 @@ export class DeviceListComponent {
     if (event == 'add-device') {
       this.selectedDeviceValue = null;
       this.selectColor = null;
-      url = `/admin/device/device-manage/${this.selectedDealerId}/${this.selectedCustomerId}/${event}`
+      // Route requires :id/:cusID parameters, using 0 as default since filters are removed
+      url = `/admin/device/device-manage/0/0/${event}`
     } else if (event == 'bulk-upload') {
       url = `/admin/device/${event}`
     }
 
+    // Don't call announceCustomerAdded() when navigating - only call it after successful save/update
     this.router.navigateByUrl(url);
   }
 
   getRechargeDetail(device: any) {
     this.spinnerLoading = true
-    this.deviceManageService.getRechargeValidity(device.Id).subscribe((res: any) => {
+    // Use new API structure - device.id instead of device.Id
+    this.deviceManageService.getRechargeValidity(device.id || device.Id).subscribe((res: any) => {
       this.spinnerLoading = false;
       if (res?.status == 200) {
         this.spinnerLoading = false;
@@ -263,9 +295,9 @@ export class DeviceListComponent {
           initialState: {
             selectedDealer: this.selectedDealerId,
             selectedCustomer: this.selectedCustomerId,
-            deviceId: device?.DeviceId,
-            Id: device?.Id,
-            vehicleNo: device?.VehicleNo,
+            deviceId: device?.deviceId || device?.DeviceId,
+            Id: device?.id || device?.Id,
+            vehicleNo: device?.vehicleNo || device?.VehicleNo,
             tittle: 'Apply Point',
             rechargeData: this.rechargeData
           },
@@ -286,8 +318,8 @@ export class DeviceListComponent {
       initialState: {
         selectedDealer: this.selectedDealerId,
         selectedCustomer: this.selectedCustomerId,
-        deviceId: device?.Id,
-        vehicleNo: device?.VehicleNo,
+        deviceId: device?.id || device?.Id,
+        vehicleNo: device?.vehicleNo || device?.VehicleNo,
         tittle: 'Apply Point',
       },
     };
@@ -302,8 +334,8 @@ export class DeviceListComponent {
       initialState: {
         selectedDealer: this.selectedDealerId,
         selectedCustomer: this.selectedCustomerId,
-        deviceId: device?.Id,
-        Id: device?.PointValidity?.Id,
+        deviceId: device?.id || device?.Id,
+        Id: device?.validity?.id || device?.PointValidity?.Id,
         deviceData: device,
         tittle: 'Device Validity',
       },
@@ -315,14 +347,16 @@ export class DeviceListComponent {
   }
 
   deletDevice(device: any) {
-    let url = this.deviceManageService.deleteDeviceManage(this.selectedDealerId, this.selectedCustomerId, device?.Id)
+    // Use new deleteDevice API
+    let deleteService = this.deviceManageService.deleteDevice(device?.id);
     const initialState: ModalOptions = {
       initialState: {
-        title: device?.DeviceId,
-        content: 'Are you sure you want to delete?',
+        title: `Delete Device: ${device?.deviceId || device?.deviceImei}`,
+        content: 'Are you sure you want to delete this device? This action cannot be undone.',
         primaryActionLabel: 'Delete',
         secondaryActionLabel: 'Cancel',
-        service: url
+        service: deleteService,
+        confirmationType: 'delete' // Use DELETE typing confirmation
       },
     };
     this.bsModelRef = this.bsmodelService.show(
@@ -335,12 +369,21 @@ export class DeviceListComponent {
 
     this.bsModelRef?.content.mapdata.subscribe(
       (value: any) => {
-        if (value?.body?.ResponseMessage == 'Success') {
-          this.refreshCustomerService.announceCustomerAdded();
-          this.notificationService.showSuccess(value?.body?.Result?.Data)
+        // Delete API doesn't return a response body - if no error, show success
+        if (value?.error) {
+          // Error case - show error message
+          const errorMsg = value?.error?.message || value?.error?.Error?.Message || 'Failed to delete device';
+          this.notificationService.showError(errorMsg);
         } else {
-          this.notificationService.showError(value?.error.Error?.Message)
+          // Success - no response body, just show success message
+          this.refreshCustomerService.announceCustomerAdded();
+          this.notificationService.showSuccess('Device deleted successfully');
         }
+      },
+      (error: any) => {
+        // Handle subscription error
+        const errorMsg = error?.error?.message || error?.message || 'Failed to delete device';
+        this.notificationService.showError(errorMsg);
       }
     );
   }
@@ -357,7 +400,8 @@ export class DeviceListComponent {
 
   showFitmentDetails(device: any) {
     this.spinnerLoading = true
-    this.deviceManageService.getFitmentDetail(device.Id).subscribe((res: any) => {
+    // Use new API structure - device.id instead of device.Id
+    this.deviceManageService.getFitmentDetail(device.id || device.Id).subscribe((res: any) => {
       this.spinnerLoading = false;
       if (res?.status == 200) {
         this.fitmentDetail = res?.body?.Result?.Data
@@ -380,11 +424,12 @@ export class DeviceListComponent {
   }
 
   deleteFitment(device: any) {
-    let url = this.deviceManageService.deleteDeviceFitement(device?.Id)
+    // Use new API structure
+    let url = this.deviceManageService.deleteDeviceFitement(device?.id || device?.Id)
     const initialState: ModalOptions = {
       initialState: {
-        title: device?.DeviceId,
-        content: `Are you sure to delete the fitment for this device ${device?.VehicleNo}?`,
+        title: device?.deviceId || device?.DeviceId,
+        content: `Are you sure to delete the fitment for this device ${device?.vehicleNo || device?.VehicleNo}?`,
         primaryActionLabel: 'Delete',
         secondaryActionLabel: 'Cancel',
         service: url
@@ -410,4 +455,32 @@ export class DeviceListComponent {
     );
   }
 
+  linkUserToDevice(device: any) {
+    const deviceId = device?.id || device?.Id;
+    if (!deviceId) {
+      this.notificationService.showError('Device ID is required');
+      return;
+    }
+
+    const initialState: ModalOptions = {
+      initialState: {
+        deviceId: deviceId
+      },
+    };
+    this.bsModelRef = this.bsmodelService.show(
+      LinkUserComponent,
+      Object.assign(initialState, {
+        id: "link-user",
+        class: "modal-lg modal-dialog-centered",
+      })
+    );
+
+    this.bsModelRef?.content.mapdata.subscribe(
+      (value: any) => {
+        if (value?.success === true) {
+          this.refreshCustomerService.announceCustomerAdded();
+        }
+      }
+    );
+  }
 }

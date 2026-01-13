@@ -194,4 +194,82 @@ export class DeviceManageService {
     .get(url)
     .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
+
+  // New device APIs
+  getDeviceList(): Observable<any> {
+    let url = API_CONSTANTS.deviceList;
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  getDeviceById(deviceId: number): Observable<any> {
+    let url = API_CONSTANTS.getDeviceById.replace('{id}', deviceId.toString());
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  addDevice(payload: any): Observable<any> {
+    let url = API_CONSTANTS.addDevice;
+    return this.apiService
+      .post(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  updateDevice(deviceId: number, payload: any): Observable<any> {
+    let url = API_CONSTANTS.updateDevice.replace('{id}', deviceId.toString());
+    return this.apiService
+      .put(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  deleteDevice(deviceId: number): Observable<any> {
+    let url = API_CONSTANTS.deleteDeviceNew.replace('{id}', deviceId.toString());
+    return this.apiService
+      .delete(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  validateDeviceUniqueId(uniqueId: string, id: number = 0): Observable<any> {
+    let url = `${API_CONSTANTS.validateDeviceUniqueId}?uniqueId=${uniqueId}&id=${id}`;
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  getDeviceTypes(): Observable<any> {
+    let url = API_CONSTANTS.deviceTypeMaster;
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  getVehicleTypes(): Observable<any> {
+    let url = API_CONSTANTS.vehicleTypeMaster;
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  getOperatorTypes(): Observable<any> {
+    let url = API_CONSTANTS.operatorTypeMaster;
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  getCustomerPlans(): Observable<any> {
+    let url = API_CONSTANTS.customerPlan;
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  createDeviceMapping(payload: any): Observable<any> {
+    let url = API_CONSTANTS.createDeviceMapping;
+    return this.apiService
+      .post(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
 }

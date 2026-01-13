@@ -7,7 +7,7 @@
             </div>
             <div class="card-body">
                 <div class="fiter-data mb-3">
-                    <subuser-filter (filterValue)="confirm($event)" (addSubuser)="addSubUser($event)"></subuser-filter>
+                    <subuser-filter (addSubuser)="addSubUser($event)"></subuser-filter>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -30,22 +30,22 @@
                                                       itemsPerPage: tableSize,
                                                       currentPage: page,
                                                       totalItems: count} let i= index"
-                                                      [ngClass]="{'active': selectColor?.Id === row?.Id}">
+                                                      [ngClass]="{'active': selectColor?.id === row?.id}">
                                                 <td>
-                                                    <a>{{ row?.LoginId }}</a>
+                                                    <a>{{ row?.loginId }}</a>
                                                 </td>
                                                 <td>
-                                                    <a>{{ row?.Password }}</a>
+                                                    <a>••••••••</a>
                                                 </td>
 
                                                 <td>
-                                                    <a>{{ row?.MobileNo }}</a>
+                                                    <a>{{ row?.mobileNo }}</a>
                                                 </td>
                                                 <td>
-                                                    <a>{{ row?.CreationTime | date : "dd/MM/yyyy HH:mm:ss" }}</a>
+                                                    <a>{{ row?.creationTime * 1000 | date : "dd/MM/yyyy HH:mm:ss" }}</a>
                                                 </td>
                                                 <td>
-                                                    <a>{{ row?.IsActive == 0 ? 'Active' : 'InActive' }}</a>
+                                                    <a>{{ row?.isActive == 1 ? 'Active' : 'InActive' }}</a>
                                                   </td>
                                                 <td>
                                                     <button mat-icon-button (click)="onContextMenu($event, row, i)">

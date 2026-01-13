@@ -8,7 +8,7 @@
             </div>
             <div class="card-body">
                 <div class="fiter-data mb-3">
-                    <device-fitler (filterValue)="confirm($event)" (addDevice)="addDevice($event)"></device-fitler>
+                    <device-fitler (addDevice)="addDevice($event)"></device-fitler>
                 </div>
 
                 <div class="row">
@@ -34,36 +34,34 @@
                                                           itemsPerPage: tableSize,
                                                           currentPage: page,
                                                           totalItems: count} let i= index"
-                                                          [ngClass]="{'active': selectColor?.Id === row?.Id}">
+                                                          [ngClass]="{'active': selectColor?.id === row?.id || selectColor?.Id === row?.id}">
                                                     <td>
-                                                        <a>{{ row?.VehicleNo }}</a>
+                                                        <a>{{ row?.vehicleNo }}</a>
                                                     </td>
                                                     <td  >
                                                         <a (mouseenter)="showCopyIcon = i" style="cursor: pointer;" [ngStyle]="{'color': (showCopyIcon === i) ? 'red' : 'blue','display': (showCopyIcon === i) ? 'inline-flex' : '', 'gap': (showCopyIcon === i) ? '8px' : ''}" (mouseleave)="showCopyIcon = null">
-                                                            {{ row?.DeviceId }}
-                                                            <i *ngIf="showCopyIcon === i" (click)="copyContent(row?.DeviceId,i)" class="fa-regular fa-copy cursor-pointer" [title]="copy == true && showCopyIcon === index ? 'Copied' : 'Copy'"></i>
+                                                            {{ row?.deviceId }}
+                                                            <i *ngIf="showCopyIcon === i" (click)="copyContent(row?.deviceId,i)" class="fa-regular fa-copy cursor-pointer" [title]="copy == true && showCopyIcon === index ? 'Copied' : 'Copy'"></i>
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <a>{{ row?.SimPhoneNumber}}</a>
+                                                        <a>{{ row?.simPhoneNumber}}</a>
                         
                                                     </td>
                                                     <td>
-                                                        <a>{{ row?.DeviceType?.Name }}</a>
+                                                        <a>{{ row?.deviceImei }}</a>
                                                     </td>
                                                     <td>
-                                                        <a>{{ row?.CreationTime | date : "dd/MM/yyyy" }}</a>
+                                                        <a>{{ row?.creationTime | date : "dd/MM/yyyy" }}</a>
                                                       </td>
                                                     <td>
-                                                        <a>{{ row?.InstallationOn | date : "dd/MM/yyyy" }}</a>
+                                                        <a>{{ row?.installationOn | date : "dd/MM/yyyy" }}</a>
                                                     </td>
                                                     <td>
-                                                        <a>{{  row?.PointValidity?.CurrentPointType === 0 ? 'dd/mm/yyyy' : row?.PointValidity?.NextRechargeDue | date :
-                                                            "dd/MM/yyyy"}}</a>
+                                                        <a>{{ row?.validity?.nextRechargeDate | date : "dd/MM/yyyy" || 'N/A' }}</a>
                                                     </td>
                                                     <td>
-                                                        <a>{{ row?.PointValidity?.CurrentPointType === 0 ? 'dd/mm/yyyy' : row?.PointValidity?.CustomerRechargeDue | date :
-                                                            "dd/MM/yyyy"}}</a>
+                                                        <a>{{ row?.validity?.customerRechargeDate | date : "dd/MM/yyyy" || 'N/A' }}</a>
                                                     </td>
                                                     <td>
                                                         <button mat-icon-button (click)="onContextMenu($event, row, i)">
@@ -88,15 +86,14 @@
                                 </div>
                                 <mat-menu #contextMenu="matMenu">
                                     <ng-template matMenuContent let-item="item">
-                                        <button mat-menu-item [matMenuTriggerFor]="fitmentSub">Fitment</button>
-                                        <button mat-menu-item *ngFor="let menuItem of urlPath" (click)="redirectTo(menuItem.name === 'Recharge Point' && selectedDeviceValue?.PointValidity?.CurrentPointType === 0 ? 'activate-point' : menuItem.path)">
-                                            {{ menuItem.name === 'Recharge Point' && selectedDeviceValue?.PointValidity?.CurrentPointType === 0 ? 'Activate Point' : menuItem.name }}
+                                        <!-- Commented out - fitment actions -->
+                                        <!-- <button mat-menu-item [matMenuTriggerFor]="fitmentSub">Fitment</button> -->
+                                        <button mat-menu-item *ngFor="let menuItem of urlPath" (click)="redirectTo(menuItem.path)">
+                                            {{ menuItem.name }}
                                         </button>
-                                        <mat-menu #fitmentSub="matMenu">
+                                        <!-- <mat-menu #fitmentSub="matMenu">
                                             <button mat-menu-item *ngFor="let menuItem of fitmentUrlPath" (click)="redirectTo(menuItem.path)">{{ menuItem.name}}</button>
-                                            <!-- <button mat-menu-item>Delete</button>
-                                            <button mat-menu-item>Show</button> -->
-                                        </mat-menu>
+                                        </mat-menu> -->
                                     </ng-template>
                                 </mat-menu>
                             </div>
