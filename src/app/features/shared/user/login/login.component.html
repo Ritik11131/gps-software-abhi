@@ -58,7 +58,7 @@
                     <ng-option *ngFor="let item of bulk" [value]="item?.title">{{item?.title}}</ng-option>
                   </ng-select>
                 </div> -->
-                <div class="selection-part mb-2">
+                <div style="display: none;" class="selection-part mb-2">
                   <span><input type="radio" value="Customer" id="customer" formControlName="filterBy"> Customer</span>
                   <span><input type="radio" value="Dealer/Reseller" id="dealer" formControlName="filterBy">
                     Reseller</span>
