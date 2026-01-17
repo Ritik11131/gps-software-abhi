@@ -86,13 +86,14 @@ export class ReportManageListComponent {
     private commonService: CommonService,
     private cdr: ChangeDetectorRef,
     private modalService: BsModalService,
-    private notificationService : NotificationService
-  ) { }
-  setData(data: any, filterType: any, formvalue: any, type: any,isLocation : any) {    
-    
+    private notificationService: NotificationService
+  ) {}
+
+  setData(data: any, filterType: any, formvalue: any, type: any, isLocation: any) {
+
     this.isLocation = formvalue?.locationType
     const timeDiff = formvalue?.toDate?.getTime() - formvalue?.fromDate?.getTime();
-    this.daysDifference = Math.floor(timeDiff / (1000 * 60 * 60 * 24));       
+    this.daysDifference = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
     if (type == 'Report') {
       this.count = 0
       this.page = 1
@@ -102,7 +103,7 @@ export class ReportManageListComponent {
     }
     this.selectedStartIndexes = [];
     this.selectedEndIndexes = [];
-    if(data) {
+    if (data) {
       this.vehicle = data;
     }
     // this.count = this.vehicle?.Points[0]?.TotalCount;
@@ -185,11 +186,7 @@ export class ReportManageListComponent {
       report.hasOwnProperty(this.filterType)
     );
 
-
-
-
-
-    if (this.filterType === 'Stop' || this.filterType === 'Idle') {      
+    if (this.filterType === 'Stop' || this.filterType === 'Idle') {
       this.count = this.vehicle?.Points[0]?.TotalCount
       this.groupDataByVehicleNo();
     } else if (this.filterType === 'Trip Report') {
@@ -198,12 +195,11 @@ export class ReportManageListComponent {
     } else if (this.filterType === 'Overspeed Report') {
       this.count = this.vehicle?.Points[0]?.TotalCount
       this.groupingspeed();
-    }
-    else if(this.filterType === 'Movement Summary'){      
+    } else if (this.filterType === 'Movement Summary') {
       this.groupingMovement()
-    } else if (this.filterType === 'GeoFence Report'){  
+    } else if (this.filterType === 'GeoFence Report') {
       this.groupingGeofence();
-    } 
+    }
   }
 
   calculateTotal() {
@@ -244,8 +240,6 @@ export class ReportManageListComponent {
     }
   }
 
-
-
   // formatDuration(totalSeconds: number): string {
   //   const hours = Math.floor(totalSeconds / 3600);
   //   const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -278,7 +272,7 @@ export class ReportManageListComponent {
             console.error('Error fetching start address:', error);
             this.startAddresses[i] = 'Failed to fetch address';
           },
-          () => { }
+          () => {}
         );
       }
     } else {
@@ -325,10 +319,10 @@ export class ReportManageListComponent {
     }));
   }
 
-  groupingGeofence(): void {    
+  groupingGeofence(): void {
     const tempGroupedData = new Map<
       string, VehicleData[]>();
-  
+
     // Iterate over the vehicle array
     this.vehicle?.forEach((vehicleItem: any) => {
       // Ensure that Points exist before processing,
@@ -417,7 +411,7 @@ export class ReportManageListComponent {
     this.vehicle?.Result?.forEach((item: any) => {
 
       const deviceID = this.vehicle.Vehicle.VehicleNo;
-       // Assuming 'Device' is a string that identifies each device.
+      // Assuming 'Device' is a string that identifies each device.
       if (!tempGroupedData.has(deviceID)) {
         tempGroupedData.set(deviceID, {
           data: [],
@@ -442,7 +436,7 @@ export class ReportManageListComponent {
 
   }
 
-  
+
   groupingOverspeed() {
     const tempGroupedData = new Map<
       string,
@@ -521,29 +515,60 @@ export class ReportManageListComponent {
   }
   @ViewChild('TABLE', { static: false }) table: ElementRef | any;
   exportToExcels(): void {
+    if (!this.filterType) {
+      this.notificationService.showError('Please select a report type first');
+      return;
+    }
+
     if (this.filterType === 'Stop' || this.filterType == 'Idle') {
+      if (!this.groupedData || this.groupedData.length === 0) {
+        this.notificationService.showError('No data available to export');
+        return;
+      }
       this.stopToExcel(this.groupedData);
     }
     if (this.filterType === 'Distance') {
+      if (!this.vehicle || this.vehicle.length === 0) {
+        this.notificationService.showError('No data available to export');
+        return;
+      }
       this.distanceToExcel();
     }
     if (this.filterType === 'Trip Report') {
+      if (!this.groupedData || this.groupedData.length === 0) {
+        this.notificationService.showError('No data available to export');
+        return;
+      }
       this.Tripreport(this.groupedData)
-
     }
     if (this.filterType === 'Overspeed Report') {
+      if (!this.groupedData || this.groupedData.length === 0) {
+        this.notificationService.showError('No data available to export');
+        return;
+      }
       this.SpeedReport(this.groupedData)
     }
     if (this.filterType === 'GeoFence Report') {
+      if (!this.vehicle || this.vehicle.length === 0) {
+        this.notificationService.showError('No data available to export');
+        return;
+      }
       this.geofenceReport()
     }
     if (this.filterType === 'Duration Report') {
+      if (!this.vehicle || this.vehicle.length === 0) {
+        this.notificationService.showError('No data available to export');
+        return;
+      }
       this.durationReport()
     }
-    if(this.filterType === 'Movement Summary') {
+    if (this.filterType === 'Movement Summary') {
+      if (!this.groupedData || this.groupedData.length === 0) {
+        this.notificationService.showError('No data available to export');
+        return;
+      }
       this.movmentSummary(this.groupedData)
-     }
-
+    }
   }
 
   async movmentSummary(groupedData: any[]) {
@@ -555,17 +580,17 @@ export class ReportManageListComponent {
             const endLocation = await this.viewAddressExcel('end', item.EndPoint, i);
 
             return {
-             VehicleNo: this.vehicle.Vehicle.VehicleNo,
+              VehicleNo: this.vehicle.Vehicle.VehicleNo,
               StartTime: moment.default(item.StartPoint).format('MMM D, YYYY, h:mm:ss A'),
-              StartLocation: this.isLocation == 2 ? startLocation : item.StartPoint?.Lat + ',' +  item.StartPoint?.Lng,
+              StartLocation: this.isLocation == 2 ? startLocation : item.StartPoint?.Lat + ',' + item.StartPoint?.Lng,
               EndTime: moment.default(item.EndPoint).format('MMM D, YYYY, h:mm:ss A'),
-              EndLocation: this.isLocation == 2 ? endLocation : item.EndPoint?.Lat + ',' +  item.EndPoint?.Lng,
+              EndLocation: this.isLocation == 2 ? endLocation : item.EndPoint?.Lat + ',' + item.EndPoint?.Lng,
               Duration: moment.default(item.StartTime).format('h:mm:ss A') + " " + 'to' + " " + moment.default(item.EndTime).format('h:mm:ss A'),
               Distance: item.Distance.toFixed(2) + ' Km',
             };
           })
         );
-  
+
         // // Calculate total duration and total distance for the current vehicle
         // const totalDuration = dataWithAddresses.reduce(
         //   (acc, row) => acc + this.parseDuration(row.Duration),
@@ -575,7 +600,7 @@ export class ReportManageListComponent {
           (acc, row) => acc + parseFloat(row.Distance),
           0
         );
-  
+
         // Add a total row for the current vehicle
         dataWithAddresses.push({
           VehicleNo: 'Total',
@@ -586,17 +611,17 @@ export class ReportManageListComponent {
           // Duration: this.formatDuration(totalDuration), // Format total duration as needed
           Distance: totalDistance.toFixed(2) + ' Km',
         });
-  
+
         return dataWithAddresses;
       })
     );
-  
+
     const flatFormattedData = formattedData.flat();
-  
+
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(flatFormattedData);
     const workbook: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Trip Data');
-  
+
     // Adjust column widths based on content length
     const maxColumnWidths = Object.keys(flatFormattedData[0]).map((key) => {
       // Find the max length of the content in each column
@@ -607,14 +632,19 @@ export class ReportManageListComponent {
       // Set a minimum width and add some padding
       return { width: Math.max(10, maxLength + 2) };
     });
-  
+
     worksheet['!cols'] = maxColumnWidths; // Apply column widths to the worksheet
-  
+
     const fileName = `${this.filterType}-Report.xlsx`;
     XLSX.writeFile(workbook, fileName);
   }
 
   durationReport() {
+    if (!this.vehicle || this.vehicle.length === 0) {
+      this.notificationService.showError('No data available to export');
+      return;
+    }
+
     let grandTotalDistance = 0; // To accumulate the total distance for all vehicles
 
     // Flatten and format the data for each vehicle, including individual totals
@@ -672,6 +702,11 @@ export class ReportManageListComponent {
   }
 
   geofenceReport() {
+    if (!this.vehicle || this.vehicle.length === 0) {
+      this.notificationService.showError('No data available to export');
+      return;
+    }
+
     const formattedData = this.vehicle.flatMap((group: any) => {
       // Calculate total duration for the current vehicle group
       const totalDuration = group.Points.reduce((acc: number, entry: { Duration: string; }) => acc + this.parseDuration(entry.Duration), 0);
@@ -740,11 +775,17 @@ export class ReportManageListComponent {
   }
 
   async stopToExcel(groupedData: any[]): Promise<void> {
+    if (!groupedData || groupedData.length === 0) {
+      this.notificationService.showError('No data available to export');
+      return;
+    }
+
     const formattedData = await Promise.all(
       groupedData.map(async (group) => {
+        if (!group.data || group.data.length === 0) return [];
         return await Promise.all(
           group.data.map(async (item: any, i: any) => {
-            
+
             const locationAddress = await this.viewAddressExcel('start', item.Loc, i); // Assuming this function retrieves the address
 
             return {
@@ -756,14 +797,19 @@ export class ReportManageListComponent {
                 .default(item.EndTime)
                 .format('MMM D, YYYY, h:mm:ss A'),
               Duration: item.Duration,
-              Address:  this.isLocation == 2 ? locationAddress : item.Loc?.Lat + ',' +  item.Loc?.Lng// Add the address here
+              Address: this.isLocation == 2 ? locationAddress : item.Loc?.Lat + ',' + item.Loc?.Lng// Add the address here
             };
           })
         );
       })
     );
 
-    const flatFormattedData = formattedData.flat();
+    const flatFormattedData = formattedData.flat().filter(item => item !== undefined && item !== null);
+
+    if (flatFormattedData.length === 0) {
+      this.notificationService.showError('No data available to export');
+      return;
+    }
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(flatFormattedData);
     const workbook: XLSX.WorkBook = XLSX.utils.book_new();
@@ -797,9 +843,9 @@ export class ReportManageListComponent {
             return {
               VehicleNo: group.Device,
               StartTime: moment.default(item.StartTime).format('MMM D, YYYY, h:mm:ss A'),
-              StartLocation:  this.isLocation == 2 ? startLocation : item.Start?.Lat + ',' +  item.Start?.Lng,
+              StartLocation: this.isLocation == 2 ? startLocation : item.Start?.Lat + ',' + item.Start?.Lng,
               EndTime: moment.default(item.EndTime).format('MMM D, YYYY, h:mm:ss A'),
-              EndLocation:  this.isLocation == 2 ? endLocation : item.End?.Lat + ',' +  item.End?.Lng,
+              EndLocation: this.isLocation == 2 ? endLocation : item.End?.Lat + ',' + item.End?.Lng,
               Duration: item.Duration,
               Distance: item.Distance.toFixed(2) + ' Km',
             };
@@ -867,9 +913,9 @@ export class ReportManageListComponent {
             return {
               VehicleNo: group.Device,
               StartTime: moment.default(item.StartTime).format('MMM D, YYYY, h:mm:ss A'),
-              StartLocation:  this.isLocation == 2 ? startLocation : item.StartLoc?.Lat + ',' +  item.StartLoc?.Lng,
+              StartLocation: this.isLocation == 2 ? startLocation : item.StartLoc?.Lat + ',' + item.StartLoc?.Lng,
               EndTime: moment.default(item.EndTime).format('MMM D, YYYY, h:mm:ss A'),
-              EndLocation:  this.isLocation == 2 ? endLocation : item.EndLoc?.Lat + ',' +  item.EndLoc?.Lng,
+              EndLocation: this.isLocation == 2 ? endLocation : item.EndLoc?.Lat + ',' + item.EndLoc?.Lng,
               Duration: item.Duration,
               Distance: item.Distance.toFixed(2) + ' Km',
               Speed: item.StartSpeed + ' km/h', // Include start speed
@@ -1032,9 +1078,9 @@ export class ReportManageListComponent {
     }
     if (this.filterType === 'Distance' && this.daysDifference > 31) {
       this.notificationService.showWarning('Please select less then or equal to 31 days')
-  } else if(this.filterType === 'Distance') {
-    this.distanceToPdf();
-  }
+    } else if (this.filterType === 'Distance') {
+      this.distanceToPdf();
+    }
     if (this.filterType === 'Trip Report') {
       this.Trippdf(this.groupedData)
 
@@ -1048,22 +1094,22 @@ export class ReportManageListComponent {
     if (this.filterType === 'Duration Report') {
       this.durationpdf()
     }
-    if(this.filterType === 'Movement Summary') {
+    if (this.filterType === 'Movement Summary') {
       this.movmentSummarypdf(this.groupedData)
-       
-     }
+
+    }
   }
 
   async movmentSummarypdf(groupedData: any[]) {
     // Create a new jsPDF instance
-    const doc : any = new jsPDF();
-  
+    const doc: any = new jsPDF();
+
     // Add the main title at the top of the document
     doc.setFontSize(18);
     doc.text(`${this.filterType} Report`, 14, 10);
-  
+
     let currentY = 30; // Starting Y position for the first table
-  
+
     // Loop through each vehicle group
     for (const group of groupedData) {
       // Prepare the data for each vehicle group
@@ -1071,19 +1117,19 @@ export class ReportManageListComponent {
         group.data.map(async (item: any, i: any) => {
           const startLocation = await this.viewAddressExcel('start', item.StartPoint, i);
           const endLocation = await this.viewAddressExcel('end', item.EndPoint, i);
-  
+
           return {
-            VehicleNo:this.vehicle.Vehicle.VehicleNo,
+            VehicleNo: this.vehicle.Vehicle.VehicleNo,
             StartTime: moment.default(item.StartTime).format('MMM D, YYYY, h:mm:ss A'),
-            StartLocation: this.isLocation == 2 ? startLocation : item.StartPoint?.Lat + ',' +  item.StartPoint?.Lng,
+            StartLocation: this.isLocation == 2 ? startLocation : item.StartPoint?.Lat + ',' + item.StartPoint?.Lng,
             EndTime: moment.default(item.EndTime).format('MMM D, YYYY, h:mm:ss A'),
-            EndLocation: this.isLocation == 2 ? endLocation : item.EndPoint?.Lat + ',' +  item.EndPoint?.Lng,
+            EndLocation: this.isLocation == 2 ? endLocation : item.EndPoint?.Lat + ',' + item.EndPoint?.Lng,
             Duration: moment.default(item.StartTime).format('h:mm:ss A') + " " + 'to' + " " + moment.default(item.EndTime).format('h:mm:ss A'),
             Distance: item.Distance.toFixed(2) + ' Km',
           };
         })
       );
-  
+
       // // Calculate total duration and total distance for the current vehicle
       // const totalDuration = dataWithAddresses.reduce(
       //   (acc, row) => acc + this.parseDuration(row.Duration),
@@ -1093,10 +1139,10 @@ export class ReportManageListComponent {
         (acc, row) => acc + parseFloat(row.Distance),
         0
       );
-  
+
       // Add a total row for the current vehicle
       dataWithAddresses.push({
-         VehicleNo: 'Total',
+        VehicleNo: 'Total',
         StartTime: '',
         StartLocation: '',
         EndTime: '',
@@ -1104,7 +1150,7 @@ export class ReportManageListComponent {
         // Duration: this.formatDuration(totalDuration), // Format total duration as needed
         Distance: totalDistance.toFixed(2) + ' Km',
       });
-  
+
       // Define the columns and rows for the PDF table
       const columns = ['Vehicle No', 'Start Time', 'Start Location', 'End Time', 'End Location', 'Duration', 'Distance'];
       const rows = dataWithAddresses.map(item => [
@@ -1116,12 +1162,12 @@ export class ReportManageListComponent {
         item.Duration,
         item.Distance,
       ]);
-  
+
       // Add the subtitle for each vehicle
       doc.setFontSize(14);
       doc.text(`Vehicle No: ${this.vehicle.Vehicle.VehicleNo}`, 14, currentY);
       currentY += 10; // Move down for the table
-  
+
       // Add the table for each vehicle using autoTable with adjusted width and margins
       autoTable(doc, {
         head: [columns],
@@ -1140,17 +1186,17 @@ export class ReportManageListComponent {
         },
         theme: 'striped', // Use striped theme
       });
-  
+
       // Update currentY to the next available position after the table
       currentY = doc.autoTable.previous.finalY + 15;
-  
+
       // Check if a new page is needed
       if (currentY > doc.internal.pageSize.height - 30) {
         doc.addPage();
         currentY = 30; // Reset Y position for the new page
       }
     }
-  
+
     // Save the PDF
     doc.save(`${this.filterType}-Report.pdf`);
   }
@@ -1178,7 +1224,7 @@ export class ReportManageListComponent {
             StartTime: moment.default(item.StartTime).format('MMM D, YYYY, h:mm:ss A'),
             EndTime: moment.default(item.EndTime).format('MMM D, YYYY, h:mm:ss A'),
             Duration: item.Duration,
-            Address: this.isLocation == 2 ? locationAddress : item.Loc?.Lat + ',' +  item.Loc?.Lng, // Include address
+            Address: this.isLocation == 2 ? locationAddress : item.Loc?.Lat + ',' + item.Loc?.Lng, // Include address
           };
         })
       );
@@ -1252,9 +1298,9 @@ export class ReportManageListComponent {
           return {
             VehicleNo: group.Device,
             StartTime: moment.default(item.StartTime).format('MMM D, YYYY, h:mm:ss A'),
-            StartLocation: this.isLocation == 2 ? startLocation : item.Start?.Lat + ',' +  item.Start?.Lng,
+            StartLocation: this.isLocation == 2 ? startLocation : item.Start?.Lat + ',' + item.Start?.Lng,
             EndTime: moment.default(item.EndTime).format('MMM D, YYYY, h:mm:ss A'),
-            EndLocation: this.isLocation == 2 ? endLocation : item.End?.Lat + ',' +  item.End?.Lng,
+            EndLocation: this.isLocation == 2 ? endLocation : item.End?.Lat + ',' + item.End?.Lng,
             Duration: item.Duration,
             Distance: item.Distance.toFixed(2) + ' Km',
           };
@@ -1354,9 +1400,9 @@ export class ReportManageListComponent {
           return {
             VehicleNo: group.Device,
             StartTime: moment.default(item.StartTime).format('MMM D, YYYY, h:mm:ss A'),
-            StartLocation: this.isLocation == 2 ? startLocation : item.StartLoc?.Lat + ',' +  item.StartLoc?.Lng,
+            StartLocation: this.isLocation == 2 ? startLocation : item.StartLoc?.Lat + ',' + item.StartLoc?.Lng,
             EndTime: moment.default(item.EndTime).format('MMM D, YYYY, h:mm:ss A'),
-            EndLocation: this.isLocation == 2 ? endLocation : item.EndLoc?.Lat + ',' +  item.EndLoc?.Lng,
+            EndLocation: this.isLocation == 2 ? endLocation : item.EndLoc?.Lat + ',' + item.EndLoc?.Lng,
             Duration: item.Duration,
             Distance: item.Distance.toFixed(2) + ' Km',
             Speed: item.StartSpeed + ' km/h', // Include start speed
@@ -1584,45 +1630,43 @@ export class ReportManageListComponent {
     const rows = Array.from(tableElement.querySelectorAll('tbody tr')).map((tr: any) =>
       Array.from(tr.querySelectorAll('td')).map((td: any) => td.innerText)
     );
-  
+
     // Create a new jsPDF instance with a larger page size (e.g., A3) and landscape orientation
     const doc: any = new jsPDF({ orientation: 'landscape', format: 'a3' });
-  
+
     // Add the title
     doc.setFontSize(18);
     doc.text('Distance Report', 14, 22);
-  
+
     // Define chunk size for breaking down large data sets
     const chunkSize = 50; // Adjust chunk size based on performance needs
-  
+
     // Loop through the data in chunks to handle larger datasets efficiently
     for (let i = 0; i < rows.length; i += chunkSize) {
       const chunk = rows.slice(i, i + chunkSize);
-  
+
       // Add each chunk of data to the table with auto pagination
       autoTable(doc, {
-        head: [headers],  // Table headers
-        body: chunk,      // Current chunk of rows
+        head: [headers], // Table headers
+        body: chunk, // Current chunk of rows
         startY: doc.previousAutoTable ? doc.previousAutoTable.finalY + 10 : 30, // Positioning after the last table
         tableWidth: 'auto', // Adjusts table width to fit the content
         margin: { top: 20, right: 5, bottom: 20, left: 5 }, // Margins
         styles: {
-          fontSize: 7,      // Smaller font size for better fit
-          cellPadding: 2,   // Reduced cell padding
+          fontSize: 7, // Smaller font size for better fit
+          cellPadding: 2, // Reduced cell padding
         },
         headStyles: {
           fillColor: [22, 160, 133], // Custom header color
           textColor: [255, 255, 255], // White text
           fontStyle: 'bold',
         },
-        theme: 'striped',   // Use striped theme
-        pageBreak: 'auto',  // Automatic page breaks
+        theme: 'striped', // Use striped theme
+        pageBreak: 'auto', // Automatic page breaks
       });
     }
-  
+
     // Save the PDF
     doc.save('distanceReport.pdf');
   }
-
 }
-

@@ -2,7 +2,7 @@
 <div class="filter-part">
     <form [formGroup]="reportForm">
         <div class="row">
-            <div class="col-md-2">
+            <!-- <div class="col-md-2">
                 <label class="form-label">Dealer/Reseller</label>
                 <ng-select placeholder="Select Dealer" formControlName="dealer" (change)="onDealerSelect($event)">
                     <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
@@ -11,8 +11,8 @@
                     class="text-danger">
                     Dealer/Reseller is required
                 </div>
-            </div>
-            <div class="col-md-2">
+            </div> -->
+            <!-- <div class="col-md-2">
                 <label class="form-label">Customer</label>
                 <ng-select placeholder="Select Customer" formControlName="customer" (change)="onCustomerSelect($event)">
                     <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
@@ -21,7 +21,7 @@
                     class="text-danger">
                     Customer is required
                 </div>
-            </div>
+            </div> -->
             <div class="col-md-2">
                 <label class="form-label">Report</label>
                 <ng-select placeholder="Select Report" (change)="onItemSelect($event)" formControlName="filtername">
