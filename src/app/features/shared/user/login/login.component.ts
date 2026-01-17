@@ -91,7 +91,7 @@ export class LoginComponent {
     this.registerForm = new FormGroup(
       {
         filterBy: new FormControl(
-          'Customer',
+           'Dealer/Reseller',
           Validators.compose([Validators.required])
         ),
         username: new FormControl(

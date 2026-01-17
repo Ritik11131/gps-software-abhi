@@ -9,6 +9,7 @@ import { ConfirmationDialogComponent } from 'src/app/features/shared/components/
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { ReportManageListComponent } from '../report-manage-list/report-manage-list.component';
 import { StorageService } from 'src/app/features/http-services/storage.service';
+import { DeviceManageService } from 'src/app/features/admin/device/device-manage/service/device-manage.service';
 
 @Component({
   selector: 'app-report-manage-filter',
@@ -26,6 +27,7 @@ export class ReportManageFilterComponent {
   reportForm!: FormGroup;
   vehicleData: any;
   selectedVehicle: any;
+  deviceData: any = [];
   spinnerLoading: boolean = false;
   reportTypeMapping: any;
   modalRef!: BsModalRef;
@@ -106,17 +108,38 @@ export class ReportManageFilterComponent {
     private dashboardService: AdminDashboardService,
     private repotManageService: ReportManageService,
     private modalService: BsModalService,
-    private storageService: StorageService
-  ) { }
+    private storageService: StorageService,
+    private deviceManageService: DeviceManageService
+  ) {}
+
   ngOnInit() {
-    this.getDealerlist();
+    // Skip dealer/customer - directly load vehicles from device API
+    this.loadVehiclesDirectly();
     this.setInitialValue();
-    this.checkDealerCustomer();
   }
 
-  checkDealerCustomer() {
-    this.storageService.getItem('adminDealerCustomer').subscribe((res: any) => {
-      this.selectDealerCustomer = res;
+  loadVehiclesDirectly() {
+    this.deviceManageService.getDeviceList().subscribe({
+      next: (res: any) => {
+        if (res?.status === 200 && res?.body?.result === true) {
+          const allDevices = res?.body?.data || [];
+          const vehicleMap = new Map();
+          allDevices.forEach((device: any) => {
+            if (device.vehicleNo && !vehicleMap.has(device.vehicleNo)) {
+              vehicleMap.set(device.vehicleNo, {
+                value: device.id,
+                text: device.vehicleNo
+              });
+            }
+          });
+          this.vehicleData = Array.from(vehicleMap.values());
+        } else {
+          this.vehicleData = [];
+        }
+      },
+      error: (error: any) => {
+        this.vehicleData = [];
+      }
     });
   }
 
@@ -137,8 +160,8 @@ export class ReportManageFilterComponent {
     currentDayEnd.setHours(23, 59, 59);
 
     this.reportForm = this.fb.group({
-      dealer: ['', [Validators.required]],
-      customer: ['', [Validators.required]],
+      dealer: [''], 
+      customer: [''], 
       vehicle: [[], [Validators.required]],
       filtername: [null, [Validators.required]],
       speed: [0],
@@ -155,8 +178,6 @@ export class ReportManageFilterComponent {
       const movementControl = this.reportForm.get('movement');
       const vehicleDataControl = this.reportForm.get('vehicledata');
       const vehicleControl = this.reportForm.get('vehicle');
-
-
       if (value === 'Overspeed Report') {
         speedControl?.setValidators([Validators.required, Validators.min(1)]);
       } else {
@@ -167,7 +188,8 @@ export class ReportManageFilterComponent {
       if (value === 'Movement Summary') {
         movementControl?.setValidators([Validators.required, Validators.min(1)]);
         vehicleDataControl?.setValidators([Validators.required]);
-        vehicleControl?.clearValidators(); 
+        vehicleControl?.clearValidators();
+
       } else {
         movementControl?.clearValidators();
         vehicleDataControl?.clearValidators();
@@ -276,6 +298,33 @@ export class ReportManageFilterComponent {
 
   onVehicleSelect(event: any) {
     this.ReportsDetails.setData(this.data, '', '', '', '');
+
+    if (!event) {
+      this.deviceData = [];
+      return;
+    }
+
+    const selectedVehicleObj = this.vehicleData?.find((vehicle: any) => vehicle.value === event);
+
+    if (selectedVehicleObj && selectedVehicleObj.text) {
+      const vehicleNo = selectedVehicleObj.text;
+
+      this.deviceManageService.getDeviceList().subscribe({
+        next: (res: any) => {
+          if (res?.status === 200 && res?.body?.result === true) {
+            const allDevices = res?.body?.data || [];
+            this.deviceData = allDevices.filter((device: any) => device.vehicleNo === vehicleNo);
+          } else {
+            this.deviceData = [];
+          }
+        },
+        error: (error: any) => {
+          this.deviceData = [];
+        }
+      });
+    } else {
+      this.deviceData = [];
+    }
   }
 
   getCustomerData(id: any) {
@@ -293,16 +342,7 @@ export class ReportManageFilterComponent {
     });
   }
   getVehicleData(id: any) {
-    this.dashboardService.customerVehicle(id).subscribe((res: any) => {
-      let data = res?.body?.Result?.Data;
-      this.vehicleData = data.map((item: any) => {
-        return {
-          value: item?.Device?.Id,
-          text: item?.Device?.VehicleNo,
-        };
-      });
-      this.selectedVehicle = this.vehicleData?.Device?.Id;
-    });
+    this.loadVehiclesDirectly();
   }
 
   removeVehicle(vehicle: any) {
@@ -336,7 +376,40 @@ export class ReportManageFilterComponent {
     this.formValueData = formValue;
     let deviceData = this.selectedVehicles.map((val) => val.value);
 
-    let payload = {
+    // Format dates with timezone as per reference project format: "2026-01-16T00:00:00+05:30"
+    const formatDateWithTimezone = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      
+      // Get timezone offset in hours and minutes
+      const offset = -date.getTimezoneOffset();
+      const offsetHours = String(Math.floor(Math.abs(offset) / 60)).padStart(2, '0');
+      const offsetMinutes = String(Math.abs(offset) % 60).padStart(2, '0');
+      const offsetSign = offset >= 0 ? '+' : '-';
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
+    };
+
+    const fromDate = new Date(formValue.fromDate);
+    const toDate = new Date(formValue.toDate);
+    const fromDateISO = formatDateWithTimezone(fromDate);
+    const toDateISO = formatDateWithTimezone(toDate);
+
+    // Use FromTime/ToTime for reports that need it, FromDate/ToDate for Distance only
+    const useTimeFields = formValue.filtername === 'Stop' || 
+                         formValue.filtername === 'Idle' || 
+                         formValue.filtername === 'Trip Report' || 
+                         formValue.filtername === 'Overspeed Report' || 
+                         formValue.filtername === 'GeoFence Report' ||
+                         formValue.filtername === 'temperature Report' ||
+                         formValue.filtername === 'Duration Report' ||
+                         formValue.filtername === 'Movement Summary';
+
+    let payload: any = {
       DeviceId:
         formValue.filtername === 'Distance' ||
           formValue.filtername === 'Stop' ||
@@ -346,12 +419,17 @@ export class ReportManageFilterComponent {
           formValue.filtername === 'Duration Report' ||
           formValue.filtername === 'temperature Report' ||
           formValue.filtername === 'GeoFence Report'
-          ? deviceData
+          ? (deviceData.length === 1 ? deviceData[0] : deviceData)
           : formValue.filtername === 'Movement Summary'
             ? Number(formValue?.vehicledata)
-            : deviceData,
-      FromTime: formatDate(formValue.fromDate, 'yyyy-MM-dd HH:mm:ss', 'en-US'),
-      ToTime: formatDate(formValue.toDate, 'yyyy-MM-dd HH:mm:ss', 'en-US'),
+            : (deviceData.length === 1 ? deviceData[0] : deviceData),
+      ...(useTimeFields ? {
+        FromTime: fromDateISO,
+        ToTime: toDateISO
+      } : {
+        FromDate: fromDateISO,
+        ToDate: toDateISO
+      }),
       ...(this.durationcontrol && { SpeedLimit: formValue.speed }),
     };
 
@@ -365,30 +443,77 @@ export class ReportManageFilterComponent {
     ) {
       payload['limit_count'] = this.tableSize;
       payload['page_num'] = this.page;
-    } else if (
-      formValue.filtername === 'Distance' ||
-      formValue.filtername === 'Duration Report'
-    ) {
+    } else if (formValue.filtername === 'Distance') {
+      // CustomerId only needed if customer field is filled
+      if (formValue.customer) {
       payload['CustomerId'] = formValue.customer;
+      }
       payload['limit_count'] = this.tableSize;
       payload['page_num'] = this.page;
+    } else if (formValue.filtername === 'Duration Report') {
+      // Duration Report uses deviceId (lowercase) as array
+      payload['deviceId'] = Array.isArray(payload.DeviceId) ? payload.DeviceId : [payload.DeviceId];
+      delete payload.DeviceId; // Remove old key
+      // No pagination needed for Duration Report
     }
 
+    // Special handling for Movement Summary - use history endpoint
     if (formValue.filtername === 'Movement Summary') {
-      payload['MovementDuration'] = formValue.movement;
+      // Convert DeviceId to string for history API
+      let deviceIdValue: any;
+      if (Array.isArray(payload.DeviceId) && payload.DeviceId.length > 0) {
+        deviceIdValue = payload.DeviceId[0];
+      } else {
+        deviceIdValue = payload.DeviceId;
+      }
+      
+      // Create clean payload for history API
+      const cleanPayload: any = {
+        DeviceId: String(deviceIdValue),
+        FromTime: payload.FromTime || payload.FromDate, // Ensure we use FromTime
+        ToTime: payload.ToTime || payload.ToDate, // Ensure we use ToTime
+        MovementDuration: formValue.movement
+      };
+      
+      // Replace payload with clean version to avoid duplicates
+      Object.keys(payload).forEach(key => delete payload[key]);
+      Object.assign(payload, cleanPayload);
+    }
+
+    // Special handling for GeoFence Report - clean payload to avoid duplicates
+    if (formValue.filtername === 'GeoFence Report') {
+      let deviceIdValue: any;
+      if (Array.isArray(payload.DeviceId) && payload.DeviceId.length > 0) {
+        deviceIdValue = payload.DeviceId[0];
+      } else {
+        deviceIdValue = payload.DeviceId;
+      }
+      
+      // Create clean payload for GeoFence API
+      const cleanPayload: any = {
+        DeviceId: deviceIdValue,
+        FromTime: payload.FromTime || payload.FromDate, // Ensure we use FromTime
+        ToTime: payload.ToTime || payload.ToDate, // Ensure we use ToTime
+        limit_count: payload.limit_count || this.tableSize,
+        page_num: payload.page_num || this.page
+      };
+      
+      // Replace payload with clean version to avoid duplicates
+      Object.keys(payload).forEach(key => delete payload[key]);
+      Object.assign(payload, cleanPayload);
     }
 
     this.reportTypeMapping = {
-      Stop: 'Stoppage/StopReport',
-      Idle: 'idle/IdleReport',
-      Distance: 'Distance/distanceReport',
-      'Trip Report': 'Trip/TripReport',
-      'Overspeed Report': 'Overspeed/OverSpeedReport',
-      'GeoFence Report': 'Geofence/GeofenceReport',
-      'Temperature Report': 'Temp',
-      'AC Report': 'Ac',
-      'Duration Report': 'Distance/v1PostDurationWise',
-      'Movement Summary': 'Movement',
+      Stop: 'reports/StopReport',
+      Idle: 'reports/IdleReport',
+      Distance: 'reports/DistanceReport',
+      'Trip Report': 'reports/TripReport',
+      'Overspeed Report': 'reports/OverSpeedReport',
+      'GeoFence Report': 'reports/Geofence', 
+      'Temperature Report': 'reports/TempReport',
+      'AC Report': 'reports/AcReport',
+      'Duration Report': 'reports/distancereport/summary', 
+      'Movement Summary': 'history', 
     };
 
     const reportType = this.reportTypeMapping[formValue.filtername];
@@ -400,15 +525,24 @@ export class ReportManageFilterComponent {
           tap((res: any) => {
             this.spinnerLoading = false;
 
-            if (res?.error?.ResponseMessage === 'Failed') {
+            // Handle error responses
+            if (res?.error || (res?.body && res?.body?.result === false)) {
+              let errorMsg = 'Something went wrong! Please try again with proper input';
+              if (res?.error?.message) {
+                errorMsg = res.error.message;
+              } else if (res?.body?.data && typeof res.body.data === 'string') {
+                errorMsg = res.body.data;
+              } else if (res?.error?.ResponseMessage === 'Failed') {
               let errContent =
                 formValue.filtername === 'GeoFence Report'
                   ? res.error.Error.Data
                   : res.error.Error.Message[0]?.ErrorMessage;
+                errorMsg = errContent || res?.error?.Error?.Data || this.showMessage;
+              }
 
               this.openConfirmationModal({
-                title: res.error.Error.Name || res.error.Error.Message,
-                content: errContent || res?.error?.Error?.Data || this.showMessage,
+                title: 'Error',
+                content: errorMsg,
                 primaryActionLabel: 'Ok',
                 secondaryActionLabel: false,
                 onPrimaryAction: () => {
@@ -419,12 +553,385 @@ export class ReportManageFilterComponent {
               return;
             }
 
-            let reportData = res?.body?.Result?.Data;
+            // Reference project response structure: {data: [...], result: true}
+            let reportData = res?.body?.data || res?.body?.Data || res?.data;
 
-            // Special case for GeoFence Report
-            if (formValue.filtername === 'GeoFence Report') {
-              let geofenceData = reportData?.flatMap((val: any) => val.Points);
-              if (!geofenceData || geofenceData.length === 0) {
+            // Check if result is successful
+            if (res?.body?.result === false || (res?.body?.result === undefined && !reportData)) {
+              this.openConfirmationModal({
+                title: formValue.filtername,
+                content: `No data found for ${formValue.filtername}`,
+                primaryActionLabel: 'Ok',
+                secondaryActionLabel: false,
+                onPrimaryAction: () => {
+                  this.hideConfirmationModal();
+                },
+              });
+              this.ReportsDetails.setData(null, null, null, null, null);
+              return;
+            }
+
+            // Special case for Distance Report - transform data structure
+            if (formValue.filtername === 'Distance') {
+              if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
+                this.openConfirmationModal({
+                  title: formValue.filtername,
+                  content: `No data found for ${formValue.filtername}`,
+                  primaryActionLabel: 'Ok',
+                  secondaryActionLabel: false,
+                  onPrimaryAction: () => {
+                    this.hideConfirmationModal();
+                  },
+                });
+                this.ReportsDetails.setData(null, null, null, null, null);
+                return;
+              }
+
+              // Transform the flat structure to match expected format
+              // Group by vehicleNo
+              const vehicleMap = new Map();
+              reportData.forEach((item: any) => {
+                const vehicleNo = item.vehicleNo || item.VehicleNo;
+                const deviceId = item.fkDeviceId || item.DeviceId || item.deviceId;
+                
+                if (!vehicleMap.has(vehicleNo)) {
+                  vehicleMap.set(vehicleNo, {
+                    Device: {
+                      VehicleNo: vehicleNo,
+                      Id: deviceId
+                    },
+                    Distance: [],
+                    Total: 0
+                  });
+                }
+                
+                const vehicle = vehicleMap.get(vehicleNo);
+                const distance = parseFloat(item.distance || item.Distance || 0);
+                
+                vehicle.Distance.push({
+                  Date: item.dateDis || item.Date || item.fromTime || item.FromTime,
+                  Distance: distance,
+                  ToDate: item.toTime || item.ToTime
+                });
+                vehicle.Total += distance;
+              });
+
+              // Convert map to array and format Total
+              this.data = Array.from(vehicleMap.values()).map((vehicle: any) => ({
+                ...vehicle,
+                Total: parseFloat(vehicle.Total.toFixed(2))
+              }));
+            }
+            // Special case for Idle Report - transform response structure
+            else if (formValue.filtername === 'Idle') {
+              if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
+                this.openConfirmationModal({
+                  title: formValue.filtername,
+                  content: `No data found for ${formValue.filtername}`,
+                  primaryActionLabel: 'Ok',
+                  secondaryActionLabel: false,
+                  onPrimaryAction: () => {
+                    this.hideConfirmationModal();
+                  },
+                });
+                this.ReportsDetails.setData(null, null, null, null, null);
+                return;
+              }
+
+              // Transform flat structure to expected format with Points array
+              const points: any[] = [];
+              
+              reportData.forEach((item: any) => {
+                const vehicleNo = item.vehicleNo || item.VehicleNo;
+                
+                // Calculate duration in seconds
+                const startTime = new Date(item.dormantStart || item.DormantStart || item.StartTime);
+                const endTime = new Date(item.dormantEnd || item.DormantEnd || item.EndTime);
+                const durationSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
+                
+                // Format duration as HH:MM:SS
+                const hours = Math.floor(durationSeconds / 3600);
+                const minutes = Math.floor((durationSeconds % 3600) / 60);
+                const seconds = durationSeconds % 60;
+                const duration = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                points.push({
+                  VehicleNo: vehicleNo,
+                  StartTime: item.dormantStart || item.DormantStart || item.StartTime,
+                  EndTime: item.dormantEnd || item.DormantEnd || item.EndTime,
+                  Duration: duration,
+                  Loc: {
+                    Lat: item.latitude || item.Latitude || item.Lat,
+                    Lng: item.longitude || item.Longitude || item.Lng
+                  }
+                });
+              });
+
+              // Structure expected by list component: { Points: [...], TotalCount: number }
+              this.data = {
+                Points: points,
+                TotalCount: points.length
+              };
+            }
+            // Special case for Trip Report - transform response structure
+            else if (formValue.filtername === 'Trip Report') {
+              if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
+                this.openConfirmationModal({
+                  title: formValue.filtername,
+                  content: `No data found for ${formValue.filtername}`,
+                  primaryActionLabel: 'Ok',
+                  secondaryActionLabel: false,
+                  onPrimaryAction: () => {
+                    this.hideConfirmationModal();
+                  },
+                });
+                this.ReportsDetails.setData(null, null, null, null, null);
+                return;
+              }
+
+              // Transform flat structure to expected format with Points array
+              const points: any[] = [];
+              
+              reportData.forEach((item: any) => {
+                const vehicleNo = item.vehicleNo || item.VehicleNo;
+                
+                // Calculate duration in seconds
+                const startTime = new Date(item.tripStartTime || item.TripStartTime || item.StartTime);
+                const endTime = new Date(item.tripEndTime || item.TripEndTime || item.EndTime);
+                const durationSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
+                
+                // Format duration as HH:MM:SS
+                const hours = Math.floor(durationSeconds / 3600);
+                const minutes = Math.floor((durationSeconds % 3600) / 60);
+                const seconds = durationSeconds % 60;
+                const duration = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                // Get distance, ensure it's positive (handle negative values)
+                const distance = Math.abs(parseFloat(item.distance || item.Distance || 0));
+                
+                points.push({
+                  Device: vehicleNo, // Used for grouping
+                  StartTime: item.tripStartTime || item.TripStartTime || item.StartTime,
+                  EndTime: item.tripEndTime || item.TripEndTime || item.EndTime,
+                  Duration: duration,
+                  Distance: distance,
+                  Start: {
+                    Lat: item.startLat || item.StartLat || item.startLatitude || item.StartLatitude,
+                    Lng: item.startLng || item.StartLng || item.startLongitude || item.StartLongitude
+                  },
+                  End: {
+                    Lat: item.endLat || item.EndLat || item.endLatitude || item.EndLatitude,
+                    Lng: item.endLng || item.EndLng || item.endLongitude || item.EndLongitude
+                  }
+                });
+              });
+
+              // Structure expected by list component: { Points: [...], TotalCount: number }
+              this.data = {
+                Points: points,
+                TotalCount: points.length
+              };
+            }
+            // Special case for Overspeed Report - transform response structure
+            else if (formValue.filtername === 'Overspeed Report') {
+              if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
+                this.openConfirmationModal({
+                  title: formValue.filtername,
+                  content: `No data found for ${formValue.filtername}`,
+                  primaryActionLabel: 'Ok',
+                  secondaryActionLabel: false,
+                  onPrimaryAction: () => {
+                    this.hideConfirmationModal();
+                  },
+                });
+                this.ReportsDetails.setData(null, null, null, null, null);
+                return;
+              }
+
+              // Transform flat structure to expected format with Points array
+              const points: any[] = [];
+              
+              reportData.forEach((item: any) => {
+                const vehicleNo = item.vehicleNo || item.VehicleNo;
+                
+                // Calculate duration in seconds
+                const startTime = new Date(item.speedStartTime || item.SpeedStartTime || item.StartTime);
+                const endTime = new Date(item.speedEndTime || item.SpeedEndTime || item.EndTime);
+                const durationSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
+                
+                // Format duration as HH:MM:SS
+                const hours = Math.floor(durationSeconds / 3600);
+                const minutes = Math.floor((durationSeconds % 3600) / 60);
+                const seconds = durationSeconds % 60;
+                const duration = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                // Get distance, ensure it's positive (handle negative values)
+                const distance = Math.abs(parseFloat(item.distance || item.Distance || 0));
+                const startSpeed = parseFloat(item.startSpeed || item.StartSpeed || 0);
+                
+                points.push({
+                  VehicleNo: vehicleNo, // Used for grouping
+                  StartTime: item.speedStartTime || item.SpeedStartTime || item.StartTime,
+                  EndTime: item.speedEndTime || item.SpeedEndTime || item.EndTime,
+                  Duration: duration,
+                  Distance: distance,
+                  StartSpeed: startSpeed,
+                  StartLoc: {
+                    Lat: item.startLat || item.StartLat || item.startLatitude || item.StartLatitude,
+                    Lng: item.startLng || item.StartLng || item.startLongitude || item.StartLongitude
+                  },
+                  EndLoc: {
+                    Lat: item.endLat || item.EndLat || item.endLatitude || item.EndLatitude,
+                    Lng: item.endLng || item.EndLng || item.endLongitude || item.EndLongitude
+                  }
+                });
+              });
+
+              // Structure expected by list component: { Points: [...], TotalCount: number }
+              this.data = {
+                Points: points,
+                TotalCount: points.length
+              };
+            }
+            // Special case for Movement Summary - transform history API response
+            else if (formValue.filtername === 'Movement Summary') {
+              if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
+                this.openConfirmationModal({
+                  title: formValue.filtername,
+                  content: `No data found for ${formValue.filtername}`,
+                primaryActionLabel: 'Ok',
+                secondaryActionLabel: false,
+                onPrimaryAction: () => {
+                  this.hideConfirmationModal();
+                },
+              });
+              this.ReportsDetails.setData(null, null, null, null, null);
+              return;
+            }
+
+              // Helper function to calculate distance between two coordinates (Haversine formula)
+              const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+                const R = 6371; // Radius of the Earth in km
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLon = (lon2 - lon1) * Math.PI / 180;
+                const a = 
+                  Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c;
+              };
+
+              const movementDuration = formValue.movement || 2; // Default to 2 minutes
+              const movementThreshold = movementDuration * 60 * 1000; // Convert to milliseconds
+              const vehicleNo = reportData[0]?.vehicleNo || reportData[0]?.VehicleNo || '';
+
+              
+              const segments: any[] = [];
+              let currentSegment: any = null;
+              let segmentStartIndex = 0;
+
+              for (let i = 0; i < reportData.length; i++) {
+                const point = reportData[i];
+                const nextPoint = reportData[i + 1];
+                
+                // Check if vehicle is moving (speed > 0 or has moved position)
+                const isMoving = (point.speed > 0) || 
+                                (nextPoint && (
+                                  point.latitude !== nextPoint.latitude || 
+                                  point.longitude !== nextPoint.longitude
+                                ));
+
+                if (isMoving) {
+                  if (!currentSegment) {
+                    // Start new segment
+                    currentSegment = {
+                      startTime: new Date(point.timestamp || point.serverTime || point.Timestamp),
+                      startPoint: { Lat: point.latitude, Lng: point.longitude },
+                      totalDistance: 0
+                    };
+                    segmentStartIndex = i;
+                  }
+                  
+                  // Add distance if moving to next point
+                  if (nextPoint) {
+                    const distance = calculateDistance(
+                      point.latitude,
+                      point.longitude,
+                      nextPoint.latitude,
+                      nextPoint.longitude
+                    );
+                    currentSegment.totalDistance += distance;
+                  }
+                } else {
+                  // Vehicle stopped - check if segment duration meets threshold
+                  if (currentSegment) {
+                    const endPoint = reportData[i - 1] || point;
+                    const segmentDuration = new Date(endPoint.timestamp || endPoint.serverTime || endPoint.Timestamp).getTime() - 
+                                          currentSegment.startTime.getTime();
+                    
+                    if (segmentDuration >= movementThreshold && currentSegment.totalDistance > 0) {
+                      segments.push({
+                        StartTime: currentSegment.startTime.toISOString(),
+                        EndTime: (endPoint.timestamp || endPoint.serverTime || endPoint.Timestamp),
+                        StartPoint: currentSegment.startPoint,
+                        EndPoint: {
+                          Lat: endPoint.latitude,
+                          Lng: endPoint.longitude
+                        },
+                        Distance: parseFloat(currentSegment.totalDistance.toFixed(2))
+                      });
+                    }
+                    currentSegment = null;
+                  }
+                }
+              }
+
+              // Handle last segment if vehicle was moving at the end
+              if (currentSegment && segments.length > 0) {
+                const lastPoint = reportData[reportData.length - 1];
+                const segmentDuration = new Date(lastPoint.timestamp || lastPoint.serverTime).getTime() - 
+                                      currentSegment.startTime.getTime();
+                
+                if (segmentDuration >= movementThreshold && currentSegment.totalDistance > 0) {
+                  segments.push({
+                    StartTime: currentSegment.startTime.toISOString(),
+                    EndTime: (lastPoint.timestamp || lastPoint.serverTime),
+                    StartPoint: currentSegment.startPoint,
+                    EndPoint: {
+                      Lat: lastPoint.latitude,
+                      Lng: lastPoint.longitude
+                    },
+                    Distance: parseFloat(currentSegment.totalDistance.toFixed(2))
+                  });
+                }
+              }
+
+              if (segments.length === 0) {
+                this.openConfirmationModal({
+                  title: formValue.filtername,
+                  content: `No movement segments found for the specified duration threshold`,
+                  primaryActionLabel: 'Ok',
+                  secondaryActionLabel: false,
+                  onPrimaryAction: () => {
+                    this.hideConfirmationModal();
+                  },
+                });
+                this.ReportsDetails.setData(null, null, null, null, null);
+                return;
+              }
+
+            
+              this.data = {
+                Vehicle: {
+                  VehicleNo: vehicleNo
+                },
+                Result: segments
+              };
+            }
+            // Special case for GeoFence Report - transform response structure
+            else if (formValue.filtername === 'GeoFence Report') {
+              if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
                 this.openConfirmationModal({
                   title: 'Geofence',
                   content: 'No GeoFence found for the given duration',
@@ -437,10 +944,94 @@ export class ReportManageFilterComponent {
                 this.ReportsDetails.setData(null, null, null, null, null);
                 return;
               }
-              this.data = reportData;
+
+              // Transform flat structure to expected format - group by vehicleNo
+              const vehicleMap = new Map();
+              
+              reportData.forEach((item: any) => {
+                const vehicleNo = item.vehicleNo || item.VehicleNo;
+                
+                if (!vehicleMap.has(vehicleNo)) {
+                  vehicleMap.set(vehicleNo, {
+                    VehicleNo: vehicleNo,
+                    Points: []
+                  });
+                }
+                
+                const vehicle = vehicleMap.get(vehicleNo);
+                
+                // Calculate duration in seconds
+                const inTime = new Date(item.geofenceInTime || item.GeofenceInTime || item.StartTime);
+                const outTime = new Date(item.geofenceOutTime || item.GeofenceOutTime || item.EndTime);
+                const durationSeconds = Math.floor((outTime.getTime() - inTime.getTime()) / 1000);
+                
+                // Format duration as HH:MM:SS
+                const hours = Math.floor(durationSeconds / 3600);
+                const minutes = Math.floor((durationSeconds % 3600) / 60);
+                const seconds = durationSeconds % 60;
+                const duration = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                vehicle.Points.push({
+                  VehicleNo: vehicleNo,
+                  StartTime: item.geofenceInTime || item.GeofenceInTime || item.StartTime,
+                  EndTime: item.geofenceOutTime || item.GeofenceOutTime || item.EndTime,
+                  Duration: duration,
+                  GeofenceName: item.geofenceInName || item.GeofenceInName || item.geofenceName || item.GeofenceName || 'Unknown'
+                });
+              });
+
+              // Convert map to array - structure expected by groupingGeofence: [{ VehicleNo, Points: [...] }]
+              this.data = Array.from(vehicleMap.values());
+            }
+            // Special case for Duration Report - transform summary response structure
+            else if (formValue.filtername === 'Duration Report') {
+              if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
+                this.openConfirmationModal({
+                  title: formValue.filtername,
+                  content: `No data found for ${formValue.filtername}`,
+                  primaryActionLabel: 'Ok',
+                  secondaryActionLabel: false,
+                  onPrimaryAction: () => {
+                    this.hideConfirmationModal();
+                  },
+                });
+                this.ReportsDetails.setData(null, null, null, null, null);
+                return;
+              }
+
+              // Transform response from summary API to expected format
+              const transformedData = reportData.map((item: any) => {
+                const vehicleNo = item.vehicleNo || item.VehicleNo;
+                const deviceId = item.deviceId || item.DeviceId;
+                
+                // Transform distanceRecords array
+                const distanceArray = (item.distanceRecords || item.DistanceRecords || []).map((record: any) => {
+                  // Calculate ToDate - it's the next day's start or use toTime
+                  const reportDate = new Date(record.reportDate || record.Date);
+                  const nextDay = new Date(reportDate);
+                  nextDay.setDate(nextDay.getDate() + 1);
+                  
+                  return {
+                    Date: record.reportDate || record.Date || item.fromTime,
+                    ToDate: record.toDate || nextDay.toISOString() || item.toTime,
+                    Distance: parseFloat(record.distance || record.Distance || 0)
+                  };
+                });
+
+                return {
+                  Device: {
+                    VehicleNo: vehicleNo,
+                    Id: deviceId
+                  },
+                  Distance: distanceArray,
+                  Total: parseFloat((item.total || item.Total || 0).toFixed(2))
+                };
+              });
+
+              this.data = transformedData;
             } else {
               // Generic check for all filter types
-              if (!reportData || reportData.length === 0) {
+              if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
                 this.openConfirmationModal({
                   title: formValue.filtername,
                   content: `No data found for ${formValue.filtername}`,
@@ -456,11 +1047,6 @@ export class ReportManageFilterComponent {
               this.data = reportData;
             }
 
-            // Handle special case for Alert report
-            if (reportType === 'Alert') {
-              this.data = res?.body?.result?.data;
-            }
-
             // Set the data if available
             this.ReportsDetails.setData(
               this.data,
@@ -471,6 +1057,18 @@ export class ReportManageFilterComponent {
             );
           }),
           catchError((error) => {
+            this.spinnerLoading = false;
+            console.error('Report API error:', error);
+            this.openConfirmationModal({
+              title: 'Error',
+              content: 'Failed to fetch report data. Please try again.',
+              primaryActionLabel: 'Ok',
+              secondaryActionLabel: false,
+              onPrimaryAction: () => {
+                this.hideConfirmationModal();
+              },
+            });
+            this.ReportsDetails.setData(null, null, null, null, null);
             return of(null);
           })
         )

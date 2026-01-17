@@ -22,36 +22,36 @@ export const admin = [
     ],
   },
 
-  {
-    name: "Reseller",
-    path: "",
-    iconClass: "assets/icons/icon_Reseller.svg",
-    subNav: [
-      {
-        "id": 138,
-        "name": "Reseller",
-        "path": "admin/reseller-raster",
-        "icon_Url": "MenuLeft.png"
-      },
+  // {
+  //   name: "Reseller",
+  //   path: "",
+  //   iconClass: "assets/icons/icon_Reseller.svg",
+  //   subNav: [
+  //     {
+  //       "id": 138,
+  //       "name": "Reseller",
+  //       "path": "admin/reseller-raster",
+  //       "icon_Url": "MenuLeft.png"
+  //     },
       
-    ],
-  },
-  {
-    name: "Customer",
-    path: "",
-    iconClass: "assets/icons/icon_Customer.svg",
-    subNav: [
-      {
-        "id": 138,
-        "name": "Customer",
-        "path": "admin/customer/customer-manage",
-        "icon_Url": "MenuLeft.png"
-      },
+  //   ],
+  // },
+  // {
+  //   name: "Customer",
+  //   path: "",
+  //   iconClass: "assets/icons/icon_Customer.svg",
+  //   subNav: [
+  //     {
+  //       "id": 138,
+  //       "name": "Customer",
+  //       "path": "admin/customer/customer-manage",
+  //       "icon_Url": "MenuLeft.png"
+  //     },
       
-    ],
-  },
+  //   ],
+  // },
   {
-    name: "Sub User",
+    name: "User",
     path: "",
     iconClass: "assets/icons/icon_Sub user.svg",
     subNav: [
@@ -75,42 +75,42 @@ export const admin = [
         "path": "admin/device/device-manage",
         "icon_Url": "MenuLeft.png"
       },
-      {
-        "id": 138,
-        "name": "Device Maker",
-        "path": "admin/device/device-maker",
-        "icon_Url": "MenuLeft.png"
-      },
-      {
-        "id": 138,
-        "name": "Device Type",
-        "path": "admin/device/device-type",
-        "icon_Url": "MenuLeft.png"
-      },
-      {
-        "id": 138,
-        "name": "Device Log",
-        "path": "admin/device/device-log",
-        "icon_Url": "MenuLeft.png"
-      },
-      {
-        "id": 138,
-        "name": "Bulk Activity",
-        "path": "admin/device/bulk-activated",
-        "icon_Url": "MenuLeft.png"
-      },
-      {
-        "id": 138,
-        "name": "Device Summary",
-        "path": "admin/device/device-summary",
-        "icon_Url": "MenuLeft.png"
-      },
-      {
-        "id": 138,
-        "name": "Device Command",
-        "path": "admin/device/device-command",
-        "icon_Url": "MenuLeft.png"
-      },
+      // {
+      //   "id": 138,
+      //   "name": "Device Maker",
+      //   "path": "admin/device/device-maker",
+      //   "icon_Url": "MenuLeft.png"
+      // },
+      // {
+      //   "id": 138,
+      //   "name": "Device Type",
+      //   "path": "admin/device/device-type",
+      //   "icon_Url": "MenuLeft.png"
+      // },
+      // {
+      //   "id": 138,
+      //   "name": "Device Log",
+      //   "path": "admin/device/device-log",
+      //   "icon_Url": "MenuLeft.png"
+      // },
+      // {
+      //   "id": 138,
+      //   "name": "Bulk Activity",
+      //   "path": "admin/device/bulk-activated",
+      //   "icon_Url": "MenuLeft.png"
+      // },
+      // {
+      //   "id": 138,
+      //   "name": "Device Summary",
+      //   "path": "admin/device/device-summary",
+      //   "icon_Url": "MenuLeft.png"
+      // },
+      // {
+      //   "id": 138,
+      //   "name": "Device Command",
+      //   "path": "admin/device/device-command",
+      //   "icon_Url": "MenuLeft.png"
+      // },
       // {
       //   "id": 138,
       //   "name": "Device Detail",
@@ -134,52 +134,52 @@ export const admin = [
       
     ],
   },
-  {
-    name: "Point Summary",
-    path: "",
-    iconClass: "assets/icons/icon_Point Summary.svg",
-    subNav: [
-      {
-        "id": 138,
-        "name": "Point Summary",
-        "path": "admin/point-summary/point-summary-manage",
-        "icon_Url": "MenuLeft.png"
-      },
-      {
-        "id": 138,
-        "name": "Reseller Liberties",
-        "path": "admin/point-summary/reseller-liberties",
-        "icon_Url": "MenuLeft.png"
-      },
+  // {
+  //   name: "Point Summary",
+  //   path: "",
+  //   iconClass: "assets/icons/icon_Point Summary.svg",
+  //   subNav: [
+  //     {
+  //       "id": 138,
+  //       "name": "Point Summary",
+  //       "path": "admin/point-summary/point-summary-manage",
+  //       "icon_Url": "MenuLeft.png"
+  //     },
+  //     {
+  //       "id": 138,
+  //       "name": "Reseller Liberties",
+  //       "path": "admin/point-summary/reseller-liberties",
+  //       "icon_Url": "MenuLeft.png"
+  //     },
       
-    ],
-  },
-  {
-    name: "Sim Operator",
-    path: "",
-    iconClass: "assets/icons/icon_Point Summary.svg",
-    subNav: [
-      {
-        "id": 138,
-        "name": "Basket",
-        "path": "admin/sim/sim-operator-manage",
-        "icon_Url": "MenuLeft.png"
-      },
-      {
-        "id": 138,
-        "name": "Sim Status",
-        "path": "admin/sim/sim-status",
-        "icon_Url": "MenuLeft.png"
-      },
-      {
-        "id": 138,
-        "name": "Bill Summary",
-        "path": "admin/sim/bill-summary",
-        "icon_Url": "MenuLeft.png"
-      },
+  //   ],
+  // },
+  // {
+  //   name: "Sim Operator",
+  //   path: "",
+  //   iconClass: "assets/icons/icon_Point Summary.svg",
+  //   subNav: [
+  //     {
+  //       "id": 138,
+  //       "name": "Basket",
+  //       "path": "admin/sim/sim-operator-manage",
+  //       "icon_Url": "MenuLeft.png"
+  //     },
+  //     {
+  //       "id": 138,
+  //       "name": "Sim Status",
+  //       "path": "admin/sim/sim-status",
+  //       "icon_Url": "MenuLeft.png"
+  //     },
+  //     {
+  //       "id": 138,
+  //       "name": "Bill Summary",
+  //       "path": "admin/sim/bill-summary",
+  //       "icon_Url": "MenuLeft.png"
+  //     },
       
-    ],
-  }
+  //   ],
+  // }
 ];
 
 
