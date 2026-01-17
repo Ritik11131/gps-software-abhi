@@ -31,6 +31,7 @@ export const API_CONSTANTS: any = {
   getAddress: 'devicecheckapi/WeatherForecast/GetAddress?lat={lat}&lng={lng}' ,
   historydata: 'History/replayWithStop',
   adminHistorydata:'History/replayWithStop1',
+  historyApi: 'history',
   changePassword: 'password',
   dealerDetails: 'Dealer/GetDealerDetails',
   customerDetails: 'v1/CustomerUser/GetCustomerDetails',

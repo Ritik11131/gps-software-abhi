@@ -7,7 +7,7 @@ import { AdminHistoryTrackingV2Component } from './new-dashboard-component/admin
 const routes: Routes = [
   // {path: 'dashboard', component: AdminDashboardComponent},
   {path: 'dashboard', component: NewAdminDashboardComponent},
-  {path: 'history-tracking/:cusId/:id', component: AdminHistoryTrackingV2Component},
+  {path: 'history-tracking/:id', component: AdminHistoryTrackingV2Component},
 
 ];
 

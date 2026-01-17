@@ -70,7 +70,7 @@ export class AdminDashboardService {
   }
   
   adminLivetrackinghistory(payload: any): Observable<any> {
-    let url = API_CONSTANTS.adminHistorydata
+    let url = API_CONSTANTS.historyApi
     return this.apiService
       .post(url, payload)
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
@@ -87,6 +87,13 @@ export class AdminDashboardService {
     let url = API_CONSTANTS.checkDetail
     return this.apiService
       .postData(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  vehicleList(): Observable<any> {
+    let url = API_CONSTANTS.vehicleList;
+    return this.apiService
+      .get(url)
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
 

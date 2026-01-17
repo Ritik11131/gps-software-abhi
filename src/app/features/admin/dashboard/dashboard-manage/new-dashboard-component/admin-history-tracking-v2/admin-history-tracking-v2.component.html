@@ -8,10 +8,13 @@
                         <label for="exampleInputEmail1" class="form-label">Device</label>
                         <ng-container>
                             <ng-select placeholder="Select Device" formControlName="deviceId"  (change)="selectVehicle($event)">
-                                <ng-option *ngFor="let item of vehicleData" [value]="item?.Device?.Id">{{
-                                  item?.Device?.VehicleNo
-                                  }}</ng-option>
+                                <ng-option *ngFor="let item of vehicleData" [value]="item?.Device?.Id">
+                                  {{ item?.Device?.VehicleNo || 'N/A' }}
+                                </ng-option>
                               </ng-select>
+                              <div *ngIf="vehicleData && vehicleData.length === 0" class="text-muted small mt-1">
+                                No vehicles available
+                              </div>
                           </ng-container>
                     </div>
                     <ng-container *ngIf="timeformate">

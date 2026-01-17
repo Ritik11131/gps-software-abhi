@@ -1218,7 +1218,7 @@ export class NewVehicleOnMapComponent {
 
   handleRePlayClick(event: MouseEvent, vehilce?: any) {
     this.liveData = vehilce
-    let url = `admin/history-tracking/${this.selectedCustomer}/${this.liveData?.Device?.Id}`;
+    let url = `admin/history-tracking/${this.liveData?.Device?.Id}`;
     this.router.navigateByUrl(url);
   }
 

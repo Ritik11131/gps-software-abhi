@@ -22,7 +22,7 @@ export class AdminHistoryTrackingV2Component {
   map: L.Map | any;
   polyline: L.Polyline | null = null;
   animatedMarker: L.Marker | any = null;
-  vehicleData: any;
+  vehicleData: any[] = [];
   selectedVehicleId: any;
   isOverSpeed: boolean = false;
   filterSelectId: any;
@@ -94,10 +94,9 @@ export class AdminHistoryTrackingV2Component {
     if (isPlatformBrowser(this.platformId)) {
       this.initializeMap();
     }
-    this.selectedCustomer = this.activeroute.snapshot.paramMap.get("cusId");
     this.selectedVehicleId = this.activeroute.snapshot.paramMap.get("id");
-    if (this.selectedCustomer) {
-      this.getVehicleData(this.selectedCustomer);
+    if (this.selectedVehicleId) {
+      this.getAllVehicleData();
     }
   }
 
@@ -208,17 +207,75 @@ export class AdminHistoryTrackingV2Component {
     });
   }
 
-  getVehicleData(id: any) {
-    this.dashboardService.customerVehicle(id).subscribe((res: any) => {
-      this.vehicleData = res?.body?.Result?.Data;
-      if (this.selectedVehicleId) {
-        this.isOverSpeed = true;
-        let newVehicleData = this.vehicleData?.filter((ele: any) => ele?.Device?.Id == this.selectedVehicleId);
-        newVehicleData?.forEach((data: any) => {
-          this.filterSelectId = data?.Device?.VehicleNo;
-          this.timeformate = true;
-          this.historyForm.controls['deviceId'].patchValue(this.filterSelectId);
-        });
+  getAllVehicleData() {
+    this.dashboardService.vehicleList().subscribe({
+      next: (res: any) => {
+        // Handle different response structures
+        let rawData: any[] = [];
+        
+        // Check for different response formats
+        if (res?.body?.Result?.Data) {
+          rawData = Array.isArray(res.body.Result.Data) ? res.body.Result.Data : [res.body.Result.Data];
+        } else if (res?.body?.result === true && res?.body?.data) {
+          rawData = Array.isArray(res.body.data) ? res.body.data : [res.body.data];
+        } else if (res?.body?.Data) {
+          rawData = Array.isArray(res.body.Data) ? res.body.Data : [res.body.Data];
+        } else if (Array.isArray(res?.body)) {
+          rawData = res.body;
+        } else if (res?.body?.data && Array.isArray(res.body.data)) {
+          rawData = res.body.data;
+        } else if (Array.isArray(res?.data)) {
+          rawData = res.data;
+        } else {
+          rawData = [];
+        }
+        
+        // Transform data to match expected structure (Device.Id, Device.VehicleNo)
+        this.vehicleData = rawData.map((item: any) => {
+          // If already in old format (has Device object), return as is
+          if (item?.Device?.Id) {
+            return item;
+          }
+          
+          // Transform new format to old format
+          return {
+            Device: {
+              Id: item?.device?.id || item?.deviceId || item?.Id || item?.id || 0,
+              VehicleNo: item?.device?.vehicleNo || item?.vehicleNo || item?.VehicleNo || item?.device?.vehicleNumber || '',
+              DeviceImei: item?.device?.deviceImei || item?.deviceImei || item?.DeviceImei || '',
+              VehicleType: item?.device?.vehicleType || item?.vehicleType || item?.VehicleType || 0
+            },
+            _original: item
+          };
+        }).filter((item: any) => item?.Device?.Id && item?.Device?.Id > 0); // Filter out invalid items
+        
+        if (this.selectedVehicleId && this.vehicleData && this.vehicleData.length > 0) {
+          this.isOverSpeed = true;
+          // Find the vehicle matching the selected device ID
+          let selectedVehicle = this.vehicleData.find((ele: any) => {
+            const deviceId = ele?.Device?.Id || ele?.deviceId || ele?.Id;
+            return deviceId == this.selectedVehicleId || deviceId == Number(this.selectedVehicleId);
+          });
+          
+          if (selectedVehicle) {
+            const vehicleNo = selectedVehicle?.Device?.VehicleNo || selectedVehicle?.vehicleNo || selectedVehicle?.VehicleNo;
+            const deviceId = selectedVehicle?.Device?.Id || selectedVehicle?.deviceId || selectedVehicle?.Id;
+            
+            this.filterSelectId = vehicleNo;
+            this.timeformate = true;
+            // Set the device ID value in the form (dropdown uses device ID as value)
+            this.historyForm.controls['deviceId'].patchValue(deviceId);
+          } else {
+            // If vehicle not found in list, still set the selectedVehicleId in form
+            this.isOverSpeed = true;
+            this.timeformate = true;
+            this.historyForm.controls['deviceId'].patchValue(Number(this.selectedVehicleId));
+          }
+        }
+      },
+      error: (error: any) => {
+        console.error('Error loading vehicle data:', error);
+        this.vehicleData = [];
       }
     });
   }
@@ -265,11 +322,18 @@ export class AdminHistoryTrackingV2Component {
       this.tripReport = [];
       this.tripType = false
       this.isLoading = true
+      const deviceId = this.selectedVehicleId ? this.selectedVehicleId : formvalue?.deviceId;
+      const fromDate = new Date(formvalue?.fromDate);
+      const toDate = new Date(formvalue?.toDate);
+      
+      // Format dates to ISO string with timezone (e.g., "2026-01-11T00:00:00+05:30")
+      const fromTimeISO = this.formatDateToISOWithTimezone(fromDate);
+      const toTimeISO = this.formatDateToISOWithTimezone(toDate);
+      
       payload = {
-        "DeviceID": Number(this.selectedVehicleId ? this.selectedVehicleId : formvalue?.deviceId),
-        "FromTime": formatDate(formvalue?.fromDate, 'yyyy-MM-dd HH:mm:ss', 'en-Us'),
-        "toTime": formatDate(formvalue?.toDate, 'yyyy-MM-dd HH:mm:ss', 'en-Us'),
-        "CustomerId": this.selectedCustomer
+        "DeviceId": String(deviceId),
+        "FromTime": fromTimeISO,
+        "ToTime": toTimeISO
       };
     } else {
       payload = this.tripValue
@@ -277,7 +341,14 @@ export class AdminHistoryTrackingV2Component {
     this.dashboardService.adminLivetrackinghistory(payload).subscribe((res: any) => {
       this.spinnerLoading = false;
       this.isLoading = false
-      if (res?.body?.Result == null) {
+      
+      // Handle HttpResponse wrapper (res.body) or direct response (res)
+      const responseBody = res?.body || res;
+      
+      // Map the new API response structure - check for data in body or directly
+      const apiData = responseBody?.data || responseBody?.Data;
+      
+      if (!apiData || (Array.isArray(apiData) && apiData.length === 0)) {
         this.tripReport = [];
         this.openConfirmationModal({
           title: "No Data",
@@ -289,12 +360,33 @@ export class AdminHistoryTrackingV2Component {
           },
         });
       } else {
-        this.historyData = res?.body?.Result?.Data;
-        this.historylist = res?.body?.Result?.Data?.Position;
+        // Map the response data to match expected structure
+        const responseData = Array.isArray(apiData) ? apiData : [apiData];
+        
+        // Map each item to the expected format
+        this.historylist = responseData.map((item: any) => ({
+          Latitude: item.latitude,
+          Longitude: item.longitude,
+          Speed: item.speed,
+          Timestamp: item.timestamp,
+          Heading: item.heading,
+          vehicleNo: item.vehicleNo
+        }));
+        
+        // Set historyData with vehicle info
+        if (responseData.length > 0) {
+          this.historyData = {
+            Vehicle: {
+              VehicleNo: responseData[0].vehicleNo || 'N/A'
+            }
+          };
+        }
+        
         if (type == 'trip') {
-          this.totaldistanceValue = this.selectTrip?.distance
+          this.totaldistanceValue = this.selectTrip?.distance || 0;
         } else {
-          this.totaldistanceValue = res?.body?.Result?.Data?.DistanceV1s[0]?.totaldistance;
+          // Calculate total distance from history data if available
+          this.totaldistanceValue = this.calculateTotalDistance(this.historylist) || 0;
           this.getTripReport(formvalue, 'history');
         }
 
@@ -302,6 +394,49 @@ export class AdminHistoryTrackingV2Component {
         this.updatePolyline();
       }
     });
+  }
+
+  formatDateToISOWithTimezone(date: Date): string {
+    // Get timezone offset in minutes and convert to HH:MM format
+    const offset = -date.getTimezoneOffset();
+    const sign = offset >= 0 ? '+' : '-';
+    const hours = Math.floor(Math.abs(offset) / 60).toString().padStart(2, '0');
+    const minutes = (Math.abs(offset) % 60).toString().padStart(2, '0');
+    const timezone = `${sign}${hours}:${minutes}`;
+    
+    // Format date to ISO string and replace Z with timezone
+    return date.toISOString().replace('Z', timezone);
+  }
+
+  calculateTotalDistance(historyList: any[]): number {
+    if (!historyList || historyList.length < 2) return 0;
+    
+    let totalDistance = 0;
+    for (let i = 1; i < historyList.length; i++) {
+      const prev = historyList[i - 1];
+      const curr = historyList[i];
+      const distance = this.calculateDistance(
+        prev.Latitude, prev.Longitude,
+        curr.Latitude, curr.Longitude
+      );
+      totalDistance += distance;
+    }
+    return totalDistance / 1000; // Convert meters to kilometers
+  }
+
+  calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371000; // Earth radius in meters
+    const dLat = this.toRad(lat2 - lat1);
+    const dLon = this.toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.toRad(lat1)) * Math.cos(this.toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  toRad(degrees: number): number {
+    return degrees * (Math.PI / 180);
   }
 
   openConfirmationModal(data = {}) {

@@ -112,10 +112,16 @@ export class VehicleOnMapV2Component {
       position: 'topright',
     })
     .addTo(this.map);
+
+    // Initialize vehicle data after map is ready
+    // New API doesn't require customer selection - fetch all vehicles
+    this.storageService.setItem('status', 'All');
+    this.getVehicleData();
   }
 
 
-  getVehicleData(id: any) {
+  getVehicleData(id?: any) {
+    // New API doesn't require customer ID - fetches all vehicles
     this.swiperData = [];
     this.spinnerLoading = true;
     this.subscription?.unsubscribe();
@@ -130,11 +136,21 @@ export class VehicleOnMapV2Component {
           this.counter--;
         }, 1000);
       }),
-      switchMap(() => this.dashboardService.customerVehicle(id)),
+      switchMap(() => this.dashboardService.vehicleList()),
       tap((res: any) => {
         this.spinnerLoading = false;
-        this.data = res?.body?.Result?.Data || [];
-        this.vehicleDatacount = res?.body?.Result?.Data || [];
+        // Transform new API response to old structure format
+        // API response: { result: true, data: [...] } or direct array
+        let rawData: any[] = [];
+        if (res?.body?.result === true && res?.body?.data) {
+          rawData = Array.isArray(res.body.data) ? res.body.data : [res.body.data];
+        } else if (Array.isArray(res?.body)) {
+          rawData = res.body;
+        } else if (res?.body?.data && Array.isArray(res.body.data)) {
+          rawData = res.body.data;
+        }
+        this.data = this.transformVehicleData(rawData);
+        this.vehicleDatacount = this.data;
         this.sendFilteredData();
       }),
       switchMap(() => this.storageService.getItem('status')),
@@ -154,21 +170,108 @@ export class VehicleOnMapV2Component {
     localStorage.setItem('isPageRefreshed', 'true');
   }
 
+  // Transform new API response structure to old format for compatibility
+  transformVehicleData(newData: any[]): any[] {
+    return newData.map((item: any) => {
+      const statusStr = item?.position?.status?.status || 'offline';
+      const statusMap: any = {
+        'running': { Status: 1, SubStatus: 1 },
+        'stop': { Status: 1, SubStatus: 2 },
+        'dormant': { Status: 1, SubStatus: 3 },
+        'offline': { Status: 0, SubStatus: 0 },
+        'never connected': { Status: 0, SubStatus: 0 },
+        'point expired': { Status: 0, SubStatus: 0 }
+      };
+      const statusInfo = statusMap[statusStr.toLowerCase()] || { Status: 0, SubStatus: 0 };
+
+      // Check validity for expired status
+      let isExpired = false;
+      let isExpiredSoon = false;
+      if (item?.validity) {
+        const nextRecharge = new Date(item.validity.nextRechargeDate);
+        const today = new Date();
+        const daysDiff = Math.ceil((nextRecharge.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        if (daysDiff < 0) {
+          isExpired = true;
+        } else if (daysDiff <= 7) {
+          isExpiredSoon = true;
+        }
+      }
+
+      // Check if never connected (no position data or invalid position)
+      const neverConnected = !item?.position || !item?.position?.latitude || !item?.position?.longitude || item?.position?.valid !== 1;
+
+      return {
+        Device: {
+          VehicleNo: item?.device?.vehicleNo || '',
+          DeviceImei: item?.device?.deviceImei || item?.device?.deviceId || '',
+          VehicleType: item?.device?.vehicleType || 0,
+          Id: item?.device?.id || 0,
+          SoftOdometer: item?.device?.details?.lastOdometer || 0
+        },
+        Eventdata: {
+          Latitude: item?.position?.latitude || 0,
+          Longitude: item?.position?.longitude || 0,
+          Speed: item?.position?.speed || 0,
+          Heading: item?.position?.heading || 0,
+          GpsTimestamp: item?.position?.deviceTime || item?.position?.servertime || new Date().toISOString(),
+          GpsStatus: item?.position?.valid === 1 ? 1 : 0,
+          EPC: item?.position?.details?.extVolt || 0
+        },
+        Status: statusInfo.Status,
+        SubStatus: statusInfo.SubStatus,
+        StatusDuration: item?.position?.status?.duration || '',
+        isexpired: isExpired ? 1 : 0,
+        isexpiredsoon: isExpiredSoon ? 1 : 0,
+        neverConnected: neverConnected,
+        // Map peripherial data if available
+        Peripherial: {
+          AC: item?.position?.details?.in1 === 1 ? 1 : 0,
+          Door: item?.position?.details?.door === true ? 1 : 0,
+          Temp: item?.position?.details?.temp || 0,
+          ACC: item?.position?.details?.ign === true ? 1 : 0
+        },
+        Battery: {
+          status: item?.position?.details?.bmsSOC ? `${item.position.details.bmsSOC.toFixed(1)}%` : null,
+          color: item?.position?.details?.bmsSOC && item.position.details.bmsSOC > 20 ? 'green' : 'red'
+        },
+        // Keep original data for reference
+        _original: item
+      };
+    });
+  }
+
   filterout(data: any): Observable<any> {
     if (this.selectedStatus === 'Offline') {
-      this.vehicleData = data.filter((res: any) => res?.Status == 0);
+      this.vehicleData = data.filter((res: any) => {
+        const status = res?._original?.position?.status?.status?.toLowerCase() || 'offline';
+        return status === 'offline' || res?.Status == 0;
+      });
     } else if (this.selectedStatus === 'Running') {
-      this.vehicleData = data.filter(
-        (res: any) => res?.Status == 1 && res?.SubStatus == 1
-      );
+      this.vehicleData = data.filter((res: any) => {
+        const status = res?._original?.position?.status?.status?.toLowerCase() || '';
+        return status === 'running' || (res?.Status == 1 && res?.SubStatus == 1);
+      });
     } else if (this.selectedStatus === 'Stop') {
-      this.vehicleData = data.filter(
-        (res: any) => res?.Status == 1 && res?.SubStatus == 2
-      );
+      this.vehicleData = data.filter((res: any) => {
+        const status = res?._original?.position?.status?.status?.toLowerCase() || '';
+        return status === 'stop' || (res?.Status == 1 && res?.SubStatus == 2);
+      });
+    } else if (this.selectedStatus === 'Dormant') {
+      this.vehicleData = data.filter((res: any) => {
+        const status = res?._original?.position?.status?.status?.toLowerCase() || '';
+        return status === 'dormant' || (res?.Status == 1 && res?.SubStatus == 3);
+      });
     } else if (this.selectedStatus === 'Idle') {
-      this.vehicleData = data.filter(
-        (res: any) => res?.Status == 1 && res?.SubStatus == 3
-      );
+      // Map Idle to Dormant
+      this.vehicleData = data.filter((res: any) => {
+        const status = res?._original?.position?.status?.status?.toLowerCase() || '';
+        return status === 'dormant' || (res?.Status == 1 && res?.SubStatus == 3);
+      });
+    } else if (this.selectedStatus === 'Never Connected') {
+      this.vehicleData = data.filter((res: any) => res?.neverConnected === true);
+    } else if (this.selectedStatus === 'Point Expired') {
+      this.vehicleData = data.filter((res: any) => res?.isexpired === 1);
     } else if (this.selectedStatus === 'Expired Soon') {
       this.vehicleData = data.filter((res: any) => res?.isexpiredsoon === 1);
     } else if (this.selectedStatus === 'Expired') {
@@ -208,7 +311,7 @@ export class VehicleOnMapV2Component {
     this.selectedCustomer = customer?.customer?.selectcus;
     if (this.selectedCustomer) {
       this.storageService.setItem('status', 'All')
-      this.getVehicleData(this.selectedCustomer);
+      this.getVehicleData(); // No parameter needed for new API
     }
   }
 
@@ -544,144 +647,164 @@ export class VehicleOnMapV2Component {
   }
 
   onCheckVehicleDevice(device: any) {
+    // Get status from new API structure if available
+    let status = device?.Status;
+    let subStatus = device?.SubStatus;
+    if (device?._original?.position?.status?.status) {
+      const statusStr = device._original.position.status.status.toLowerCase();
+      if (statusStr === 'running') {
+        status = 1;
+        subStatus = 1;
+      } else if (statusStr === 'stop') {
+        status = 1;
+        subStatus = 2;
+      } else if (statusStr === 'dormant') {
+        status = 1;
+        subStatus = 3;
+      } else {
+        status = 0;
+        subStatus = 0;
+      }
+    }
+
     if (device?.Device?.VehicleType == 1) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_car_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_car_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_car_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_car_gray.png';
       }
     } else if (device?.Device?.VehicleType == 2) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_bus_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_bus_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_bus_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_bus_gray.png';
       }
     } else if (device?.Device?.VehicleType == 3) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_truck_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_truck_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_truck_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_truck_gray.png';
       }
     } else if (device?.Device?.VehicleType == 4) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_bike_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_bike_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_bike_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_bike_gray.png';
       }
     } else if (device?.Device?.VehicleType == 5) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_jcb_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_jcb_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_jcb_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_jcb_gray.png';
       }
     } else if (device?.Device?.VehicleType == 6) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_lifter_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_lifter_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_lifter_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_lifter_gray.png';
       }
     } else if (device?.Device?.VehicleType == 7) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_loader_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_loader_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_loader_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_loader_gray.png';
       }
     } else if (device?.Device?.VehicleType == 8) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_marker_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_marker_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_marker_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_marker_gray.png';
       }
     } else if (device?.Device?.VehicleType == 9) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_person_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_person_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_person_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_person_gray.png';
       }
     } else if (device?.Device?.VehicleType == 10) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_pet_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_pet_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_pet_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_pet_gray.png';
       }
     } else if (device?.Device?.VehicleType == 11) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_ship_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_ship_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_ship_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_ship_gray.png';
       }
     } else if (device?.Device?.VehicleType == 12) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_tanker_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_tanker_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_tanker_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_tanker_gray.png';
       }
     } else if (device?.Device?.VehicleType == 13) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/geen_taxi_f.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/blue_taxi_f.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/yellow_taxi_f.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/gray_taxi_f.png';
       }
     } else if (device?.Device?.VehicleType == 14) {
-      if (device?.Status === 1 && device?.SubStatus === 1) {
+      if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_tractor_green.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 2) {
+      } else if (status === 1 && subStatus === 2) {
         return 'assets/drawable/rp_marker_tractor_blue.png';
-      } else if (device?.Status === 1 && device?.SubStatus === 3) {
+      } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_tractor_yellow.png';
-      } else if (device?.Status === 0) {
+      } else if (status === 0) {
         return 'assets/drawable/rp_marker_tractor_gray.png';
       }
     }
@@ -1146,7 +1269,7 @@ export class VehicleOnMapV2Component {
 
   handleRePlayClick(event: MouseEvent, vehilce?: any) {
     this.liveData = vehilce
-    let url = `admin/history-tracking/${this.selectedCustomer}/${this.liveData?.Device?.Id}`;
+    let url = `admin/history-tracking/${this.liveData?.Device?.Id}`;
     this.router.navigateByUrl(url);
   }
 
@@ -1172,8 +1295,32 @@ export class VehicleOnMapV2Component {
 
 
   checkStauts(vehicle: any) {
+    // Use new API structure if available
+    if (vehicle?._original?.position?.status?.status) {
+      const status = vehicle._original.position.status.status;
+      const duration = vehicle._original.position.status.duration || '';
+      
+      // Map status values
+      const statusMap: any = {
+        'running': 'Running',
+        'stop': 'Stop',
+        'dormant': 'Dormant',
+        'offline': 'Offline',
+        'never connected': 'Never Connected',
+        'point expired': 'Point Expired'
+      };
+      
+      const statusText = statusMap[status.toLowerCase()] || status;
+      
+      if (duration) {
+        return `${statusText} (${duration})`;
+      }
+      return statusText;
+    }
+    
+    // Fallback to old structure
     if (!vehicle || !vehicle?.StatusDuration || vehicle?.StatusDuration == null)
-      return;
+      return '';
     const parts = vehicle.StatusDuration.split(' ');
     if (parts[0] === 'Never') {
       return `${vehicle.StatusDuration}`;
@@ -1216,7 +1363,7 @@ export class VehicleOnMapV2Component {
     this.liveTime = false;
    this.clearMarkers()
     this.subscription?.unsubscribe();
-    this.getVehicleData(this.selectedCustomer)
+    this.getVehicleData() // No parameter needed for new API
   }
 
   clearMarkers() {

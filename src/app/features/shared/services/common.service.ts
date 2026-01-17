@@ -13,29 +13,55 @@ export class CommonService {
   ) { }
 
   formatTimeValue(time: any) {
-    if (typeof time === 'undefined' || time === null) {
+    if (typeof time === 'undefined' || time === null || time === '') {
       return "00hr, 00min, 00sec";
-    } 
-    const [days, timming] = time?.split(".");
-    const newTime = timming.split(':');
-    let formattedTime = '';
-  
-    if (parseInt(days) !== 0) {
-      const day = Math.floor(parseInt(days) / 24);
-      formattedTime += `${days}days, `;
     }
-  
-    if (parseInt(newTime[0]) !== 0) {
-      formattedTime += `${newTime[0]}hr, `;
+    
+    // Handle new API format: "5 min, 15 sec" or "2 hr, 30 min, 15 sec"
+    if (typeof time === 'string' && (time.includes('min') || time.includes('sec') || time.includes('hr'))) {
+      // Already formatted, return as is
+      return time;
     }
-  
-    if (parseInt(newTime[1]) !== 0) {
-      formattedTime += `${newTime[1]}min, `;
+    
+    // Handle old format: "days.hours:minutes:seconds"
+    if (typeof time === 'string' && time.includes('.') && time.includes(':')) {
+      try {
+        const [days, timming] = time.split(".");
+        if (!timming) {
+          return "00hr, 00min, 00sec";
+        }
+        const newTime = timming.split(':');
+        if (!newTime || newTime.length < 3) {
+          return "00hr, 00min, 00sec";
+        }
+        let formattedTime = '';
+      
+        if (parseInt(days) !== 0 && !isNaN(parseInt(days))) {
+          formattedTime += `${days}days, `;
+        }
+      
+        if (parseInt(newTime[0]) !== 0 && !isNaN(parseInt(newTime[0]))) {
+          formattedTime += `${newTime[0]}hr, `;
+        }
+      
+        if (parseInt(newTime[1]) !== 0 && !isNaN(parseInt(newTime[1]))) {
+          formattedTime += `${newTime[1]}min, `;
+        }
+      
+        if (newTime[2] !== undefined) {
+          formattedTime += `${newTime[2]}sec`;
+        } else {
+          formattedTime += '00sec';
+        }
+      
+        return formattedTime || "00hr, 00min, 00sec";
+      } catch (error) {
+        return "00hr, 00min, 00sec";
+      }
     }
-  
-    formattedTime += `${newTime[2]}sec`;
-  
-    return formattedTime;
+    
+    // Fallback for any other format
+    return "00hr, 00min, 00sec";
   }
   
 

@@ -73,6 +73,11 @@ export class ApiService {
   postData(url: any, payload: any, options: any = {}): Observable<any> {
     let requestOptions = { ...options, ...this.responseType };    
     return this.http.post(this.setBaseurl(url), payload, requestOptions);
+  }
+
+  postFullUrl(url: any, payload: any, options: any = {}): Observable<any> {
+    let requestOptions = { ...options, ...this.responseType };    
+    return this.http.post(url, payload, requestOptions);
   } 
 
   getData(urlData: any, options: any = {}): Observable<any> {

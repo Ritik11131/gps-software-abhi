@@ -8,28 +8,7 @@
                 </div>
                 <div *ngIf="showContent">
                     <div class="card-body">
-                        <div class="dealer-part mb-3">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <ng-select placeholder="Select Dealer" [ngModel]="selectedDealer" 
-                                        (ngModelChange)="onDealerSelect($event)">
-                                        <ng-option *ngFor="let item of dealerData" [value]="item?.Id">{{ item?.Name }}</ng-option>
-                                    </ng-select>
-                                </div> 
-                                <div class="col-md-2">
-                                    <button tooltip="Device" class="btn btn-primary" (click)="openAllresellerDetails()"><i class="fa fa-car" aria-hidden="true"></i></button>
-                                </div>
-                                <div class="col-md-2">
-                                    <button tooltip="Balance Point" class="btn btn-primary" (click)="onShowBalnace()"><i class="fa fa-paperclip" aria-hidden="true"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="customer-part">
-                                    <ng-select placeholder="Select Customer" [ngModel]="selectedCustomer" 
-                                        (ngModelChange)="onCustomerSelect($event)">
-                                        <ng-option *ngFor="let item of customerData" [value]="item?.Id">{{ item?.CustomerName }}</ng-option>
-                                    </ng-select>                                
-                        </div>
+                        <!-- Dealer and Customer dropdowns removed - showing all vehicles directly -->
                     </div>
                     <div class="card-content">        
                         <div>

@@ -86,8 +86,8 @@ export class NewVehicleListComponent {
   ) { };
 
   ngOnInit() {
-    this.checkDealerCustomer()
-    this.getDealerList();
+    // Removed dealer/customer selection - showing all vehicles directly
+    // No need to fetch dealer/customer data
   }
 
   checkDealerCustomer() {
