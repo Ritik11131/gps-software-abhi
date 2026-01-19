@@ -160,8 +160,8 @@ export class ReportManageFilterComponent {
     currentDayEnd.setHours(23, 59, 59);
 
     this.reportForm = this.fb.group({
-      dealer: [''], 
-      customer: [''], 
+      dealer: [''],
+      customer: [''],
       vehicle: [[], [Validators.required]],
       filtername: [null, [Validators.required]],
       speed: [0],
@@ -249,7 +249,7 @@ export class ReportManageFilterComponent {
   Confirm(event: any) {
     this.page = event.pageNumber;
     this.tableSize = event.pageSize;
-    this.submit(this.formValueData, '');
+    // this.submit(this.formValueData, '');
   }
 
   getDealerlist() {
@@ -384,13 +384,13 @@ export class ReportManageFilterComponent {
       const hours = String(date.getHours()).padStart(2, '0');
       const minutes = String(date.getMinutes()).padStart(2, '0');
       const seconds = String(date.getSeconds()).padStart(2, '0');
-      
+
       // Get timezone offset in hours and minutes
       const offset = -date.getTimezoneOffset();
       const offsetHours = String(Math.floor(Math.abs(offset) / 60)).padStart(2, '0');
       const offsetMinutes = String(Math.abs(offset) % 60).padStart(2, '0');
       const offsetSign = offset >= 0 ? '+' : '-';
-      
+
       return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
     };
 
@@ -400,14 +400,14 @@ export class ReportManageFilterComponent {
     const toDateISO = formatDateWithTimezone(toDate);
 
     // Use FromTime/ToTime for reports that need it, FromDate/ToDate for Distance only
-    const useTimeFields = formValue.filtername === 'Stop' || 
-                         formValue.filtername === 'Idle' || 
-                         formValue.filtername === 'Trip Report' || 
-                         formValue.filtername === 'Overspeed Report' || 
-                         formValue.filtername === 'GeoFence Report' ||
-                         formValue.filtername === 'temperature Report' ||
-                         formValue.filtername === 'Duration Report' ||
-                         formValue.filtername === 'Movement Summary';
+    const useTimeFields = formValue.filtername === 'Stop' ||
+      formValue.filtername === 'Idle' ||
+      formValue.filtername === 'Trip Report' ||
+      formValue.filtername === 'Overspeed Report' ||
+      formValue.filtername === 'GeoFence Report' ||
+      formValue.filtername === 'temperature Report' ||
+      formValue.filtername === 'Duration Report' ||
+      formValue.filtername === 'Movement Summary';
 
     let payload: any = {
       DeviceId:
@@ -441,12 +441,16 @@ export class ReportManageFilterComponent {
       formValue.filtername === 'temperature Report' ||
       formValue.filtername === 'GeoFence Report'
     ) {
-      payload['limit_count'] = this.tableSize;
-      payload['page_num'] = this.page;
+      // payload['limit_count'] = this.tableSize;
+      // payload['page_num'] = this.page;
+      payload['limit_count'] = 50000;
+      payload['page_num'] = 1;
+  
+
     } else if (formValue.filtername === 'Distance') {
       // CustomerId only needed if customer field is filled
       if (formValue.customer) {
-      payload['CustomerId'] = formValue.customer;
+        payload['CustomerId'] = formValue.customer;
       }
       payload['limit_count'] = this.tableSize;
       payload['page_num'] = this.page;
@@ -466,7 +470,7 @@ export class ReportManageFilterComponent {
       } else {
         deviceIdValue = payload.DeviceId;
       }
-      
+
       // Create clean payload for history API
       const cleanPayload: any = {
         DeviceId: String(deviceIdValue),
@@ -474,7 +478,7 @@ export class ReportManageFilterComponent {
         ToTime: payload.ToTime || payload.ToDate, // Ensure we use ToTime
         MovementDuration: formValue.movement
       };
-      
+
       // Replace payload with clean version to avoid duplicates
       Object.keys(payload).forEach(key => delete payload[key]);
       Object.assign(payload, cleanPayload);
@@ -488,7 +492,7 @@ export class ReportManageFilterComponent {
       } else {
         deviceIdValue = payload.DeviceId;
       }
-      
+
       // Create clean payload for GeoFence API
       const cleanPayload: any = {
         DeviceId: deviceIdValue,
@@ -497,7 +501,7 @@ export class ReportManageFilterComponent {
         limit_count: payload.limit_count || this.tableSize,
         page_num: payload.page_num || this.page
       };
-      
+
       // Replace payload with clean version to avoid duplicates
       Object.keys(payload).forEach(key => delete payload[key]);
       Object.assign(payload, cleanPayload);
@@ -509,11 +513,11 @@ export class ReportManageFilterComponent {
       Distance: 'reports/DistanceReport',
       'Trip Report': 'reports/TripReport',
       'Overspeed Report': 'reports/OverSpeedReport',
-      'GeoFence Report': 'reports/Geofence', 
+      'GeoFence Report': 'reports/Geofence',
       'Temperature Report': 'reports/TempReport',
       'AC Report': 'reports/AcReport',
-      'Duration Report': 'reports/distancereport/summary', 
-      'Movement Summary': 'history', 
+      'Duration Report': 'reports/distancereport/summary',
+      'Movement Summary': 'history',
     };
 
     const reportType = this.reportTypeMapping[formValue.filtername];
@@ -543,7 +547,7 @@ export class ReportManageFilterComponent {
               } else {
                 this.data = null;
               }
-              
+
               this.ReportsDetails.setData(
                 this.data,
                 formValue.filtername,
@@ -554,7 +558,7 @@ export class ReportManageFilterComponent {
               return;
             }
 
-            
+
             let reportData = res?.body?.data || res?.body?.Data || res?.data;
 
             // Check if result is successful - show empty table instead of popup
@@ -575,7 +579,7 @@ export class ReportManageFilterComponent {
               } else {
                 this.data = null;
               }
-              
+
               this.ReportsDetails.setData(
                 this.data,
                 formValue.filtername,
@@ -607,7 +611,7 @@ export class ReportManageFilterComponent {
               reportData.forEach((item: any) => {
                 const vehicleNo = item.vehicleNo || item.VehicleNo;
                 const deviceId = item.fkDeviceId || item.DeviceId || item.deviceId;
-                
+
                 if (!vehicleMap.has(vehicleNo)) {
                   vehicleMap.set(vehicleNo, {
                     Device: {
@@ -618,10 +622,10 @@ export class ReportManageFilterComponent {
                     Total: 0
                   });
                 }
-                
+
                 const vehicle = vehicleMap.get(vehicleNo);
                 const distance = parseFloat(item.distance || item.Distance || 0);
-                
+
                 vehicle.Distance.push({
                   Date: item.dateDis || item.Date || item.fromTime || item.FromTime,
                   Distance: distance,
@@ -653,21 +657,21 @@ export class ReportManageFilterComponent {
 
               // Transform flat structure to expected format with Points array
               const points: any[] = [];
-              
+
               reportData.forEach((item: any) => {
                 const vehicleNo = item.vehicleNo || item.VehicleNo;
-                
+
                 // Calculate duration in seconds
                 const startTime = new Date(item.dormantStart || item.DormantStart || item.StartTime);
                 const endTime = new Date(item.dormantEnd || item.DormantEnd || item.EndTime);
                 const durationSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
-                
+
                 // Format duration as HH:MM:SS
                 const hours = Math.floor(durationSeconds / 3600);
                 const minutes = Math.floor((durationSeconds % 3600) / 60);
                 const seconds = durationSeconds % 60;
                 const duration = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                
+
                 points.push({
                   VehicleNo: vehicleNo,
                   StartTime: item.dormantStart || item.DormantStart || item.StartTime,
@@ -703,24 +707,24 @@ export class ReportManageFilterComponent {
 
               // Transform flat structure to expected format with Points array
               const points: any[] = [];
-              
+
               reportData.forEach((item: any) => {
                 const vehicleNo = item.vehicleNo || item.VehicleNo;
-                
+
                 // Calculate duration in seconds
                 const startTime = new Date(item.tripStartTime || item.TripStartTime || item.StartTime);
                 const endTime = new Date(item.tripEndTime || item.TripEndTime || item.EndTime);
                 const durationSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
-                
+
                 // Format duration as HH:MM:SS
                 const hours = Math.floor(durationSeconds / 3600);
                 const minutes = Math.floor((durationSeconds % 3600) / 60);
                 const seconds = durationSeconds % 60;
                 const duration = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                
+
                 // Get distance, ensure it's positive (handle negative values)
                 const distance = Math.abs(parseFloat(item.distance || item.Distance || 0));
-                
+
                 points.push({
                   Device: vehicleNo, // Used for grouping
                   StartTime: item.tripStartTime || item.TripStartTime || item.StartTime,
@@ -761,25 +765,25 @@ export class ReportManageFilterComponent {
 
               // Transform flat structure to expected format with Points array
               const points: any[] = [];
-              
+
               reportData.forEach((item: any) => {
                 const vehicleNo = item.vehicleNo || item.VehicleNo;
-                
+
                 // Calculate duration in seconds
                 const startTime = new Date(item.speedStartTime || item.SpeedStartTime || item.StartTime);
                 const endTime = new Date(item.speedEndTime || item.SpeedEndTime || item.EndTime);
                 const durationSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
-                
+
                 // Format duration as HH:MM:SS
                 const hours = Math.floor(durationSeconds / 3600);
                 const minutes = Math.floor((durationSeconds % 3600) / 60);
                 const seconds = durationSeconds % 60;
                 const duration = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                
+
                 // Get distance, ensure it's positive (handle negative values)
                 const distance = Math.abs(parseFloat(item.distance || item.Distance || 0));
                 const startSpeed = parseFloat(item.startSpeed || item.StartSpeed || 0);
-                
+
                 points.push({
                   VehicleNo: vehicleNo, // Used for grouping
                   StartTime: item.speedStartTime || item.SpeedStartTime || item.StartTime,
@@ -824,7 +828,7 @@ export class ReportManageFilterComponent {
                 const R = 6371; // Radius of the Earth in km
                 const dLat = (lat2 - lat1) * Math.PI / 180;
                 const dLon = (lon2 - lon1) * Math.PI / 180;
-                const a = 
+                const a =
                   Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                   Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                   Math.sin(dLon / 2) * Math.sin(dLon / 2);
@@ -836,7 +840,7 @@ export class ReportManageFilterComponent {
               const movementThreshold = movementDuration * 60 * 1000; // Convert to milliseconds
               const vehicleNo = reportData[0]?.vehicleNo || reportData[0]?.VehicleNo || '';
 
-              
+
               const segments: any[] = [];
               let currentSegment: any = null;
               let segmentStartIndex = 0;
@@ -844,13 +848,13 @@ export class ReportManageFilterComponent {
               for (let i = 0; i < reportData.length; i++) {
                 const point = reportData[i];
                 const nextPoint = reportData[i + 1];
-                
+
                 // Check if vehicle is moving (speed > 0 or has moved position)
-                const isMoving = (point.speed > 0) || 
-                                (nextPoint && (
-                                  point.latitude !== nextPoint.latitude || 
-                                  point.longitude !== nextPoint.longitude
-                                ));
+                const isMoving = (point.speed > 0) ||
+                  (nextPoint && (
+                    point.latitude !== nextPoint.latitude ||
+                    point.longitude !== nextPoint.longitude
+                  ));
 
                 if (isMoving) {
                   if (!currentSegment) {
@@ -862,7 +866,7 @@ export class ReportManageFilterComponent {
                     };
                     segmentStartIndex = i;
                   }
-                  
+
                   // Add distance if moving to next point
                   if (nextPoint) {
                     const distance = calculateDistance(
@@ -877,9 +881,9 @@ export class ReportManageFilterComponent {
                   // Vehicle stopped - check if segment duration meets threshold
                   if (currentSegment) {
                     const endPoint = reportData[i - 1] || point;
-                    const segmentDuration = new Date(endPoint.timestamp || endPoint.serverTime || endPoint.Timestamp).getTime() - 
-                                          currentSegment.startTime.getTime();
-                    
+                    const segmentDuration = new Date(endPoint.timestamp || endPoint.serverTime || endPoint.Timestamp).getTime() -
+                      currentSegment.startTime.getTime();
+
                     if (segmentDuration >= movementThreshold && currentSegment.totalDistance > 0) {
                       segments.push({
                         StartTime: currentSegment.startTime.toISOString(),
@@ -900,9 +904,9 @@ export class ReportManageFilterComponent {
               // Handle last segment if vehicle was moving at the end
               if (currentSegment && segments.length > 0) {
                 const lastPoint = reportData[reportData.length - 1];
-                const segmentDuration = new Date(lastPoint.timestamp || lastPoint.serverTime).getTime() - 
-                                      currentSegment.startTime.getTime();
-                
+                const segmentDuration = new Date(lastPoint.timestamp || lastPoint.serverTime).getTime() -
+                  currentSegment.startTime.getTime();
+
                 if (segmentDuration >= movementThreshold && currentSegment.totalDistance > 0) {
                   segments.push({
                     StartTime: currentSegment.startTime.toISOString(),
@@ -930,7 +934,7 @@ export class ReportManageFilterComponent {
                 return;
               }
 
-            
+
               this.data = {
                 Vehicle: {
                   VehicleNo: vehicleNo
@@ -955,30 +959,30 @@ export class ReportManageFilterComponent {
 
               // Transform flat structure to expected format - group by vehicleNo
               const vehicleMap = new Map();
-              
+
               reportData.forEach((item: any) => {
                 const vehicleNo = item.vehicleNo || item.VehicleNo;
-                
+
                 if (!vehicleMap.has(vehicleNo)) {
                   vehicleMap.set(vehicleNo, {
                     VehicleNo: vehicleNo,
                     Points: []
                   });
                 }
-                
+
                 const vehicle = vehicleMap.get(vehicleNo);
-                
+
                 // Calculate duration in seconds
                 const inTime = new Date(item.geofenceInTime || item.GeofenceInTime || item.StartTime);
                 const outTime = new Date(item.geofenceOutTime || item.GeofenceOutTime || item.EndTime);
                 const durationSeconds = Math.floor((outTime.getTime() - inTime.getTime()) / 1000);
-                
+
                 // Format duration as HH:MM:SS
                 const hours = Math.floor(durationSeconds / 3600);
                 const minutes = Math.floor((durationSeconds % 3600) / 60);
                 const seconds = durationSeconds % 60;
                 const duration = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                
+
                 vehicle.Points.push({
                   VehicleNo: vehicleNo,
                   StartTime: item.geofenceInTime || item.GeofenceInTime || item.StartTime,
@@ -1010,14 +1014,14 @@ export class ReportManageFilterComponent {
               const transformedData = reportData.map((item: any) => {
                 const vehicleNo = item.vehicleNo || item.VehicleNo;
                 const deviceId = item.deviceId || item.DeviceId;
-                
+
                 // Transform distanceRecords array
                 const distanceArray = (item.distanceRecords || item.DistanceRecords || []).map((record: any) => {
                   // Calculate ToDate - it's the next day's start or use toTime
                   const reportDate = new Date(record.reportDate || record.Date);
                   const nextDay = new Date(reportDate);
                   nextDay.setDate(nextDay.getDate() + 1);
-                  
+
                   return {
                     Date: record.reportDate || record.Date || item.fromTime,
                     ToDate: record.toDate || nextDay.toISOString() || item.toTime,
@@ -1082,7 +1086,7 @@ export class ReportManageFilterComponent {
             } else {
               this.data = null;
             }
-            
+
             this.ReportsDetails.setData(
               this.data,
               this.formValueData?.filtername || null,
@@ -1090,7 +1094,7 @@ export class ReportManageFilterComponent {
               null,
               this.isLocation
             );
-            
+
             return of(null);
           })
         )
