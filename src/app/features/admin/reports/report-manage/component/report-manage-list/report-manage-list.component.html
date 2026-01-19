@@ -207,7 +207,7 @@
                                         </ng-template>
                                     </ng-template>
                                 </td>
-
+                                <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
                                 <td>
                                     <ng-container *ngIf="isLocation === 1; else endaddress">
                                         {{ entry.End?.Lat }}, {{ entry.End?.Lng }}
@@ -226,27 +226,6 @@
                                             </span>
                                         </ng-template>
                                     </ng-template>
-                                </td>
-                                <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
-                                <td>
-                                    <ng-container *ngIf="isLocation === 1; else endaddress">
-                                        {{ entry.End?.Lat }}, {{ entry.End?.Lng }}
-                                    </ng-container>
-                                    <ng-template #endaddress>
-                                        {{ viewAddress('end',entry.End, i) }}
-                                        <ng-container *ngIf="selectedEndIndexes.includes(i); else viewAddresss">
-                                            <div *ngIf="endAddresses[i]; else loader">
-                                                {{ endAddresses[i] }}
-                                            </div>
-                                            <ng-template #loader>
-                                                <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
-                                            </ng-template>
-                                        </ng-container>
-                                        <ng-template #viewAddresss>
-                                            View Address
-                                        </ng-template>
-                                    </ng-template>
-
                                 </td>
                                 <td>{{entry.Duration}}</td>
                                 <td>{{entry.Distance}}</td>
