@@ -45,7 +45,8 @@
                             {{ group.vehicleNo }}
                         </div>
                     </div>
-                    <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0 && group.data && group.data.length > 0">
+                    <div class="pagination-data"
+                        *ngIf="groupedData && groupedData?.length > 0 && group.data && group.data.length > 0">
                         <pagination-controls previousLabel="Prev" nextLabel="Next"
                             (pageChange)="onTableDataChange($event)">
                         </pagination-controls>
@@ -65,15 +66,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngIf="!group.data || group.data.length === 0" class="text-center">
-                                <td colspan="4" style="text-align: center; padding: 20px;">
-                                    <strong>No data available</strong>
-                                </td>
-                            </tr>
-                            <tr *ngFor="let entry of group.data |  paginate : {
-                                itemsPerPage: tableSize,
-                                currentPage: page,
-                                totalItems: count}; let i = index">
+                            <tr *ngFor="let entry of group.data | paginate : {
+        itemsPerPage: tableSize,
+        currentPage: page,
+        totalItems: count}; let i = index">
                                 <td>{{ entry.StartTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
                                 <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
                                 <td>{{ entry.Duration }}</td>
@@ -82,26 +78,16 @@
                                         {{ entry.Loc?.Lat }}, {{ entry.Loc?.Lng }}
                                     </ng-container>
                                     <ng-template #addressBlock>
-                                        <ng-container *ngIf="selectedStartIndexes.includes(i); else viewBtn">
-                                            <div *ngIf="startAddresses[i]; else loader">
-                                                {{ startAddresses[i] }}
-                                            </div>
-                                            <ng-template #loader>
-                                                <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
-                                            </ng-template>
-                                        </ng-container>
-                                        <ng-template #viewBtn>
-                                            <span (click)="viewAddress('start', entry.Loc, i)"
-                                                style="cursor: pointer; color: blue; text-decoration: underline;">
-                                                View Address
-                                            </span>
-                                        </ng-template>
+                                        <div *ngIf="startAddresses[i]">{{ startAddresses[i] }}</div>
+
+                                        <div *ngIf="!startAddresses[i] && loadingIndices[i]" class="cssload-loading">
+                                            <i></i><i></i><i></i><i></i></div>
+
+                                        <span *ngIf="!startAddresses[i] && !loadingIndices[i]" style="display:none">
+                                            {{ viewAddress('start', entry.Loc, i) }}
+                                        </span>
                                     </ng-template>
                                 </td>
-                                <!-- <td>
-                                    <span class="badge bg-info"  (click)="openMap(entry)"> show on map</span>
-                                </td> -->
-
                             </tr>
                         </tbody>
                     </table>
@@ -157,7 +143,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="pagination-data" *ngIf="groupedData && groupedData?.length > 0 && group.data && group.data.length > 0">
+                    <div class="pagination-data"
+                        *ngIf="groupedData && groupedData?.length > 0 && group.data && group.data.length > 0">
                         <pagination-controls previousLabel="Prev" nextLabel="Next"
                             (pageChange)="onTableDataChange($event)">
                         </pagination-controls>
@@ -178,60 +165,44 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngIf="!group.data || group.data.length === 0" class="text-center">
-                                <td colspan="6" style="text-align: center; padding: 20px;">
-                                    <strong>No data available</strong>
-                                </td>
-                            </tr>
-                            <tr *ngFor="let entry of group.data |  paginate : {
-                                itemsPerPage: tableSize,
-                                currentPage: page,
-                                totalItems: count}; let i = index">
+                            <tr *ngFor="let entry of group.data | paginate : {
+        itemsPerPage: tableSize,
+        currentPage: page,
+        totalItems: count}; let i = index">
                                 <td>{{ entry.StartTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+
                                 <td>
                                     <ng-container *ngIf="isLocation === 1; else startaddress">
                                         {{ entry?.Start?.Lat }}, {{ entry?.Start?.Lng }}
                                     </ng-container>
                                     <ng-template #startaddress>
-                                        <ng-container *ngIf="selectedStartIndexes.includes(i); else viewStart">
-                                            <div *ngIf="startAddresses[i]; else loader">{{ startAddresses[i] }}</div>
-                                            <ng-template #loader>
-                                                <div class="cssload-loading"><i></i></div>
-                                            </ng-template>
-                                        </ng-container>
-                                        <ng-template #viewStart>
-                                            <span (click)="viewAddress('start', entry.Start, i)"
-                                                style="cursor: pointer; color: blue; text-decoration: underline;">
-                                                View Address
-                                            </span>
-                                        </ng-template>
+                                        <div *ngIf="startAddresses[i]">{{ startAddresses[i] }}</div>
+                                        <div *ngIf="!startAddresses[i] && loadingIndices[i]" class="cssload-loading">
+                                            <i></i></div>
+                                        <span *ngIf="!startAddresses[i] && !loadingIndices[i]" style="display:none">
+                                            {{ viewAddress('start', entry.Start, i) }}
+                                        </span>
                                     </ng-template>
                                 </td>
+
                                 <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+
                                 <td>
                                     <ng-container *ngIf="isLocation === 1; else endaddress">
                                         {{ entry.End?.Lat }}, {{ entry.End?.Lng }}
                                     </ng-container>
                                     <ng-template #endaddress>
-                                        <ng-container *ngIf="selectedEndIndexes.includes(i); else viewEnd">
-                                            <div *ngIf="endAddresses[i]; else loader">{{ endAddresses[i] }}</div>
-                                            <ng-template #loader>
-                                                <div class="cssload-loading"><i></i></div>
-                                            </ng-template>
-                                        </ng-container>
-                                        <ng-template #viewEnd>
-                                            <span (click)="viewAddress('end', entry.End, i)"
-                                                style="cursor: pointer; color: blue; text-decoration: underline;">
-                                                View Address
-                                            </span>
-                                        </ng-template>
+                                        <div *ngIf="endAddresses[i]">{{ endAddresses[i] }}</div>
+                                        <div *ngIf="!endAddresses[i] && loadingIndices[i]" class="cssload-loading">
+                                            <i></i></div>
+                                        <span *ngIf="!endAddresses[i] && !loadingIndices[i]" style="display:none">
+                                            {{ viewAddress('end', entry.End, i) }}
+                                        </span>
                                     </ng-template>
                                 </td>
+
                                 <td>{{entry.Duration}}</td>
                                 <td>{{entry.Distance}}</td>
-                                <td>
-                                    <!-- <span class="badge bg-info"  (click)="openMap(entry)"> show on map</span> -->
-                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -308,15 +279,10 @@
 
                         <!--hide andddddd loop sol  -->
                         <tbody>
-                            <tr *ngIf="!group.data || group.data.length === 0" class="text-center">
-                                <td [attr.colspan]="isLocation == 2 ? 6 : 4" style="text-align: center; padding: 20px;">
-                                    <strong>No data available</strong>
-                                </td>
-                            </tr>
                             <tr *ngFor="let entry of group.data | paginate : {
-                                        itemsPerPage: tableSize,
-                                        currentPage: page,
-                                         totalItems: count}; let i = index">
+            itemsPerPage: tableSize,
+            currentPage: page,
+            totalItems: count}; let i = index">
 
                                 <td>{{entry.StartTime | date: ' h:mm:ss a'}} , {{entry.EndTime | date: ' h:mm:ss a'}}
                                 </td>
@@ -324,39 +290,25 @@
                                 <td>{{ entry.EndPoint?.Lat }} , {{ entry.EndPoint?.Lng }}</td>
 
                                 <td *ngIf="isLocation == 2">
-                                    <ng-container *ngIf="selectedStartIndexes.includes(i); else viewStart">
-                                        <div *ngIf="startAddresses[i]; else loader">
-                                            {{ startAddresses[i] }}
-                                        </div>
-                                        <ng-template #loader>
-                                            <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
-                                        </ng-template>
-                                    </ng-container>
+                                    <div *ngIf="startAddresses[i]">{{ startAddresses[i] }}</div>
 
-                                    <ng-template #viewStart>
-                                        <span (click)="viewAddress('start', entry?.StartPoint, i)"
-                                            style="cursor: pointer; color: blue; text-decoration: underline;">
-                                            View Address
-                                        </span>
-                                    </ng-template>
+                                    <div *ngIf="!startAddresses[i] && loadingIndices[i]" class="cssload-loading"><i></i>
+                                    </div>
+
+                                    <span *ngIf="!startAddresses[i] && !loadingIndices[i]" style="display:none">
+                                        {{ viewAddress('start', entry?.StartPoint, i) }}
+                                    </span>
                                 </td>
 
                                 <td *ngIf="isLocation == 2">
-                                    <ng-container *ngIf="selectedEndIndexes.includes(i); else viewEnd">
-                                        <div *ngIf="endAddresses[i]; else loader">
-                                            {{ endAddresses[i] }}
-                                        </div>
-                                        <ng-template #loader>
-                                            <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
-                                        </ng-template>
-                                    </ng-container>
+                                    <div *ngIf="endAddresses[i]">{{ endAddresses[i] }}</div>
 
-                                    <ng-template #viewEnd>
-                                        <span (click)="viewAddress('end', entry.EndPoint, i)"
-                                            style="cursor: pointer; color: blue; text-decoration: underline;">
-                                            View Address
-                                        </span>
-                                    </ng-template>
+                                    <div *ngIf="!endAddresses[i] && loadingIndices[i]" class="cssload-loading"><i></i>
+                                    </div>
+
+                                    <span *ngIf="!endAddresses[i] && !loadingIndices[i]" style="display:none">
+                                        {{ viewAddress('end', entry.EndPoint, i) }}
+                                    </span>
                                 </td>
 
                                 <td>{{entry.Distance}}</td>
@@ -441,63 +393,45 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngIf="!group.data || group.data.length === 0" class="text-center">
-                                <td colspan="7" style="text-align: center; padding: 20px;">
-                                    <strong>No data available</strong>
-                                </td>
-                            </tr>
-                            <tr *ngFor="let entry of group.data |  paginate : {
-                                itemsPerPage: tableSize,
-                                currentPage: page,
-                                totalItems: count}; let i = index">
+                            <tr *ngFor="let entry of group.data | paginate : {
+        itemsPerPage: tableSize,
+        currentPage: page,
+        totalItems: count}; let i = index">
                                 <td>{{ entry.StartTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+
                                 <td>
                                     <ng-container *ngIf="isLocation === 1; else overstartaddress">
                                         {{entry.StartLoc?.Lat }}, {{entry.StartLoc?.Lng }}
                                     </ng-container>
                                     <ng-template #overstartaddress>
-                                        <ng-container *ngIf="selectedStartIndexes.includes(i); else viewStart">
-                                            <div *ngIf="startAddresses[i]; else loader">{{ startAddresses[i] }}</div>
-                                            <ng-template #loader>
-                                                <div class="cssload-loading"><i></i></div>
-                                            </ng-template>
-                                        </ng-container>
-                                        <ng-template #viewStart>
-                                            <span (click)="viewAddress('start', entry.StartLoc, i)"
-                                                style="cursor: pointer; color: blue; text-decoration: underline;">
-                                                View Address
-                                            </span>
-                                        </ng-template>
+                                        <div *ngIf="startAddresses[i]">{{ startAddresses[i] }}</div>
+                                        <div *ngIf="!startAddresses[i] && loadingIndices[i]" class="cssload-loading">
+                                            <i></i></div>
+                                        <span *ngIf="!startAddresses[i] && !loadingIndices[i]" style="display:none">
+                                            {{ viewAddress('start', entry.StartLoc, i) }}
+                                        </span>
                                     </ng-template>
                                 </td>
+
                                 <td>{{ entry.EndTime | date: 'MMM d, yyyy, h:mm:ss a' }}</td>
+
                                 <td>
                                     <ng-container *ngIf="isLocation === 1; else overEndaddress">
                                         {{entry.EndLoc?.Lat }}, {{entry.EndLoc?.Lng }}
                                     </ng-container>
                                     <ng-template #overEndaddress>
-                                        <ng-container *ngIf="selectedEndIndexes.includes(i); else viewEnd">
-                                            <div *ngIf="endAddresses[i]; else loader">{{ endAddresses[i] }}</div>
-                                            <ng-template #loader>
-                                                <div class="cssload-loading"><i></i></div>
-                                            </ng-template>
-                                        </ng-container>
-                                        <ng-template #viewEnd>
-                                            <span (click)="viewAddress('end', entry.EndLoc, i)"
-                                                style="cursor: pointer; color: blue; text-decoration: underline;">
-                                                View Address
-                                            </span>
-                                        </ng-template>
+                                        <div *ngIf="endAddresses[i]">{{ endAddresses[i] }}</div>
+                                        <div *ngIf="!endAddresses[i] && loadingIndices[i]" class="cssload-loading">
+                                            <i></i></div>
+                                        <span *ngIf="!endAddresses[i] && !loadingIndices[i]" style="display:none">
+                                            {{ viewAddress('end', entry.EndLoc, i) }}
+                                        </span>
                                     </ng-template>
                                 </td>
+
                                 <td>{{entry.Duration}}</td>
                                 <td>{{entry.Distance}}</td>
-                                <td style="color: red;">
-                                    {{entry.StartSpeed}} km/h</td>
-                                <!-- <td>
-                                    <span class="badge bg-info"  (click)="openMap(entry)"> show on map</span>
-                                </td> -->
-
+                                <td style="color: red;">{{entry.StartSpeed}} km/h</td>
                             </tr>
                         </tbody>
                     </table>
@@ -550,30 +484,22 @@
                         <p>
                             Start Address :-
                             <span class="start-address">
-                                <ng-container *ngIf="selectedStartIndexes.includes(i); else viewStart">
-                                    {{ startAddresses[i] || 'Loading...' }}
-                                </ng-container>
-                                <ng-template #viewStart>
-                                    <span (click)="viewAddress('start', vehicleValue.StartLoc, i)"
-                                        style="cursor: pointer; color: blue;">
-                                        View Address
-                                    </span>
-                                </ng-template>
+                                <span *ngIf="startAddresses[i]">{{ startAddresses[i] }}</span>
+                                <span *ngIf="!startAddresses[i] && loadingIndices[i]">Loading...</span>
+                                <span *ngIf="!startAddresses[i] && !loadingIndices[i]" style="display:none">
+                                    {{ viewAddress('start', vehicleValue.StartLoc, i) }}
+                                </span>
                             </span>
                         </p>
 
                         <p>
                             End Address :-
                             <span class="end-address">
-                                <ng-container *ngIf="selectedEndIndexes.includes(i); else viewEnd">
-                                    {{ endAddresses[i] || 'Loading...' }}
-                                </ng-container>
-                                <ng-template #viewEnd>
-                                    <span (click)="viewAddress('end', vehicleValue.EndLoc, i)"
-                                        style="cursor: pointer; color: blue;">
-                                        View Address
-                                    </span>
-                                </ng-template>
+                                <span *ngIf="endAddresses[i]">{{ endAddresses[i] }}</span>
+                                <span *ngIf="!endAddresses[i] && loadingIndices[i]">Loading...</span>
+                                <span *ngIf="!endAddresses[i] && !loadingIndices[i]" style="display:none">
+                                    {{ viewAddress('end', vehicleValue.EndLoc, i) }}
+                                </span>
                             </span>
                         </p>
                         <p class="vehicle-number">{{vehicleValue?.Duration}}</p>
@@ -603,15 +529,11 @@
                         <p>
                             Address :-
                             <span class="end-address">
-                                <ng-container *ngIf="selectedStartIndexes.includes(i); else viewStart">
-                                    {{ startAddresses[i] || 'Loading...' }}
-                                </ng-container>
-                                <ng-template #viewStart>
-                                    <span (click)="viewAddress('start', vehicleValue.Point, i)"
-                                        style="cursor: pointer; color: blue;">
-                                        View Address
-                                    </span>
-                                </ng-template>
+                                <span *ngIf="startAddresses[i]">{{ startAddresses[i] }}</span>
+                                <span *ngIf="!startAddresses[i] && loadingIndices[i]">Loading...</span>
+                                <span *ngIf="!startAddresses[i] && !loadingIndices[i]" style="display:none">
+                                    {{ viewAddress('start', vehicleValue.Point, i) }}
+                                </span>
                             </span>
                         </p>
                     </div>
