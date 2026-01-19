@@ -525,65 +525,79 @@ export class ReportManageFilterComponent {
           tap((res: any) => {
             this.spinnerLoading = false;
 
-            // Handle error responses
+            // Handle error responses - show empty table instead of popup
             if (res?.error || (res?.body && res?.body?.result === false)) {
-              let errorMsg = 'Something went wrong! Please try again with proper input';
-              if (res?.error?.message) {
-                errorMsg = res.error.message;
-              } else if (res?.body?.data && typeof res.body.data === 'string') {
-                errorMsg = res.body.data;
-              } else if (res?.error?.ResponseMessage === 'Failed') {
-              let errContent =
-                formValue.filtername === 'GeoFence Report'
-                  ? res.error.Error.Data
-                  : res.error.Error.Message[0]?.ErrorMessage;
-                errorMsg = errContent || res?.error?.Error?.Data || this.showMessage;
+              // Set empty data structure based on report type to show empty table
+              if (formValue.filtername === 'Stop' || formValue.filtername === 'Idle') {
+                this.data = { Points: [], TotalCount: 0 };
+              } else if (formValue.filtername === 'Trip Report' || formValue.filtername === 'Overspeed Report') {
+                this.data = { Points: [], TotalCount: 0 };
+              } else if (formValue.filtername === 'Movement Summary') {
+                this.data = { Vehicle: { VehicleNo: '' }, Result: [] };
+              } else if (formValue.filtername === 'GeoFence Report') {
+                this.data = [];
+              } else if (formValue.filtername === 'Distance') {
+                this.data = [];
+              } else if (formValue.filtername === 'Duration Report') {
+                this.data = [];
+              } else {
+                this.data = null;
               }
-
-              this.openConfirmationModal({
-                title: 'Error',
-                content: errorMsg,
-                primaryActionLabel: 'Ok',
-                secondaryActionLabel: false,
-                onPrimaryAction: () => {
-                  this.hideConfirmationModal();
-                },
-              });
-              this.ReportsDetails.setData(null, null, null, null, null);
+              
+              this.ReportsDetails.setData(
+                this.data,
+                formValue.filtername,
+                formValue,
+                type,
+                this.isLocation
+              );
               return;
             }
 
-            // Reference project response structure: {data: [...], result: true}
+            
             let reportData = res?.body?.data || res?.body?.Data || res?.data;
 
-            // Check if result is successful
+            // Check if result is successful - show empty table instead of popup
             if (res?.body?.result === false || (res?.body?.result === undefined && !reportData)) {
-              this.openConfirmationModal({
-                title: formValue.filtername,
-                content: `No data found for ${formValue.filtername}`,
-                primaryActionLabel: 'Ok',
-                secondaryActionLabel: false,
-                onPrimaryAction: () => {
-                  this.hideConfirmationModal();
-                },
-              });
-              this.ReportsDetails.setData(null, null, null, null, null);
+              // Set empty data structure based on report type to show empty table
+              if (formValue.filtername === 'Stop' || formValue.filtername === 'Idle') {
+                this.data = { Points: [], TotalCount: 0 };
+              } else if (formValue.filtername === 'Trip Report' || formValue.filtername === 'Overspeed Report') {
+                this.data = { Points: [], TotalCount: 0 };
+              } else if (formValue.filtername === 'Movement Summary') {
+                this.data = { Vehicle: { VehicleNo: '' }, Result: [] };
+              } else if (formValue.filtername === 'GeoFence Report') {
+                this.data = [];
+              } else if (formValue.filtername === 'Distance') {
+                this.data = [];
+              } else if (formValue.filtername === 'Duration Report') {
+                this.data = [];
+              } else {
+                this.data = null;
+              }
+              
+              this.ReportsDetails.setData(
+                this.data,
+                formValue.filtername,
+                formValue,
+                type,
+                this.isLocation
+              );
               return;
             }
 
             // Special case for Distance Report - transform data structure
             if (formValue.filtername === 'Distance') {
               if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
-                this.openConfirmationModal({
-                  title: formValue.filtername,
-                  content: `No data found for ${formValue.filtername}`,
-                  primaryActionLabel: 'Ok',
-                  secondaryActionLabel: false,
-                  onPrimaryAction: () => {
-                    this.hideConfirmationModal();
-                  },
-                });
-                this.ReportsDetails.setData(null, null, null, null, null);
+                // Set empty data structure to show empty table
+                this.data = [];
+                this.ReportsDetails.setData(
+                  this.data,
+                  formValue.filtername,
+                  formValue,
+                  type,
+                  this.isLocation
+                );
                 return;
               }
 
@@ -625,16 +639,15 @@ export class ReportManageFilterComponent {
             // Special case for Idle Report - transform response structure
             else if (formValue.filtername === 'Idle') {
               if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
-                this.openConfirmationModal({
-                  title: formValue.filtername,
-                  content: `No data found for ${formValue.filtername}`,
-                  primaryActionLabel: 'Ok',
-                  secondaryActionLabel: false,
-                  onPrimaryAction: () => {
-                    this.hideConfirmationModal();
-                  },
-                });
-                this.ReportsDetails.setData(null, null, null, null, null);
+                // Set empty data structure to show empty table
+                this.data = { Points: [], TotalCount: 0 };
+                this.ReportsDetails.setData(
+                  this.data,
+                  formValue.filtername,
+                  formValue,
+                  type,
+                  this.isLocation
+                );
                 return;
               }
 
@@ -676,16 +689,15 @@ export class ReportManageFilterComponent {
             // Special case for Trip Report - transform response structure
             else if (formValue.filtername === 'Trip Report') {
               if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
-                this.openConfirmationModal({
-                  title: formValue.filtername,
-                  content: `No data found for ${formValue.filtername}`,
-                  primaryActionLabel: 'Ok',
-                  secondaryActionLabel: false,
-                  onPrimaryAction: () => {
-                    this.hideConfirmationModal();
-                  },
-                });
-                this.ReportsDetails.setData(null, null, null, null, null);
+                // Set empty data structure to show empty table
+                this.data = { Points: [], TotalCount: 0 };
+                this.ReportsDetails.setData(
+                  this.data,
+                  formValue.filtername,
+                  formValue,
+                  type,
+                  this.isLocation
+                );
                 return;
               }
 
@@ -735,16 +747,15 @@ export class ReportManageFilterComponent {
             // Special case for Overspeed Report - transform response structure
             else if (formValue.filtername === 'Overspeed Report') {
               if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
-                this.openConfirmationModal({
-                  title: formValue.filtername,
-                  content: `No data found for ${formValue.filtername}`,
-                  primaryActionLabel: 'Ok',
-                  secondaryActionLabel: false,
-                  onPrimaryAction: () => {
-                    this.hideConfirmationModal();
-                  },
-                });
-                this.ReportsDetails.setData(null, null, null, null, null);
+                // Set empty data structure to show empty table
+                this.data = { Points: [], TotalCount: 0 };
+                this.ReportsDetails.setData(
+                  this.data,
+                  formValue.filtername,
+                  formValue,
+                  type,
+                  this.isLocation
+                );
                 return;
               }
 
@@ -796,18 +807,17 @@ export class ReportManageFilterComponent {
             // Special case for Movement Summary - transform history API response
             else if (formValue.filtername === 'Movement Summary') {
               if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
-                this.openConfirmationModal({
-                  title: formValue.filtername,
-                  content: `No data found for ${formValue.filtername}`,
-                primaryActionLabel: 'Ok',
-                secondaryActionLabel: false,
-                onPrimaryAction: () => {
-                  this.hideConfirmationModal();
-                },
-              });
-              this.ReportsDetails.setData(null, null, null, null, null);
-              return;
-            }
+                // Set empty data structure to show empty table
+                this.data = { Vehicle: { VehicleNo: '' }, Result: [] };
+                this.ReportsDetails.setData(
+                  this.data,
+                  formValue.filtername,
+                  formValue,
+                  type,
+                  this.isLocation
+                );
+                return;
+              }
 
               // Helper function to calculate distance between two coordinates (Haversine formula)
               const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -908,16 +918,15 @@ export class ReportManageFilterComponent {
               }
 
               if (segments.length === 0) {
-                this.openConfirmationModal({
-                  title: formValue.filtername,
-                  content: `No movement segments found for the specified duration threshold`,
-                  primaryActionLabel: 'Ok',
-                  secondaryActionLabel: false,
-                  onPrimaryAction: () => {
-                    this.hideConfirmationModal();
-                  },
-                });
-                this.ReportsDetails.setData(null, null, null, null, null);
+                // Set empty data structure to show empty table
+                this.data = { Vehicle: { VehicleNo: vehicleNo }, Result: [] };
+                this.ReportsDetails.setData(
+                  this.data,
+                  formValue.filtername,
+                  formValue,
+                  type,
+                  this.isLocation
+                );
                 return;
               }
 
@@ -932,16 +941,15 @@ export class ReportManageFilterComponent {
             // Special case for GeoFence Report - transform response structure
             else if (formValue.filtername === 'GeoFence Report') {
               if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
-                this.openConfirmationModal({
-                  title: 'Geofence',
-                  content: 'No GeoFence found for the given duration',
-                  primaryActionLabel: 'Ok',
-                  secondaryActionLabel: false,
-                  onPrimaryAction: () => {
-                    this.hideConfirmationModal();
-                  },
-                });
-                this.ReportsDetails.setData(null, null, null, null, null);
+                // Set empty data structure to show empty table
+                this.data = [];
+                this.ReportsDetails.setData(
+                  this.data,
+                  formValue.filtername,
+                  formValue,
+                  type,
+                  this.isLocation
+                );
                 return;
               }
 
@@ -986,16 +994,15 @@ export class ReportManageFilterComponent {
             // Special case for Duration Report - transform summary response structure
             else if (formValue.filtername === 'Duration Report') {
               if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
-                this.openConfirmationModal({
-                  title: formValue.filtername,
-                  content: `No data found for ${formValue.filtername}`,
-                  primaryActionLabel: 'Ok',
-                  secondaryActionLabel: false,
-                  onPrimaryAction: () => {
-                    this.hideConfirmationModal();
-                  },
-                });
-                this.ReportsDetails.setData(null, null, null, null, null);
+                // Set empty data structure to show empty table
+                this.data = [];
+                this.ReportsDetails.setData(
+                  this.data,
+                  formValue.filtername,
+                  formValue,
+                  type,
+                  this.isLocation
+                );
                 return;
               }
 
@@ -1032,16 +1039,15 @@ export class ReportManageFilterComponent {
             } else {
               // Generic check for all filter types
               if (!reportData || (Array.isArray(reportData) && reportData.length === 0)) {
-                this.openConfirmationModal({
-                  title: formValue.filtername,
-                  content: `No data found for ${formValue.filtername}`,
-                  primaryActionLabel: 'Ok',
-                  secondaryActionLabel: false,
-                  onPrimaryAction: () => {
-                    this.hideConfirmationModal();
-                  },
-                });
-                this.ReportsDetails.setData(null, null, null, null, null);
+                // Set empty data structure to show empty table
+                this.data = null;
+                this.ReportsDetails.setData(
+                  this.data,
+                  formValue.filtername,
+                  formValue,
+                  type,
+                  this.isLocation
+                );
                 return;
               }
               this.data = reportData;
@@ -1059,16 +1065,32 @@ export class ReportManageFilterComponent {
           catchError((error) => {
             this.spinnerLoading = false;
             console.error('Report API error:', error);
-            this.openConfirmationModal({
-              title: 'Error',
-              content: 'Failed to fetch report data. Please try again.',
-              primaryActionLabel: 'Ok',
-              secondaryActionLabel: false,
-              onPrimaryAction: () => {
-                this.hideConfirmationModal();
-              },
-            });
-            this.ReportsDetails.setData(null, null, null, null, null);
+
+            // Set empty data structure based on report type to show empty table
+            if (this.formValueData?.filtername === 'Stop' || this.formValueData?.filtername === 'Idle') {
+              this.data = { Points: [], TotalCount: 0 };
+            } else if (this.formValueData?.filtername === 'Trip Report' || this.formValueData?.filtername === 'Overspeed Report') {
+              this.data = { Points: [], TotalCount: 0 };
+            } else if (this.formValueData?.filtername === 'Movement Summary') {
+              this.data = { Vehicle: { VehicleNo: '' }, Result: [] };
+            } else if (this.formValueData?.filtername === 'GeoFence Report') {
+              this.data = [];
+            } else if (this.formValueData?.filtername === 'Distance') {
+              this.data = [];
+            } else if (this.formValueData?.filtername === 'Duration Report') {
+              this.data = [];
+            } else {
+              this.data = null;
+            }
+            
+            this.ReportsDetails.setData(
+              this.data,
+              this.formValueData?.filtername || null,
+              this.formValueData || null,
+              null,
+              this.isLocation
+            );
+            
             return of(null);
           })
         )

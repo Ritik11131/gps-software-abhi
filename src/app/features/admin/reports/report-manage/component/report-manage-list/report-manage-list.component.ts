@@ -92,20 +92,21 @@ export class ReportManageListComponent {
   setData(data: any, filterType: any, formvalue: any, type: any, isLocation: any) {
 
     this.isLocation = formvalue?.locationType
-    const timeDiff = formvalue?.toDate?.getTime() - formvalue?.fromDate?.getTime();
-    this.daysDifference = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    if (formvalue?.toDate && formvalue?.fromDate) {
+      const timeDiff = formvalue?.toDate?.getTime() - formvalue?.fromDate?.getTime();
+      this.daysDifference = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    }
     if (type == 'Report') {
       this.count = 0
       this.page = 1
     }
-    if (filterType == 'GeoFence Report') {
-      this.count = data[0]?.Points[0]?.TotalCount
+    if (filterType == 'GeoFence Report' && data && Array.isArray(data) && data.length > 0) {
+      this.count = data[0]?.Points?.[0]?.TotalCount || 0
     }
     this.selectedStartIndexes = [];
     this.selectedEndIndexes = [];
-    if (data) {
-      this.vehicle = data;
-    }
+    // Always set vehicle, even if null/empty, so table structure is shown
+    this.vehicle = data;
     // this.count = this.vehicle?.Points[0]?.TotalCount;
 
     this.filterType = filterType;
@@ -187,13 +188,13 @@ export class ReportManageListComponent {
     );
 
     if (this.filterType === 'Stop' || this.filterType === 'Idle') {
-      this.count = this.vehicle?.Points[0]?.TotalCount
+      this.count = this.vehicle?.Points?.[0]?.TotalCount || this.vehicle?.TotalCount || 0;
       this.groupDataByVehicleNo();
     } else if (this.filterType === 'Trip Report') {
-      this.count = this.vehicle?.Points[0]?.TotalCount
+      this.count = this.vehicle?.Points?.[0]?.TotalCount || this.vehicle?.TotalCount || 0;
       this.groupingTrip();
     } else if (this.filterType === 'Overspeed Report') {
-      this.count = this.vehicle?.Points[0]?.TotalCount
+      this.count = this.vehicle?.Points?.[0]?.TotalCount || this.vehicle?.TotalCount || 0;
       this.groupingspeed();
     } else if (this.filterType === 'Movement Summary') {
       this.groupingMovement()
@@ -306,17 +307,28 @@ export class ReportManageListComponent {
   groupDataByVehicleNo(): void {
     const tempGroupedData = new Map<string, VehicleData[]>();
 
-    this.vehicle.Points.forEach((item: VehicleData) => {
-      const vehicleNo = item.VehicleNo;
-      if (!tempGroupedData.has(vehicleNo)) {
-        tempGroupedData.set(vehicleNo, []);
-      }
-      tempGroupedData.get(vehicleNo)?.push(item);
-    });
+    if (this.vehicle?.Points && Array.isArray(this.vehicle.Points) && this.vehicle.Points.length > 0) {
+      this.vehicle.Points.forEach((item: VehicleData) => {
+        const vehicleNo = item.VehicleNo;
+        if (!tempGroupedData.has(vehicleNo)) {
+          tempGroupedData.set(vehicleNo, []);
+        }
+        tempGroupedData.get(vehicleNo)?.push(item);
+      });
+    }
+    
     this.groupedData = Array.from(tempGroupedData, ([vehicleNo, data]) => ({
       vehicleNo,
       data,
     }));
+    
+    // If no data, create an empty group to show table structure
+    if (this.groupedData.length === 0 && this.filterType) {
+      this.groupedData = [{
+        vehicleNo: '',
+        data: []
+      }];
+    }
   }
 
   groupingGeofence(): void {
@@ -324,20 +336,24 @@ export class ReportManageListComponent {
       string, VehicleData[]>();
 
     // Iterate over the vehicle array
-    this.vehicle?.forEach((vehicleItem: any) => {
-      // Ensure that Points exist before processing,
-      const vehicleNo = vehicleItem.VehicleNo;
-      vehicleItem.Points.forEach((item: VehicleData) => {
-        if (!tempGroupedData.has(vehicleNo)) {
-          tempGroupedData.set(vehicleNo, []);
+    if (this.vehicle && Array.isArray(this.vehicle) && this.vehicle.length > 0) {
+      this.vehicle.forEach((vehicleItem: any) => {
+        // Ensure that Points exist before processing,
+        const vehicleNo = vehicleItem.VehicleNo;
+        if (vehicleItem.Points && Array.isArray(vehicleItem.Points) && vehicleItem.Points.length > 0) {
+          vehicleItem.Points.forEach((item: VehicleData) => {
+            if (!tempGroupedData.has(vehicleNo)) {
+              tempGroupedData.set(vehicleNo, []);
+            }
+            tempGroupedData.get(vehicleNo)?.push(item);
+          });
         }
-        tempGroupedData.get(vehicleNo)?.push(item);
       });
-      this.groupedData = Array.from(tempGroupedData, ([vehicleNo, data]) => ({
-        vehicleNo,
-        data,
-      }));
-    });
+    }
+    this.groupedData = Array.from(tempGroupedData, ([vehicleNo, data]) => ({
+      vehicleNo,
+      data,
+    }));
   }
   groupingTrip() {
     const tempGroupedData = new Map<
@@ -345,22 +361,24 @@ export class ReportManageListComponent {
       { data: Device[]; totalDistance: number; totalDuration: number }
     >();
 
-    this.vehicle.Points.forEach((item: Device) => {
-      const deviceID = item.Device; // Assuming 'Device' is a string that identifies each device.
-      if (!tempGroupedData.has(deviceID)) {
-        tempGroupedData.set(deviceID, {
-          data: [],
-          totalDistance: 0,
-          totalDuration: 0,
-        });
-      }
-      const deviceData = tempGroupedData.get(deviceID);
-      if (deviceData) {
-        deviceData.data.push(item);
-        deviceData.totalDistance += item.Distance; // Assuming 'distance' is a number representing the distance.
-        deviceData.totalDuration += this.durationInSeconds(item.Duration); // Convert duration to seconds and add.
-      }
-    });
+    if (this.vehicle?.Points && Array.isArray(this.vehicle.Points) && this.vehicle.Points.length > 0) {
+      this.vehicle.Points.forEach((item: Device) => {
+        const deviceID = item.Device; // Assuming 'Device' is a string that identifies each device.
+        if (!tempGroupedData.has(deviceID)) {
+          tempGroupedData.set(deviceID, {
+            data: [],
+            totalDistance: 0,
+            totalDuration: 0,
+          });
+        }
+        const deviceData = tempGroupedData.get(deviceID);
+        if (deviceData) {
+          deviceData.data.push(item);
+          deviceData.totalDistance += item.Distance; // Assuming 'distance' is a number representing the distance.
+          deviceData.totalDuration += this.durationInSeconds(item.Duration); // Convert duration to seconds and add.
+        }
+      });
+    }
 
     this.groupedData = Array.from(tempGroupedData, ([Device, details]) => ({
       Device,
@@ -368,6 +386,16 @@ export class ReportManageListComponent {
       totalDistance: parseFloat(details.totalDistance.toFixed(2)), // Round to two decimal places and convert back to number.
       totalDuration: this.formatDuration(details.totalDuration), // Format total seconds into a readable string.
     }));
+    
+    // If no data, create an empty group to show table structure
+    if (this.groupedData.length === 0 && this.filterType) {
+      this.groupedData = [{
+        Device: '',
+        data: [],
+        totalDistance: 0,
+        totalDuration: '0 sec'
+      }];
+    }
 
   }
   groupingspeed() {
@@ -376,22 +404,24 @@ export class ReportManageListComponent {
       { data: speedData[]; totalDistance: number; totalDuration: number }
     >();
 
-    this.vehicle.Points.forEach((item: speedData) => {
-      const deviceID = item.VehicleNo; // Assuming 'Device' is a string that identifies each device.
-      if (!tempGroupedData.has(deviceID)) {
-        tempGroupedData.set(deviceID, {
-          data: [],
-          totalDistance: 0,
-          totalDuration: 0,
-        });
-      }
-      const deviceData = tempGroupedData.get(deviceID);
-      if (deviceData) {
-        deviceData.data.push(item);
-        deviceData.totalDistance += item.Distance; // Assuming 'distance' is a number representing the distance.
-        deviceData.totalDuration += this.durationInSeconds(item.Duration); // Convert duration to seconds and add.
-      }
-    });
+    if (this.vehicle?.Points && Array.isArray(this.vehicle.Points) && this.vehicle.Points.length > 0) {
+      this.vehicle.Points.forEach((item: speedData) => {
+        const deviceID = item.VehicleNo; // Assuming 'Device' is a string that identifies each device.
+        if (!tempGroupedData.has(deviceID)) {
+          tempGroupedData.set(deviceID, {
+            data: [],
+            totalDistance: 0,
+            totalDuration: 0,
+          });
+        }
+        const deviceData = tempGroupedData.get(deviceID);
+        if (deviceData) {
+          deviceData.data.push(item);
+          deviceData.totalDistance += item.Distance; // Assuming 'distance' is a number representing the distance.
+          deviceData.totalDuration += this.durationInSeconds(item.Duration); // Convert duration to seconds and add.
+        }
+      });
+    }
 
     this.groupedData = Array.from(tempGroupedData, ([Device, details]) => ({
       Device,
@@ -399,6 +429,16 @@ export class ReportManageListComponent {
       totalDistance: parseFloat(details.totalDistance.toFixed(2)), // Round to two decimal places and convert back to number.
       totalDuration: this.formatDuration(details.totalDuration), // Format total seconds into a readable string.
     }));
+    
+    // If no data, create an empty group to show table structure
+    if (this.groupedData.length === 0 && this.filterType) {
+      this.groupedData = [{
+        Device: '',
+        data: [],
+        totalDistance: 0,
+        totalDuration: '0 sec'
+      }];
+    }
 
   }
 
@@ -408,31 +448,43 @@ export class ReportManageListComponent {
       { data: Device[]; totalDistance: number; totalDuration: number }
     >();
 
-    this.vehicle?.Result?.forEach((item: any) => {
+    if (this.vehicle?.Result && Array.isArray(this.vehicle.Result) && this.vehicle.Result.length > 0) {
+      this.vehicle.Result.forEach((item: any) => {
 
-      const deviceID = this.vehicle.Vehicle.VehicleNo;
-      // Assuming 'Device' is a string that identifies each device.
-      if (!tempGroupedData.has(deviceID)) {
-        tempGroupedData.set(deviceID, {
-          data: [],
-          totalDistance: 0,
-          totalDuration: 0,
-        });
-      }
-      const deviceData = tempGroupedData.get(deviceID);
-      if (deviceData) {
-        deviceData.data.push(item);
-        deviceData.totalDistance += item.Distance; // Assuming 'distance' is a number representing the distance.
-        // deviceData.totalDuration += this.durationInSeconds(item.Duration); // Convert duration to seconds and add.
-      }
-    });
+        const deviceID = this.vehicle.Vehicle?.VehicleNo || '';
+        // Assuming 'Device' is a string that identifies each device.
+        if (!tempGroupedData.has(deviceID)) {
+          tempGroupedData.set(deviceID, {
+            data: [],
+            totalDistance: 0,
+            totalDuration: 0,
+          });
+        }
+        const deviceData = tempGroupedData.get(deviceID);
+        if (deviceData) {
+          deviceData.data.push(item);
+          deviceData.totalDistance += item.Distance; // Assuming 'distance' is a number representing the distance.
+          // deviceData.totalDuration += this.durationInSeconds(item.Duration); // Convert duration to seconds and add.
+        }
+      });
+    }
 
     this.groupedData = Array.from(tempGroupedData, ([Device, details]) => ({
       Device,
       data: details.data,
-      totalDistance: parseFloat(details.totalDistance.toFixed(2)), // Round to two decimal places and convert back to number.
-      totalDuration: this.formatDuration(details.totalDuration), // Format total seconds into a readable string.
+      totalDistance: parseFloat(details.totalDistance.toFixed(2)), 
+      totalDuration: this.formatDuration(details.totalDuration), 
     }));
+    
+    // If no data, create an empty group to show table structure
+    if (this.groupedData.length === 0 && this.filterType) {
+      this.groupedData = [{
+        Device: '',
+        data: [],
+        totalDistance: 0,
+        totalDuration: '0 sec'
+      }];
+    }
 
   }
 
