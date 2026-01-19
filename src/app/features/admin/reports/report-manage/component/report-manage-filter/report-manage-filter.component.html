@@ -70,16 +70,27 @@
                     <!-- <ng-template ng-multi-label-tmp let-items="items">
 
                     </ng-template> -->
-<ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
-    <div class="ng-value" *ngIf="items.length === 1">
-        <span class="ng-value-label">{{$any(items[0]).text}}</span>
-        <span class="ng-value-icon right" (click)="clear(items[0])" aria-hidden="true">×</span>
-    </div>
+                    <ng-select [items]="vehicleData" formControlName="vehicle" [multiple]="true" bindLabel="text"
+                        bindValue="value" placeholder="Select Vehicle" (change)="onVehicleSelect($event)"
+                        (remove)="removeVehicle($event)">
 
-    <div class="ng-value" *ngIf="items.length > 1">
-        <span class="ng-value-label">{{items.length}} Vehicles Selected</span>
-    </div>
-</ng-template>
+                        <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+
+                            <div class="ng-value" *ngIf="items.length === 1">
+                                <span class="ng-value-label" [title]="$any(items[0]).text">
+                                    {{ $any(items[0]).text.length > 15 ? ($any(items[0]).text | slice:0:15) + '...' :
+                                    $any(items[0]).text }}
+                                </span>
+                                <span class="ng-value-icon right" (click)="clear(items[0])" aria-hidden="true">×</span>
+                            </div>
+
+                            <div class="ng-value" *ngIf="items.length > 1">
+                                <span class="ng-value-label">{{ items.length }} Vehicles Selected</span>
+                            </div>
+
+                        </ng-template>
+
+                    </ng-select>
                 </ng-select>
                 <div *ngIf="reportForm.get('vehicle')?.invalid && (reportForm.get('vehicle')?.dirty || reportForm.get('vehicle')?.touched)"
                     class="text-danger">
