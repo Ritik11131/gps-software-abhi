@@ -20,7 +20,10 @@
                                     <li class="vehicle-value" *ngFor="let vehicle of vehicleData; let i = index" style="cursor: pointer;" (click)="onSelectVehicle(vehicle)">
                                         <span [class]="getVehicleColor(vehicle)">{{vehicle?.Device?.VehicleNo}}</span>
                                         <span [class]="getVehicleColor(vehicle)">{{formatVehicleStatusDuration(vehicle)}}</span>
-                                        <button [class]="getVehicleColor(vehicle)"  mat-icon-button (click)="onContextMenu($event, vehicle, i)">
+                                        <!-- <button [class]="getVehicleColor(vehicle)"  mat-icon-button (click)="onContextMenu($event, vehicle, i)">
+                                            <mat-icon>more_vert</mat-icon>
+                                        </button> -->
+                                         <button [class]="getVehicleColor(vehicle)"  mat-icon-button>
                                             <mat-icon>more_vert</mat-icon>
                                         </button>
                                     </li>
