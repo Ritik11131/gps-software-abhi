@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   hostURL: "http://localhost:4200",
-  baseAPIURl: "https://api.gpsvts.in/api/",
+  baseAPIURl: "http://api.gpsvts.in/api/",
 };
 /*
  * For easier debugging in development mode, you can import the following file
