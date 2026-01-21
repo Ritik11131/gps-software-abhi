@@ -53,6 +53,14 @@ export class AdminHistoryTrackingV2Component {
   waypointPolyline: L.Polyline | any;
   spinnerLoading: boolean = false // Declare waypointPolyline as a class-level variable
 
+  // Address caching to prevent repeated fetches when stopped
+  private cachedAddress: string = 'Address not available';
+  private lastGeocodeKey: string = '';
+  private isGeocodingInProgress: boolean = false;
+  private playbackStartTime: Date | null = null;
+  private playbackTickCount: number = 0;
+  private isPopupOpen: boolean = false;
+
 
 
   selectDate = [
@@ -593,13 +601,16 @@ export class AdminHistoryTrackingV2Component {
       this.animatedMarker = L.marker(path[startIndex]).addTo(this.map);
     }
 
-    let popupOpened = true;
+    this.isPopupOpen = true;
     const canvas = document.createElement('canvas');
     const context: any = canvas.getContext('2d');
     const img = new Image();
 
     let currentIndex = startIndex;
     const steps = path.length - 1;
+
+    this.playbackStartTime = new Date(this.historylist[startIndex]?.Timestamp);
+    this.playbackTickCount = 0;
 
     const animateStep = () => {
       if (currentIndex < path.length - 1) {
@@ -639,25 +650,55 @@ export class AdminHistoryTrackingV2Component {
               this.animatedMarker.setLatLng([lat, lng]);
               this.animatedMarker.setIcon(icon);
 
-              if (stepIndex === 0 && popupOpened) {
-                const address = { Lat: lat, Lng: lng };
-                this.animatedMarker
-                  .bindPopup(this.generateInfoWindowContent(this.historylist[currentIndex], 'Address is Loading...'))
-                  .openPopup();
+              const currentData = this.historylist[currentIndex];
+              const stepMs = this.moveInterval / this.stepsInSegment;
+              this.playbackTickCount++;
+              const displayTime = new Date((this.playbackStartTime?.getTime() || 0) + this.playbackTickCount * stepMs);
+              const formattedTime = this.formatDateValue(displayTime);
 
-                this.getLiveAddressLocation(address)
-                  .pipe(
-                    map((addressValue) =>
-                      this.generateInfoWindowContent(
-                        this.historylist[currentIndex],
-                        addressValue || 'Address not available'
-                      )
-                    ),
-                    catchError(() =>
-                      of(this.generateInfoWindowContent(this.historylist[currentIndex], 'Address not available'))
+              if (stepIndex === 0 && this.isPopupOpen) {
+                const speed = Number(currentData?.Speed) || 0;
+                const geocodeKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
+                const isStopped = speed <= 0.5;
+                const shouldFetchAddress =
+                  !isStopped &&
+                  !this.isGeocodingInProgress &&
+                  geocodeKey !== this.lastGeocodeKey;
+
+                if (shouldFetchAddress) {
+                  this.isGeocodingInProgress = true;
+                  this.lastGeocodeKey = geocodeKey;
+                  const address = { Lat: lat, Lng: lng };
+                  this.animatedMarker
+                    .bindPopup(this.generateInfoWindowContent(currentData, 'Address is Loading...', formattedTime))
+                    .openPopup();
+
+                  this.getLiveAddressLocation(address)
+                    .pipe(
+                      map((addressValue) => {
+                        this.cachedAddress = addressValue || 'Address not available';
+                        return this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime);
+                      }),
+                      catchError(() => {
+                        this.cachedAddress = 'Address not available';
+                        return of(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
+                      })
                     )
-                  )
-                  .subscribe((content) => this.animatedMarker.getPopup().setContent(content));
+                    .subscribe((content) => {
+                      this.isGeocodingInProgress = false;
+                      this.animatedMarker.getPopup().setContent(content);
+                    });
+                } else {
+                  this.animatedMarker
+                    .bindPopup(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime))
+                    .openPopup();
+                }
+              }
+
+              if (this.isPopupOpen && this.animatedMarker.getPopup()) {
+                this.animatedMarker
+                  .getPopup()
+                  .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
               }
 
               this.map.setView([lat, lng], this.map.getZoom(), { animate: true });
@@ -684,16 +725,52 @@ export class AdminHistoryTrackingV2Component {
         };
 
         this.animatedMarker.on('popupclose', () => {
-          popupOpened = false;
+          this.isPopupOpen = false;
         });
 
         this.animatedMarker.on('click', () => {
-          if (!popupOpened) {
+          const currentData = this.historylist[this.currentIndex];
+          const lat = Number(currentData?.Latitude);
+          const lng = Number(currentData?.Longitude);
+          const speed = Number(currentData?.Speed) || 0;
+          const geocodeKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
+          const isStopped = speed <= 0.5;
+          const shouldFetchAddress =
+            !isStopped &&
+            !this.isGeocodingInProgress &&
+            geocodeKey !== this.lastGeocodeKey;
+
+          if (!this.isPopupOpen) {
             this.animatedMarker.openPopup();
-            popupOpened = true;
-          } else {
+            this.isPopupOpen = true;
+          }
+
+          if (shouldFetchAddress) {
+            this.isGeocodingInProgress = true;
+            this.lastGeocodeKey = geocodeKey;
+            const address = { Lat: lat, Lng: lng };
             this.animatedMarker
-              .getPopup().setContent(this.generateInfoWindowContent(this.historylist[currentIndex], 'Address is Loading...'))
+              .getPopup()
+              .setContent(this.generateInfoWindowContent(currentData, 'Address is Loading...'));
+            this.getLiveAddressLocation(address)
+              .pipe(
+                map((addressValue) => {
+                  this.cachedAddress = addressValue || 'Address not available';
+                  return this.generateInfoWindowContent(currentData, this.cachedAddress);
+                }),
+                catchError(() => {
+                  this.cachedAddress = 'Address not available';
+                  return of(this.generateInfoWindowContent(currentData, this.cachedAddress));
+                })
+              )
+              .subscribe((content) => {
+                this.isGeocodingInProgress = false;
+                this.animatedMarker.getPopup().setContent(content);
+              });
+          } else if (this.animatedMarker.getPopup()) {
+            this.animatedMarker
+              .getPopup()
+              .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress));
           }
         });
       } else {
@@ -738,7 +815,6 @@ export class AdminHistoryTrackingV2Component {
   }
 
   sliderChange(event: any) {
-    this.sliderValue = 0
     this.sliderValue = Number(event.target.value);
     this.getslidervalue(this.sliderValue)
   }
@@ -748,15 +824,18 @@ export class AdminHistoryTrackingV2Component {
     this.sliderValue = event;
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
-      if (this.currentIndex >= this.historylist.length - 1) {
-        this.currentIndex = 0;
-      }
+    }
+    if (this.currentIndex >= this.historylist.length - 1) {
+      this.currentIndex = 0;
+    }
+    this.updateMarkerForIndex(this.currentIndex);
+    if (this.isPlaying) {
       this.animateMarker(this.currentIndex);
     }
   }
 
 
-  generateInfoWindowContent(data: any, address: string) {
+  generateInfoWindowContent(data: any, address: string, formattedTime?: string | null) {
     const truncateLongWords = (text: string, maxLength: number) => {
       return text
         .split(' ')
@@ -783,7 +862,7 @@ export class AdminHistoryTrackingV2Component {
                           </div>
                         <div class="row mb-2">
                           <div class="col-md-12">
-                          <span> <strong>Date:</strong> ${this.formatDateValue(data.Timestamp)}
+                          <span> <strong>Date:</strong> ${(formattedTime || this.formatDateValue(data.Timestamp) || '')}
                           </div>
                          
                         </div>
@@ -793,5 +872,58 @@ export class AdminHistoryTrackingV2Component {
                 </span>
                         </div>
                       </div>`;
+  }
+
+  private updateMarkerForIndex(index: number) {
+    if (!this.historylist || this.historylist.length === 0) return;
+    const currentData = this.historylist[index];
+    const lat = Number(currentData?.Latitude);
+    const lng = Number(currentData?.Longitude);
+    const speed = Number(currentData?.Speed) || 0;
+    const geocodeKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
+    const isStopped = speed <= 0.5;
+
+    if (!this.animatedMarker) {
+      this.animatedMarker = L.marker([lat, lng]).addTo(this.map);
+    } else {
+      this.animatedMarker.setLatLng([lat, lng]);
+    }
+
+    if (!this.isPopupOpen || !this.animatedMarker.getPopup()) {
+      return;
+    }
+
+    const shouldFetchAddress =
+      !isStopped &&
+      !this.isGeocodingInProgress &&
+      geocodeKey !== this.lastGeocodeKey;
+
+    if (shouldFetchAddress) {
+      this.isGeocodingInProgress = true;
+      this.lastGeocodeKey = geocodeKey;
+      const address = { Lat: lat, Lng: lng };
+      this.animatedMarker
+        .getPopup()
+        .setContent(this.generateInfoWindowContent(currentData, 'Address is Loading...'));
+      this.getLiveAddressLocation(address)
+        .pipe(
+          map((addressValue) => {
+            this.cachedAddress = addressValue || 'Address not available';
+            return this.generateInfoWindowContent(currentData, this.cachedAddress);
+          }),
+          catchError(() => {
+            this.cachedAddress = 'Address not available';
+            return of(this.generateInfoWindowContent(currentData, this.cachedAddress));
+          })
+        )
+        .subscribe((content) => {
+          this.isGeocodingInProgress = false;
+          this.animatedMarker.getPopup().setContent(content);
+        });
+    } else {
+      this.animatedMarker
+        .getPopup()
+        .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress));
+    }
   }
 }
