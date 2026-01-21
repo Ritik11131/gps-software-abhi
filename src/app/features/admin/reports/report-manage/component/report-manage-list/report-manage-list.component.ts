@@ -1081,14 +1081,21 @@ export class ReportManageListComponent {
   }
 
 
-  onTableDataChange(event: any) {
+ onTableDataChange(event: any) {
     this.page = event;
+
+    
+    this.startAddresses = [];       
+    this.endAddresses = [];         
+    this.selectedStartIndexes = [];  
+    this.selectedEndIndexes = [];   
+    this.loadingIndices = {};  
+
     this.filterPagination.emit({
       pageNumber: this.page,
       pageSize: this.tableSize
     })
   };
-
   onTableSizeChange(event: any): void {
     const selectedValue = event.target.value;
 
