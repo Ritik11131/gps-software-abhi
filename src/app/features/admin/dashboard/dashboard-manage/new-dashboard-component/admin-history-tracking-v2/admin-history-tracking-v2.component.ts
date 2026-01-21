@@ -53,6 +53,43 @@ export class AdminHistoryTrackingV2Component {
   waypointPolyline: L.Polyline | any;
   spinnerLoading: boolean = false // Declare waypointPolyline as a class-level variable
 
+  // Address caching to prevent repeated fetches when stopped
+  private cachedAddress: string = 'Address not available';
+  private lastGeocodeKey: string = '';
+  private isGeocodingInProgress: boolean = false;
+  private playbackStartTime: Date | null = null;
+  private playbackTickCount: number = 0;
+  private isPopupOpen: boolean = false;
+  private playbackBaseTime: Date | null = null;
+
+  private parseTimestamp(value: any): Date | null {
+    if (!value) {
+      return null;
+    }
+    if (value instanceof Date) {
+      return value;
+    }
+    if (typeof value === 'string') {
+      const parsed = new Date(value);
+      if (!isNaN(parsed.getTime())) {
+        return parsed;
+      }
+      const match = value.match(/^(\d{2})[/-](\d{2})[/-](\d{4})(?:\s+(\d{2}):(\d{2}):(\d{2}))?$/);
+      if (match) {
+        const [, dd, mm, yyyy, hh = '00', min = '00', ss = '00'] = match;
+        return new Date(
+          Number(yyyy),
+          Number(mm) - 1,
+          Number(dd),
+          Number(hh),
+          Number(min),
+          Number(ss)
+        );
+      }
+    }
+    return null;
+  }
+
 
 
   selectDate = [
@@ -322,18 +359,15 @@ export class AdminHistoryTrackingV2Component {
       this.tripReport = [];
       this.tripType = false
       this.isLoading = true
-      const deviceId = this.selectedVehicleId ? this.selectedVehicleId : formvalue?.deviceId;
+      const deviceId = Number(this.selectedVehicleId ? this.selectedVehicleId : formvalue?.deviceId);
       const fromDate = new Date(formvalue?.fromDate);
       const toDate = new Date(formvalue?.toDate);
-      
-      // Format dates to ISO string with timezone (e.g., "2026-01-11T00:00:00+05:30")
-      const fromTimeISO = this.formatDateToISOWithTimezone(fromDate);
-      const toTimeISO = this.formatDateToISOWithTimezone(toDate);
-      
+
       payload = {
-        "DeviceId": String(deviceId),
-        "FromTime": fromTimeISO,
-        "ToTime": toTimeISO
+        DeviceId: String(deviceId),
+        FromTime: this.formatDateToISOWithTimezone(fromDate),
+        ToTime: this.formatDateToISOWithTimezone(toDate),
+        MovementDuration: '01'
       };
     } else {
       payload = this.tripValue
@@ -371,7 +405,11 @@ export class AdminHistoryTrackingV2Component {
           Timestamp: item.timestamp,
           Heading: item.heading,
           vehicleNo: item.vehicleNo
-        }));
+        })).sort((a: any, b: any) => {
+          const ta = this.parseTimestamp(a.Timestamp)?.getTime() || 0;
+          const tb = this.parseTimestamp(b.Timestamp)?.getTime() || 0;
+          return ta - tb;
+        });
         
         // Set historyData with vehicle info
         if (responseData.length > 0) {
@@ -391,6 +429,9 @@ export class AdminHistoryTrackingV2Component {
         }
 
         this.userService.historycount(this.historylist.length);
+        this.playbackBaseTime = this.historylist?.length
+          ? this.parseTimestamp(this.historylist[0]?.Timestamp)
+          : null;
         this.updatePolyline();
       }
     });
@@ -593,13 +634,19 @@ export class AdminHistoryTrackingV2Component {
       this.animatedMarker = L.marker(path[startIndex]).addTo(this.map);
     }
 
-    let popupOpened = true;
+    this.isPopupOpen = true;
     const canvas = document.createElement('canvas');
     const context: any = canvas.getContext('2d');
     const img = new Image();
 
     let currentIndex = startIndex;
     const steps = path.length - 1;
+
+    const baseTime = this.playbackBaseTime || this.parseTimestamp(this.historylist[startIndex]?.Timestamp);
+    this.playbackStartTime = baseTime
+      ? new Date(baseTime.getTime() + startIndex * this.moveInterval)
+      : new Date();
+    this.playbackTickCount = 0;
 
     const animateStep = () => {
       if (currentIndex < path.length - 1) {
@@ -639,25 +686,59 @@ export class AdminHistoryTrackingV2Component {
               this.animatedMarker.setLatLng([lat, lng]);
               this.animatedMarker.setIcon(icon);
 
-              if (stepIndex === 0 && popupOpened) {
-                const address = { Lat: lat, Lng: lng };
-                this.animatedMarker
-                  .bindPopup(this.generateInfoWindowContent(this.historylist[currentIndex], 'Address is Loading...'))
-                  .openPopup();
+              const currentData = this.historylist[currentIndex];
+              this.playbackTickCount++;
+              const stepMs = this.moveInterval / this.stepsInSegment;
+              const playbackTime = new Date((this.playbackStartTime?.getTime() || 0) + this.playbackTickCount * stepMs);
+              const isMoving = Number(currentData?.Speed) > 0.5;
+              // When stopped, keep time advancing via playback clock; when moving, show actual point time
+              const formattedTime = isMoving
+                ? this.getFormattedHistoryTime(currentIndex)
+                : (this.formatDateValue(playbackTime) || this.getFormattedHistoryTime(currentIndex));
 
-                this.getLiveAddressLocation(address)
-                  .pipe(
-                    map((addressValue) =>
-                      this.generateInfoWindowContent(
-                        this.historylist[currentIndex],
-                        addressValue || 'Address not available'
-                      )
-                    ),
-                    catchError(() =>
-                      of(this.generateInfoWindowContent(this.historylist[currentIndex], 'Address not available'))
+              if (stepIndex === 0 && this.isPopupOpen) {
+                const speed = Number(currentData?.Speed) || 0;
+                const geocodeKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
+                const isStopped = speed <= 0.5;
+                const shouldFetchAddress =
+                  !isStopped &&
+                  !this.isGeocodingInProgress &&
+                  geocodeKey !== this.lastGeocodeKey;
+
+                if (shouldFetchAddress) {
+                  this.isGeocodingInProgress = true;
+                  this.lastGeocodeKey = geocodeKey;
+                  const address = { Lat: lat, Lng: lng };
+                  this.animatedMarker
+                    .bindPopup(this.generateInfoWindowContent(currentData, 'Address is Loading...', formattedTime))
+                    .openPopup();
+
+                  this.getLiveAddressLocation(address)
+                    .pipe(
+                      map((addressValue) => {
+                        this.cachedAddress = addressValue || 'Address not available';
+                        return this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime);
+                      }),
+                      catchError(() => {
+                        this.cachedAddress = 'Address not available';
+                        return of(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
+                      })
                     )
-                  )
-                  .subscribe((content) => this.animatedMarker.getPopup().setContent(content));
+                    .subscribe((content) => {
+                      this.isGeocodingInProgress = false;
+                      this.animatedMarker.getPopup().setContent(content);
+                    });
+                } else {
+                  this.animatedMarker
+                    .bindPopup(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime))
+                    .openPopup();
+                }
+              }
+
+              if (this.isPopupOpen && this.animatedMarker.getPopup()) {
+                this.animatedMarker
+                  .getPopup()
+                  .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
               }
 
               this.map.setView([lat, lng], this.map.getZoom(), { animate: true });
@@ -684,16 +765,53 @@ export class AdminHistoryTrackingV2Component {
         };
 
         this.animatedMarker.on('popupclose', () => {
-          popupOpened = false;
+          this.isPopupOpen = false;
         });
 
         this.animatedMarker.on('click', () => {
-          if (!popupOpened) {
+          const currentData = this.historylist[this.currentIndex];
+          const lat = Number(currentData?.Latitude);
+          const lng = Number(currentData?.Longitude);
+          const speed = Number(currentData?.Speed) || 0;
+          const geocodeKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
+          const isStopped = speed <= 0.5;
+          const shouldFetchAddress =
+            !isStopped &&
+            !this.isGeocodingInProgress &&
+            geocodeKey !== this.lastGeocodeKey;
+          const formattedTime = this.getFormattedHistoryTime(this.currentIndex);
+
+          if (!this.isPopupOpen) {
             this.animatedMarker.openPopup();
-            popupOpened = true;
-          } else {
+            this.isPopupOpen = true;
+          }
+
+          if (shouldFetchAddress) {
+            this.isGeocodingInProgress = true;
+            this.lastGeocodeKey = geocodeKey;
+            const address = { Lat: lat, Lng: lng };
             this.animatedMarker
-              .getPopup().setContent(this.generateInfoWindowContent(this.historylist[currentIndex], 'Address is Loading...'))
+              .getPopup()
+              .setContent(this.generateInfoWindowContent(currentData, 'Address is Loading...', formattedTime));
+            this.getLiveAddressLocation(address)
+              .pipe(
+                map((addressValue) => {
+                  this.cachedAddress = addressValue || 'Address not available';
+                  return this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime);
+                }),
+                catchError(() => {
+                  this.cachedAddress = 'Address not available';
+                  return of(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
+                })
+              )
+              .subscribe((content) => {
+                this.isGeocodingInProgress = false;
+                this.animatedMarker.getPopup().setContent(content);
+              });
+          } else if (this.animatedMarker.getPopup()) {
+            this.animatedMarker
+              .getPopup()
+              .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
           }
         });
       } else {
@@ -707,6 +825,20 @@ export class AdminHistoryTrackingV2Component {
 
   formatDateValue(date: any) {
     return this.datePipe.transform(date, 'dd-MM-yyyy HH:mm:ss')
+  }
+
+  private getFormattedPlaybackTime(index: number): string {
+    const baseTime = this.playbackBaseTime || this.parseTimestamp(this.historylist?.[index]?.Timestamp);
+    if (!baseTime) {
+      return this.formatDateValue(this.historylist?.[index]?.Timestamp) || '';
+    }
+    const displayTime = new Date(baseTime.getTime() + index * this.moveInterval);
+    return this.formatDateValue(displayTime) || '';
+  }
+
+  private getFormattedHistoryTime(index: number): string {
+    const ts = this.parseTimestamp(this.historylist?.[index]?.Timestamp);
+    return this.formatDateValue(ts || this.historylist?.[index]?.Timestamp) || '';
   }
 
   changeSpeed(event: any) {
@@ -738,7 +870,6 @@ export class AdminHistoryTrackingV2Component {
   }
 
   sliderChange(event: any) {
-    this.sliderValue = 0
     this.sliderValue = Number(event.target.value);
     this.getslidervalue(this.sliderValue)
   }
@@ -748,15 +879,26 @@ export class AdminHistoryTrackingV2Component {
     this.sliderValue = event;
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
-      if (this.currentIndex >= this.historylist.length - 1) {
-        this.currentIndex = 0;
-      }
+    }
+    if (this.currentIndex >= this.historylist.length) {
+      this.currentIndex = this.historylist.length - 1;
+    }
+    // Reset playback clock to the selected point so time doesn't jump back
+    const baseTime = this.playbackBaseTime || this.parseTimestamp(this.historylist[this.currentIndex]?.Timestamp);
+    this.playbackStartTime = baseTime
+      ? new Date(baseTime.getTime() + this.currentIndex * this.moveInterval)
+      : new Date();
+    this.playbackTickCount = 0;
+    // Keep popup in sync with slider jumps
+    this.isPopupOpen = true;
+    this.updateMarkerForIndex(this.currentIndex);
+    if (this.isPlaying) {
       this.animateMarker(this.currentIndex);
     }
   }
 
 
-  generateInfoWindowContent(data: any, address: string) {
+  generateInfoWindowContent(data: any, address: string, formattedTime?: string | null) {
     const truncateLongWords = (text: string, maxLength: number) => {
       return text
         .split(' ')
@@ -783,7 +925,7 @@ export class AdminHistoryTrackingV2Component {
                           </div>
                         <div class="row mb-2">
                           <div class="col-md-12">
-                          <span> <strong>Date:</strong> ${this.formatDateValue(data.Timestamp)}
+                          <span> <strong>Date:</strong> ${(formattedTime || this.formatDateValue(data.Timestamp) || '')}
                           </div>
                          
                         </div>
@@ -793,5 +935,64 @@ export class AdminHistoryTrackingV2Component {
                 </span>
                         </div>
                       </div>`;
+  }
+
+  private updateMarkerForIndex(index: number) {
+    if (!this.historylist || this.historylist.length === 0) return;
+    const currentData = this.historylist[index];
+    const lat = Number(currentData?.Latitude);
+    const lng = Number(currentData?.Longitude);
+    const speed = Number(currentData?.Speed) || 0;
+    const geocodeKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
+    const isStopped = speed <= 0.5;
+    const formattedTime = this.getFormattedHistoryTime(index);
+
+    if (!this.animatedMarker) {
+      this.animatedMarker = L.marker([lat, lng]).addTo(this.map);
+    } else {
+      this.animatedMarker.setLatLng([lat, lng]);
+    }
+
+    if (!this.animatedMarker.getPopup()) {
+      this.animatedMarker.bindPopup(
+        this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime)
+      );
+    }
+    if (this.isPopupOpen) {
+      this.animatedMarker.openPopup();
+    }
+
+    const shouldFetchAddress =
+      !isStopped &&
+      !this.isGeocodingInProgress &&
+      geocodeKey !== this.lastGeocodeKey;
+
+    if (shouldFetchAddress) {
+      this.isGeocodingInProgress = true;
+      this.lastGeocodeKey = geocodeKey;
+      const address = { Lat: lat, Lng: lng };
+      this.animatedMarker
+        .getPopup()
+        .setContent(this.generateInfoWindowContent(currentData, 'Address is Loading...', formattedTime));
+      this.getLiveAddressLocation(address)
+        .pipe(
+          map((addressValue) => {
+            this.cachedAddress = addressValue || 'Address not available';
+            return this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime);
+          }),
+          catchError(() => {
+            this.cachedAddress = 'Address not available';
+            return of(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
+          })
+        )
+        .subscribe((content) => {
+          this.isGeocodingInProgress = false;
+          this.animatedMarker.getPopup().setContent(content);
+        });
+    } else {
+      this.animatedMarker
+        .getPopup()
+        .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
+    }
   }
 }
