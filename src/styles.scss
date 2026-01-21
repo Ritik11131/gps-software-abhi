@@ -393,3 +393,22 @@ div.dataTables_paginate a.current {
 .text-danger{
   font-size: 13px;
 }
+
+
+.cdk-overlay-pane .mat-calendar,
+.cdk-overlay-pane .ngx-mat-calendar,
+.cdk-overlay-pane .mat-datepicker-content,
+.cdk-overlay-pane .mat-calendar-container {
+  transform: scale(0.90) !important;
+  transform-origin: top center !important;
+}
+
+.cdk-overlay-pane {
+  &.mat-datepicker-panel {
+    overflow: visible !important;
+  }
+  
+  &[class*="ngx-mat"] {
+    overflow: visible !important;
+  }
+}
