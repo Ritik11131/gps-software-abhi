@@ -60,6 +60,35 @@ export class AdminHistoryTrackingV2Component {
   private playbackStartTime: Date | null = null;
   private playbackTickCount: number = 0;
   private isPopupOpen: boolean = false;
+  private playbackBaseTime: Date | null = null;
+
+  private parseTimestamp(value: any): Date | null {
+    if (!value) {
+      return null;
+    }
+    if (value instanceof Date) {
+      return value;
+    }
+    if (typeof value === 'string') {
+      const parsed = new Date(value);
+      if (!isNaN(parsed.getTime())) {
+        return parsed;
+      }
+      const match = value.match(/^(\d{2})[/-](\d{2})[/-](\d{4})(?:\s+(\d{2}):(\d{2}):(\d{2}))?$/);
+      if (match) {
+        const [, dd, mm, yyyy, hh = '00', min = '00', ss = '00'] = match;
+        return new Date(
+          Number(yyyy),
+          Number(mm) - 1,
+          Number(dd),
+          Number(hh),
+          Number(min),
+          Number(ss)
+        );
+      }
+    }
+    return null;
+  }
 
 
 
@@ -330,18 +359,15 @@ export class AdminHistoryTrackingV2Component {
       this.tripReport = [];
       this.tripType = false
       this.isLoading = true
-      const deviceId = this.selectedVehicleId ? this.selectedVehicleId : formvalue?.deviceId;
+      const deviceId = Number(this.selectedVehicleId ? this.selectedVehicleId : formvalue?.deviceId);
       const fromDate = new Date(formvalue?.fromDate);
       const toDate = new Date(formvalue?.toDate);
-      
-      // Format dates to ISO string with timezone (e.g., "2026-01-11T00:00:00+05:30")
-      const fromTimeISO = this.formatDateToISOWithTimezone(fromDate);
-      const toTimeISO = this.formatDateToISOWithTimezone(toDate);
-      
+
       payload = {
-        "DeviceId": String(deviceId),
-        "FromTime": fromTimeISO,
-        "ToTime": toTimeISO
+        DeviceId: String(deviceId),
+        FromTime: this.formatDateToISOWithTimezone(fromDate),
+        ToTime: this.formatDateToISOWithTimezone(toDate),
+        MovementDuration: '01'
       };
     } else {
       payload = this.tripValue
@@ -379,7 +405,11 @@ export class AdminHistoryTrackingV2Component {
           Timestamp: item.timestamp,
           Heading: item.heading,
           vehicleNo: item.vehicleNo
-        }));
+        })).sort((a: any, b: any) => {
+          const ta = this.parseTimestamp(a.Timestamp)?.getTime() || 0;
+          const tb = this.parseTimestamp(b.Timestamp)?.getTime() || 0;
+          return ta - tb;
+        });
         
         // Set historyData with vehicle info
         if (responseData.length > 0) {
@@ -399,6 +429,9 @@ export class AdminHistoryTrackingV2Component {
         }
 
         this.userService.historycount(this.historylist.length);
+        this.playbackBaseTime = this.historylist?.length
+          ? this.parseTimestamp(this.historylist[0]?.Timestamp)
+          : null;
         this.updatePolyline();
       }
     });
@@ -609,7 +642,10 @@ export class AdminHistoryTrackingV2Component {
     let currentIndex = startIndex;
     const steps = path.length - 1;
 
-    this.playbackStartTime = new Date(this.historylist[startIndex]?.Timestamp);
+    const baseTime = this.playbackBaseTime || this.parseTimestamp(this.historylist[startIndex]?.Timestamp);
+    this.playbackStartTime = baseTime
+      ? new Date(baseTime.getTime() + startIndex * this.moveInterval)
+      : new Date();
     this.playbackTickCount = 0;
 
     const animateStep = () => {
@@ -651,10 +687,14 @@ export class AdminHistoryTrackingV2Component {
               this.animatedMarker.setIcon(icon);
 
               const currentData = this.historylist[currentIndex];
-              const stepMs = this.moveInterval / this.stepsInSegment;
               this.playbackTickCount++;
-              const displayTime = new Date((this.playbackStartTime?.getTime() || 0) + this.playbackTickCount * stepMs);
-              const formattedTime = this.formatDateValue(displayTime);
+              const stepMs = this.moveInterval / this.stepsInSegment;
+              const playbackTime = new Date((this.playbackStartTime?.getTime() || 0) + this.playbackTickCount * stepMs);
+              const isMoving = Number(currentData?.Speed) > 0.5;
+              // When stopped, keep time advancing via playback clock; when moving, show actual point time
+              const formattedTime = isMoving
+                ? this.getFormattedHistoryTime(currentIndex)
+                : (this.formatDateValue(playbackTime) || this.getFormattedHistoryTime(currentIndex));
 
               if (stepIndex === 0 && this.isPopupOpen) {
                 const speed = Number(currentData?.Speed) || 0;
@@ -739,6 +779,7 @@ export class AdminHistoryTrackingV2Component {
             !isStopped &&
             !this.isGeocodingInProgress &&
             geocodeKey !== this.lastGeocodeKey;
+          const formattedTime = this.getFormattedHistoryTime(this.currentIndex);
 
           if (!this.isPopupOpen) {
             this.animatedMarker.openPopup();
@@ -751,16 +792,16 @@ export class AdminHistoryTrackingV2Component {
             const address = { Lat: lat, Lng: lng };
             this.animatedMarker
               .getPopup()
-              .setContent(this.generateInfoWindowContent(currentData, 'Address is Loading...'));
+              .setContent(this.generateInfoWindowContent(currentData, 'Address is Loading...', formattedTime));
             this.getLiveAddressLocation(address)
               .pipe(
                 map((addressValue) => {
                   this.cachedAddress = addressValue || 'Address not available';
-                  return this.generateInfoWindowContent(currentData, this.cachedAddress);
+                  return this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime);
                 }),
                 catchError(() => {
                   this.cachedAddress = 'Address not available';
-                  return of(this.generateInfoWindowContent(currentData, this.cachedAddress));
+                  return of(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
                 })
               )
               .subscribe((content) => {
@@ -770,7 +811,7 @@ export class AdminHistoryTrackingV2Component {
           } else if (this.animatedMarker.getPopup()) {
             this.animatedMarker
               .getPopup()
-              .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress));
+              .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
           }
         });
       } else {
@@ -784,6 +825,20 @@ export class AdminHistoryTrackingV2Component {
 
   formatDateValue(date: any) {
     return this.datePipe.transform(date, 'dd-MM-yyyy HH:mm:ss')
+  }
+
+  private getFormattedPlaybackTime(index: number): string {
+    const baseTime = this.playbackBaseTime || this.parseTimestamp(this.historylist?.[index]?.Timestamp);
+    if (!baseTime) {
+      return this.formatDateValue(this.historylist?.[index]?.Timestamp) || '';
+    }
+    const displayTime = new Date(baseTime.getTime() + index * this.moveInterval);
+    return this.formatDateValue(displayTime) || '';
+  }
+
+  private getFormattedHistoryTime(index: number): string {
+    const ts = this.parseTimestamp(this.historylist?.[index]?.Timestamp);
+    return this.formatDateValue(ts || this.historylist?.[index]?.Timestamp) || '';
   }
 
   changeSpeed(event: any) {
@@ -825,9 +880,17 @@ export class AdminHistoryTrackingV2Component {
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
     }
-    if (this.currentIndex >= this.historylist.length - 1) {
-      this.currentIndex = 0;
+    if (this.currentIndex >= this.historylist.length) {
+      this.currentIndex = this.historylist.length - 1;
     }
+    // Reset playback clock to the selected point so time doesn't jump back
+    const baseTime = this.playbackBaseTime || this.parseTimestamp(this.historylist[this.currentIndex]?.Timestamp);
+    this.playbackStartTime = baseTime
+      ? new Date(baseTime.getTime() + this.currentIndex * this.moveInterval)
+      : new Date();
+    this.playbackTickCount = 0;
+    // Keep popup in sync with slider jumps
+    this.isPopupOpen = true;
     this.updateMarkerForIndex(this.currentIndex);
     if (this.isPlaying) {
       this.animateMarker(this.currentIndex);
@@ -882,6 +945,7 @@ export class AdminHistoryTrackingV2Component {
     const speed = Number(currentData?.Speed) || 0;
     const geocodeKey = `${lat.toFixed(3)},${lng.toFixed(3)}`;
     const isStopped = speed <= 0.5;
+    const formattedTime = this.getFormattedHistoryTime(index);
 
     if (!this.animatedMarker) {
       this.animatedMarker = L.marker([lat, lng]).addTo(this.map);
@@ -889,8 +953,13 @@ export class AdminHistoryTrackingV2Component {
       this.animatedMarker.setLatLng([lat, lng]);
     }
 
-    if (!this.isPopupOpen || !this.animatedMarker.getPopup()) {
-      return;
+    if (!this.animatedMarker.getPopup()) {
+      this.animatedMarker.bindPopup(
+        this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime)
+      );
+    }
+    if (this.isPopupOpen) {
+      this.animatedMarker.openPopup();
     }
 
     const shouldFetchAddress =
@@ -904,16 +973,16 @@ export class AdminHistoryTrackingV2Component {
       const address = { Lat: lat, Lng: lng };
       this.animatedMarker
         .getPopup()
-        .setContent(this.generateInfoWindowContent(currentData, 'Address is Loading...'));
+        .setContent(this.generateInfoWindowContent(currentData, 'Address is Loading...', formattedTime));
       this.getLiveAddressLocation(address)
         .pipe(
           map((addressValue) => {
             this.cachedAddress = addressValue || 'Address not available';
-            return this.generateInfoWindowContent(currentData, this.cachedAddress);
+            return this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime);
           }),
           catchError(() => {
             this.cachedAddress = 'Address not available';
-            return of(this.generateInfoWindowContent(currentData, this.cachedAddress));
+            return of(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
           })
         )
         .subscribe((content) => {
@@ -923,7 +992,7 @@ export class AdminHistoryTrackingV2Component {
     } else {
       this.animatedMarker
         .getPopup()
-        .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress));
+        .setContent(this.generateInfoWindowContent(currentData, this.cachedAddress, formattedTime));
     }
   }
 }
