@@ -163,7 +163,7 @@ export class AddSubuserComponent implements OnDestroy {
     this.subuserForm = this.fb.group({
       loginId: ['', [Validators.required]],
       userName: ['', [Validators.required]],
-      password: ['', [Validators.required]],
+      password: ['Abc@123', [Validators.required]],
       mobileNo: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       email: ['', [Validators.required, Validators.email]],
       userType: [2, [Validators.required]], // 2 = Customer, 1 = Dealer

@@ -146,15 +146,14 @@ export class DeviceListComponent {
 
   setInitialValue() {
     this.columns = [
-      { key: 'Vehicle No', title: 'Vehicle No' },
-      { key: 'Device Id', title: 'Device Id' },
-      { key: 'Mobile No', title: 'Mobile No' },
-      { key: 'Device', title: 'Device' },
-      { key: 'Creation Date', title: 'Creation Date' },
-      { key: 'Installation', title: 'Installation' },
-      { key: 'Point Recharge', title: 'Point Recharge Due' },
-      { key: 'Recharge', title: 'Customer Recharge Due' },
-      { key: 'Action', title: 'Action' },
+      { key: 'vehicleNo', title: 'Vehicle No' },
+      { key: 'deviceUid', title: 'Unique ID' },
+      { key: 'deviceType', title: 'Device Type' },
+      { key: 'simPhoneNumber', title: 'Primary Sim No.' },
+      { key: 'installationOn', title: 'Installation Date' },
+      { key: 'creationTime', title: 'Creation Date' },
+      { key: 'rechargeDue', title: 'Vehicle Recharge Due' },
+      { key: 'action', title: 'Action' },
     ]
   }
 

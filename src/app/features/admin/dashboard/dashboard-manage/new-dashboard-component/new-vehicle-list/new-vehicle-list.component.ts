@@ -375,6 +375,28 @@ export class NewVehicleListComponent {
     if ((vehicle?.ResultCode == 2)) {
       return `${vehicle.ResultMessage[0]}`
     } else {
+      // Use new API structure: position.status.status and position.status.duration
+      if (vehicle?._original?.position?.status) {
+        const status = vehicle._original.position.status.status || '';
+        const duration = vehicle._original.position.status.duration || '';
+        const statusMap: Record<string, string> = {
+          'running': 'Running',
+          'stop': 'Stop',
+          'dormant': 'Dormant',
+          'offline': 'Offline',
+          'never connected': 'Never Connected',
+          'point expired': 'Point Expired'
+        };
+        const statusText = statusMap[status.toLowerCase()] || status;
+        if (status.toLowerCase() === 'running' && vehicle?.Eventdata?.Speed != null) {
+          return `${statusText} (${vehicle.Eventdata.Speed} Km/h)`;
+        }
+        if (duration) {
+          return `${statusText} (${duration})`;
+        }
+        return statusText;
+      }
+
       if (!vehicle || !vehicle?.StatusDuration || vehicle?.StatusDuration == null) return;
 
       if (vehicle?.ResultCode == 3 && vehicle?.PointValidity?.CurrentPointType == 0) {

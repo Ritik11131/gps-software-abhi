@@ -9,6 +9,12 @@
                 <div class="fiter-data mb-3">
                     <subuser-filter (addSubuser)="addSubUser($event)"></subuser-filter>
                 </div>
+                <div class="row mb-3" *ngIf="subUserData && subUserData.length > 0">
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" placeholder="Search by Mobile No, Login ID or Name..."
+                            [(ngModel)]="searchTerm" (input)="applySearch()">
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
@@ -26,27 +32,29 @@
                                         </thead>
 
                                         <tbody>
-                                            <tr *ngFor="let row of subUserData |  paginate : {
+                                            <tr *ngFor="let row of filteredSubUserData |  paginate : {
                                                       itemsPerPage: tableSize,
                                                       currentPage: page,
                                                       totalItems: count} let i= index"
                                                       [ngClass]="{'active': selectColor?.id === row?.id}">
                                                 <td>
-                                                    <a>{{ row?.loginId }}</a>
+                                                    <span>{{ (page - 1) * tableSize + i + 1 }}</span>
                                                 </td>
                                                 <td>
-                                                    <a>••••••••</a>
-                                                </td>
-
-                                                <td>
-                                                    <a>{{ row?.mobileNo }}</a>
+                                                    <span>{{ row?.userName || 'N/A' }}</span>
                                                 </td>
                                                 <td>
-                                                    <a>{{ row?.creationTime * 1000 | date : "dd/MM/yyyy HH:mm:ss" }}</a>
+                                                    <span>{{ row?.loginId || 'N/A' }}</span>
                                                 </td>
                                                 <td>
-                                                    <a>{{ row?.isActive == 1 ? 'Active' : 'InActive' }}</a>
-                                                  </td>
+                                                    <span>{{ row?.mobileNo || 'N/A' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ row?.userType === 1 ? 'Dealer' : row?.userType === 2 ? 'Customer' : 'N/A' }}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{{ row?.creationTime ? (row.creationTime * 1000 | date : "dd/MM/yyyy HH:mm:ss") : 'N/A' }}</span>
+                                                </td>
                                                 <td>
                                                     <button mat-icon-button (click)="onContextMenu($event, row, i)">
                                                         <mat-icon>more_vert</mat-icon>
@@ -56,10 +64,10 @@
                                         </tbody>
                                     </table>
                                     <div class="text-center"
-                                        *ngIf="subUserData && subUserData.length == 0 || subUserData == null "
+                                        *ngIf="filteredSubUserData.length === 0 && !spinnerLoading"
                                         style="width: 100%;">No Data Available</div>
                                 </div>
-                                <div class="pagination-data" *ngIf="subUserData && subUserData?.length > 0">
+                                <div class="pagination-data" *ngIf="filteredSubUserData && filteredSubUserData.length > 0">
                                     <pagination-controls previousLabel="Prev" nextLabel="Next"
                                         (pageChange)="onTableDataChange($event)">
                                     </pagination-controls>

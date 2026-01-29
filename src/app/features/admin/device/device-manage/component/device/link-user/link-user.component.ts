@@ -14,12 +14,14 @@ export class LinkUserComponent {
   @Output() mapdata = new EventEmitter<any>();
   
   userList: any[] = [];
+  filteredUserList: any[] = [];
   selectedUserIds: number[] = [];
   spinnerLoading: boolean = false;
   isLoadingUsers: boolean = false;
   page: number = 1;
   count: number = 0;
   tableSize: number = 10;
+  searchTerm: string = '';
 
   constructor(
     private bsmodalservice: BsModalService,
@@ -41,14 +43,17 @@ export class LinkUserComponent {
         this.userList = (res?.body?.data || []).filter((item: any) => 
           item.userType === 1 || item.userType === 2
         );
-        this.count = this.userList.length;
+        this.applySearch();
       } else {
         this.userList = [];
+        this.filteredUserList = [];
         this.count = 0;
       }
     }, (error: any) => {
       this.isLoadingUsers = false;
       this.userList = [];
+      this.filteredUserList = [];
+      this.count = 0;
     });
   }
 
@@ -72,10 +77,10 @@ export class LinkUserComponent {
 
   selectAllUsers(event: any) {
     const isChecked = event.target.checked;
-    // Get users on current page
+    // Get users on current page (from filtered list)
     const startIndex = (this.page - 1) * this.tableSize;
     const endIndex = startIndex + this.tableSize;
-    const currentPageUsers = this.userList.slice(startIndex, endIndex).map(user => user.id);
+    const currentPageUsers = this.filteredUserList.slice(startIndex, endIndex).map(user => user.id);
     
     if (isChecked) {
       // Select all users from the current page
@@ -93,13 +98,29 @@ export class LinkUserComponent {
   isAllCurrentPageSelected(): boolean {
     const startIndex = (this.page - 1) * this.tableSize;
     const endIndex = startIndex + this.tableSize;
-    const currentPageUsers = this.userList.slice(startIndex, endIndex);
+    const currentPageUsers = this.filteredUserList.slice(startIndex, endIndex);
     if (currentPageUsers.length === 0) return false;
     return currentPageUsers.every(user => this.selectedUserIds.includes(user.id));
   }
 
   onTableDataChange(event: any) {
     this.page = event;
+  }
+
+  applySearch() {
+    const term = (this.searchTerm || '').trim().toLowerCase();
+    if (!term) {
+      this.filteredUserList = [...this.userList];
+    } else {
+      this.filteredUserList = this.userList.filter((user: any) => {
+        const mobileNo = (user.mobileNo || '').toString().toLowerCase();
+        const loginId = (user.loginId || '').toString().toLowerCase();
+        const name = (user.userName || '').toString().toLowerCase();
+        return mobileNo.includes(term) || loginId.includes(term) || name.includes(term);
+      });
+    }
+    this.count = this.filteredUserList.length;
+    this.page = 1;
   }
 
   submit() {

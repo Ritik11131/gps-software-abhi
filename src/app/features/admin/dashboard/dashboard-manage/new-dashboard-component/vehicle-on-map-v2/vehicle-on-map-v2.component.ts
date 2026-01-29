@@ -207,8 +207,9 @@ export class VehicleOnMapV2Component {
           DeviceImei: item?.device?.deviceImei || item?.device?.deviceId || '',
           VehicleType: item?.device?.vehicleType || 0,
           Id: item?.device?.id || 0,
-          SoftOdometer: item?.device?.details?.lastOdometer || 0
+          SoftOdometer: item?.position?.details?.odometer ?? item?.device?.details?.lastOdometer ?? 0
         },
+        TotalDistance: item?.position?.details?.totalDistance ?? 0,
         Eventdata: {
           Latitude: item?.position?.latitude || 0,
           Longitude: item?.position?.longitude || 0,
@@ -594,17 +595,13 @@ export class VehicleOnMapV2Component {
       )}</span>
               </div>
               <div class="col-md-5">
-                <span> <strong>Day Distance:</strong> ${this.dayDistanceValue || 0
+                <span> <strong>Day Distance:</strong> ${this.formatDayDistance(vehicle?.TotalDistance ?? vehicle?._original?.position?.details?.totalDistance ?? this.dayDistanceValue)
       } Km</span>
               </div>
             </div>
             <div class="row mb-2">
-              <div class="col-md-7">
-                <span>  <strong>IMEI: </strong>${vehicle?.Device?.DeviceImei
-      } </span>
-              </div>
-                <div class="col-md-5">
-                <span> <strong>Odometer:</strong> ${this.updateOdometer(vehicle?.Device?.SoftOdometer)}</span>
+              <div class="col-md-12">
+                <span><strong>Odometer:</strong> ${this.updateOdometer(vehicle?.Device?.SoftOdometer ?? vehicle?._original?.position?.details?.odometer)}</span>
               </div>
             </div>
             <div class="row mb-2">
@@ -637,7 +634,6 @@ export class VehicleOnMapV2Component {
         ? `<li><a><i class="fa fa-battery-full" style="color:${vehicle.Battery.color} !important"></i><br/><span class="live-value" style="color:black !important">${vehicle.Battery.status}</span></a></li>`
         : ''
       }
-            <li><a  id="adminPlayId" title="Live" style="cursor:pointer"><i class="fa fa-circle-play" ></i><br/><span class="live-value" style="color:black !important">Live</span></a></li>
             <li><a  id="adminReplayId" title="Replay" style="cursor:pointer"><i class="fa fa-undo" ></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>
           </ul>
         </div>
@@ -816,13 +812,27 @@ export class VehicleOnMapV2Component {
       return 'N/A';
     }
     else {
-      const odo: number = parseFloat(data);
-      if (odo === 0.0) {
+      const odoMeters: number = parseFloat(data);
+      if (odoMeters === 0.0 || isNaN(odoMeters)) {
         return 'N/A';
-      } else {
-        return `${odo.toFixed(1)} km`;
       }
+      // API returns odometer in meters; convert to km
+      const odoKm = odoMeters / 1000;
+      return `${odoKm.toFixed(1)} km`;
     }
+  }
+
+  /** Converts day distance from meters to km for display (API returns totalDistance in meters). */
+  formatDayDistance(data: any): string {
+    if (data == undefined || data == null) {
+      return '0';
+    }
+    const meters: number = parseFloat(data);
+    if (meters === 0 || isNaN(meters)) {
+      return '0';
+    }
+    const km = meters / 1000;
+    return km.toFixed(2);
   }
 
   formateDateValue(date: any) {
