@@ -66,7 +66,7 @@ export class AddCustomerComponent {
     this.customerForm = this.fb.group({
       customerName: ['', [Validators.required, Validators.pattern('')]],
       userName: ['', [Validators.required, Validators.pattern('')]],
-      password: ['abc123', [Validators.required, Validators.pattern('')]],
+      password: ['Abc@123', [Validators.required, Validators.pattern('')]],
       email: ['', [Validators.required, Validators.email]],
       phn: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       Address: [''],

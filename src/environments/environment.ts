@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  hostURL: "http://localhost:4200",
+  hostURL: "https://localhost:4200",
   baseAPIURl: "https://api.gpsvts.in/api/",
 };
 /*

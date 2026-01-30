@@ -201,6 +201,16 @@ export class DeviceDetailsComponent implements OnDestroy {
     this.deviceManageService.getOperatorTypes().subscribe((res: any) => {
       if (res?.status === 200 && res?.body?.result === true) {
         this.operatorData = res?.body?.data || [];
+        // Auto-fill Primary SIM Operator with Airtel when adding a new device
+        const isAddMode = !this.deviceId || this.deviceId === 'add-device' || this.deviceId === 'null';
+        if (isAddMode && this.operatorData?.length > 0 && this.deviceForm) {
+          const airtel = this.operatorData.find((op: any) =>
+            (op?.name || '').toLowerCase().trim() === 'airtel'
+          );
+          if (airtel?.id != null) {
+            this.deviceForm.patchValue({ fkSimOperator: airtel.id });
+          }
+        }
       }
     });
   }
@@ -358,6 +368,11 @@ export class DeviceDetailsComponent implements OnDestroy {
       } else if ((res?.status === 200 || res?.status === 201) && res?.body?.data) {
         // Handle case where device is created (201) but response format might be different
         // Some APIs return the created object directly in data field
+        this.notificationService.showSuccess('Device saved successfully');
+        this.router.navigateByUrl('admin/device/device-manage');
+        this.refreshCustomerService.announceCustomerAdded();
+      } else if ((res?.status === 200 || res?.status === 201) && res?.body?.id != null) {
+        // Handle case where API returns 201 with the created device object directly as body (no result/data wrapper)
         this.notificationService.showSuccess('Device saved successfully');
         this.router.navigateByUrl('admin/device/device-manage');
         this.refreshCustomerService.announceCustomerAdded();

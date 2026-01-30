@@ -17,7 +17,9 @@ export class SubuserListComponent {
   selectedDealerId: any;
   selectedCustomerId: any;
   spinnerLoading: boolean = false
-  subUserData: any;
+  subUserData: any[] = [];
+  filteredSubUserData: any[] = [];
+  searchTerm: string = '';
   columns: any;
   page = 1;
   count = 0;
@@ -67,12 +69,13 @@ export class SubuserListComponent {
 
   setInitialValue() {
     this.columns = [
-      { key: 'Company', title: 'Login Id' },
-      { key: 'password', title: 'password' },
-      { key: 'Mobile No', title: 'Mobile No' },
-      { key: 'Creation Date', title: 'Creation Date' },
-      { key: 'Status', title: 'Status' },
-      { key: 'Action', title: 'Action' },
+      { key: 'sno', title: 'Sno.' },
+      { key: 'name', title: 'Name' },
+      { key: 'loginId', title: 'Login Id' },
+      { key: 'mobileNo', title: 'Mobile No' },
+      { key: 'userType', title: 'User Type' },
+      { key: 'creationTime', title: 'Creation Time' },
+      { key: 'action', title: 'Action' },
     ]
   }
 
@@ -95,16 +98,17 @@ export class SubuserListComponent {
         // Show all users with userType 1 (Dealer) or userType 2 (Customer)
         this.subUserData = data?.filter((item: any) => 
           item.userType === 1 || item.userType === 2
-        );
-        
-        this.count = this.subUserData.length;
+        ) || [];
+        this.applySearch();
       } else {
-        this.subUserData = []
+        this.subUserData = [];
+        this.filteredSubUserData = [];
         this.count = 0;
       }
     }, (error: any) => {
       this.spinnerLoading = false;
       this.subUserData = [];
+      this.filteredSubUserData = [];
       this.count = 0;
       console.error('Error fetching user list:', error);
     })
@@ -116,7 +120,23 @@ export class SubuserListComponent {
   */
   onTableDataChange(event: any) {
     this.page = event;
-  };
+  }
+
+  applySearch() {
+    const term = (this.searchTerm || '').trim().toLowerCase();
+    if (!term) {
+      this.filteredSubUserData = [...this.subUserData];
+    } else {
+      this.filteredSubUserData = this.subUserData.filter((user: any) => {
+        const mobileNo = (user.mobileNo || '').toString().toLowerCase();
+        const loginId = (user.loginId || '').toString().toLowerCase();
+        const name = (user.userName || '').toString().toLowerCase();
+        return mobileNo.includes(term) || loginId.includes(term) || name.includes(term);
+      });
+    }
+    this.count = this.filteredSubUserData.length;
+    this.page = 1;
+  }
 
   toggleDropdown(event: Event) {
     const target = event.currentTarget as HTMLElement;

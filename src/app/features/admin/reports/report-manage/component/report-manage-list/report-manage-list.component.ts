@@ -561,8 +561,7 @@ export class ReportManageListComponent {
       { key: 'keyValue', val: 'Vehicle No' },
       { key: 'keyValue', val: 'Alert Type Name' },
       { key: 'keyValue', val: 'Alert Time' },
-      { key: 'keyValue', val: 'Creation Time' },
-      { key: 'keyValue', val: 'Status' },
+      { key: 'keyValue', val: 'Location' },
     ];
   }
   @ViewChild('TABLE', { static: false }) table: ElementRef | any;
@@ -620,6 +619,13 @@ export class ReportManageListComponent {
         return;
       }
       this.movmentSummary(this.groupedData)
+    }
+    if (this.filterType === 'Alert Report') {
+      if (!this.vehicle || this.vehicle.length === 0) {
+        this.notificationService.showError('No data available to export');
+        return;
+      }
+      this.alertReport()
     }
   }
 
@@ -1157,6 +1163,68 @@ export class ReportManageListComponent {
       this.movmentSummarypdf(this.groupedData)
 
     }
+    if (this.filterType === 'Alert Report') {
+      this.alertpdf()
+    }
+  }
+
+  alertReport() {
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.table.nativeElement);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    // Adjust column widths based on content length with added spacing
+    const columnWidths: Record<string, number> = Object.keys(ws).reduce((acc, key) => {
+      if (key[0] === '!') return acc; // Skip meta properties
+      const col = key.replace(/[0-9]/g, ''); // Extract column letter(s)
+      const content = ws[key]?.v?.toString() || ''; // Cell content as string
+      acc[col] = Math.max(acc[col] || 10, content.length + 5); // Add padding of 5 to each cell content length
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Convert to array of widths for worksheet settings
+    ws['!cols'] = Object.entries(columnWidths).map(([_, width]) => ({ width: width as number })); // Explicitly cast width to number
+
+    /* save to file */
+    XLSX.writeFile(wb, 'AlertReport.xlsx');
+  }
+
+  alertpdf() {
+    // Extract table data from the DOM
+    const tableElement = this.table.nativeElement;
+    const headers = Array.from(tableElement.querySelectorAll('thead th')).map((th: any) => th.innerText);
+    const rows = Array.from(tableElement.querySelectorAll('tbody tr')).map((tr: any) =>
+      Array.from(tr.querySelectorAll('td')).map((td: any) => td.innerText)
+    );
+
+    // Create a new jsPDF instance
+    const doc = new jsPDF();
+
+    // Add the title
+    doc.setFontSize(18);
+    doc.text('Alert Report', 14, 22);
+
+    // Add the table using autoTable with adjusted width and margins
+    autoTable(doc, {
+      head: [headers], // Table headers
+      body: rows, // Table rows
+      startY: 30,
+      tableWidth: 'auto', // Adjusts table width to fit the content
+      margin: { top: 20, right: 5, bottom: 20, left: 5 }, // Adjust margins to reduce space on the left and right
+      styles: {
+        fontSize: 8,
+        cellPadding: 3,
+      },
+      headStyles: {
+        fillColor: [22, 160, 133], // Custom header color
+        textColor: [255, 255, 255], // White text
+        fontStyle: 'bold',
+      },
+      theme: 'striped', // Use striped theme
+    });
+
+    // Save the PDF
+    doc.save('AlertReport.pdf');
   }
 
   async movmentSummarypdf(groupedData: any[]) {

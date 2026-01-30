@@ -57,7 +57,7 @@ export const admin = [
     subNav: [
       {
         "id": 138,
-        "name": "Sub User",
+        "name": "User",
         "path": "admin/subuser/customer-sub-user",
         "icon_Url": "MenuLeft.png"
       },

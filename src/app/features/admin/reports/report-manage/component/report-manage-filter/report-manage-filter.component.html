@@ -116,6 +116,31 @@
                     </ng-option>
                 </ng-select>
             </div>
+            <div class="col-md-2" *ngIf="reportForm.get('filtername')?.value === 'Alert Report'">
+                <label class="form-label">Notification Type</label>
+                <ng-select placeholder="Select Type" formControlName="alertType" [multiple]="true">
+                    <ng-template ng-header-tmp>
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" class="me-2" [ngModel]="isAllAlertTypesSelected()"
+                                (ngModelChange)="toggleAlertTypeSelectAll($event)"
+                                [ngModelOptions]="{standalone: true}" />
+                            <span>Select All</span>
+                        </div>
+                    </ng-template>
+                    <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                        <div>
+                            <input id="alert-item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                                [ngModelOptions]="{standalone: true}" />
+                            {{ item }}
+                        </div>
+                    </ng-template>
+                    <ng-option *ngFor="let item of alertTypeOptions" [value]="item">{{ item }}</ng-option>
+                </ng-select>
+                <div *ngIf="reportForm.get('alertType')?.invalid && (reportForm.get('alertType')?.dirty || reportForm.get('alertType')?.touched)"
+                    class="text-danger">
+                    Notification Type is required
+                </div>
+            </div>
             <div class="col-md-2" *ngIf="isLocation">
                 <label for="exampleInputEmail1" class="form-label">Location</label>
                 <ng-select placeholder="Select Location" formControlName="locationType">

@@ -138,6 +138,8 @@ export const API_CONSTANTS: any = {
   addEditDeviceType:'Device/AddEditDeviceTypeChild',
   alert :'Alert/GetAlertData',
   alertType: 'Alert/GetAlertType',
+  alertDurationUrl: 'Alerts/DurationWiseV1',
+  alertDurationTypes: ['ignitionOn', 'ignitionOff'],
   alertSetting : 'Alerts/userId?UserId={userId}',
   alertsmapping :'Alerts/Alertsmapping',
   simOperator:'SIMCard/Basket/baskets',

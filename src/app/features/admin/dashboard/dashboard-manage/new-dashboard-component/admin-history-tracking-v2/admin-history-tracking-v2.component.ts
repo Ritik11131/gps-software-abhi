@@ -48,6 +48,7 @@ export class AdminHistoryTrackingV2Component {
   tripType: boolean = false;
   bsModalRef!: BsModalRef;
   totaldistanceValue: any = 0;
+  distanceCoveredSoFar: number = 0; // Distance from start to current replay position (updates as marker moves)
   selectTrip: any;
   tripValue: any;
   waypointPolyline: L.Polyline | any;
@@ -422,9 +423,11 @@ export class AdminHistoryTrackingV2Component {
         
         if (type == 'trip') {
           this.totaldistanceValue = this.selectTrip?.distance || 0;
+          this.distanceCoveredSoFar = 0;
         } else {
-          // Calculate total distance from history data if available
+          // Calculate total distance from history data
           this.totaldistanceValue = this.calculateTotalDistance(this.historylist) || 0;
+          this.distanceCoveredSoFar = 0; // Start of replay = 0 km covered
           this.getTripReport(formvalue, 'history');
         }
 
@@ -470,6 +473,22 @@ export class AdminHistoryTrackingV2Component {
     return totalDistance / 1000; // Convert meters to kilometers
   }
 
+  /** Distance from start (index 0) up to and including the segment ending at endIndex. In km. */
+  getDistanceUpToIndex(historyList: any[], endIndex: number): number {
+    if (!historyList || historyList.length < 2 || endIndex <= 0) return 0;
+    const last = Math.min(endIndex, historyList.length - 1);
+    let totalMeters = 0;
+    for (let i = 1; i <= last; i++) {
+      const prev = historyList[i - 1];
+      const curr = historyList[i];
+      totalMeters += this.calculateDistance(
+        prev.Latitude, prev.Longitude,
+        curr.Latitude, curr.Longitude
+      );
+    }
+    return totalMeters / 1000; // Convert meters to kilometers
+  }
+
   calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
     const R = 6371000; // Earth radius in meters
     const dLat = this.toRad(lat2 - lat1);
@@ -513,6 +532,7 @@ export class AdminHistoryTrackingV2Component {
     this.selectedSpeed = 1;
     this.moveInterval = 1000;
     this.totaldistanceValue = 0;
+    this.distanceCoveredSoFar = 0;
     this.topSpeed = 0;
     this.historylist = [];
 
@@ -630,6 +650,7 @@ export class AdminHistoryTrackingV2Component {
 
     if (path.length === 0) return;
 
+    this.distanceCoveredSoFar = this.getDistanceUpToIndex(this.historylist, startIndex);
     if (!this.animatedMarker) {
       this.animatedMarker = L.marker(path[startIndex]).addTo(this.map);
     }
@@ -743,12 +764,14 @@ export class AdminHistoryTrackingV2Component {
 
               this.map.setView([lat, lng], this.map.getZoom(), { animate: true });
               this.sliderValue = currentIndex;
+              // Distance covered = from start to current point (currentIndex); update so UI shows live during replay
+              this.distanceCoveredSoFar = this.getDistanceUpToIndex(this.historylist, currentIndex);
               stepIndex++;
               this.timeoutId = setTimeout(moveMarker, this.moveInterval / this.stepsInSegment);
             } else {
               currentIndex++;
               this.currentIndex = currentIndex;
-
+              this.distanceCoveredSoFar = this.getDistanceUpToIndex(this.historylist, currentIndex);
               if (currentIndex === steps) {
                 this.sliderValue = currentIndex;
                 this.isPlaying = false;
@@ -891,6 +914,7 @@ export class AdminHistoryTrackingV2Component {
     this.playbackTickCount = 0;
     // Keep popup in sync with slider jumps
     this.isPopupOpen = true;
+    this.distanceCoveredSoFar = this.getDistanceUpToIndex(this.historylist, this.currentIndex);
     this.updateMarkerForIndex(this.currentIndex);
     if (this.isPlaying) {
       this.animateMarker(this.currentIndex);

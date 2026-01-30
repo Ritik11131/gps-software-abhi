@@ -80,7 +80,26 @@
                           <div class="margin-b-30" style="margin-bottom: 0px !important;">
                             <span class="margin-b-2" style="font-weight: 600;">Top Speed (Km/H)</span>
                             {{topSpeed || 0}}Km/h
-                          
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="widget total-data">
+                        <div class="row row-table ">
+                          <div class="margin-b-30" style="margin-bottom: 0px !important;">
+                            <span class="margin-b-2" style="font-weight: 600;">Total Distance</span>
+                            {{totaldistanceValue | number:'1.2-2'}} Km
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="widget total-data">
+                        <div class="row row-table ">
+                          <div class="margin-b-30" style="margin-bottom: 0px !important;">
+                            <span class="margin-b-2" style="font-weight: 600;">Distance Covered (Replay)</span>
+                            {{distanceCoveredSoFar | number:'1.2-2'}} Km
                           </div>
                         </div>
                       </div>
@@ -117,8 +136,9 @@
                        </select>
                     </div>
                     <div class="total-distance">
-                      <span class="distance">Distance :  {{totaldistanceValue | number:'1.2-2'}} Km</span>
-                      </div>
+                      <span class="distance">Total : {{totaldistanceValue | number:'1.2-2'}} Km</span>
+                      <span class="distance" style="margin-left: 12px;">Covered : {{distanceCoveredSoFar | number:'1.2-2'}} Km</span>
+                    </div>
                 </div>
             </div>
         </div>

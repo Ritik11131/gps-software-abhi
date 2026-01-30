@@ -10,6 +10,7 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { ReportManageListComponent } from '../report-manage-list/report-manage-list.component';
 import { StorageService } from 'src/app/features/http-services/storage.service';
 import { DeviceManageService } from 'src/app/features/admin/device/device-manage/service/device-manage.service';
+import { API_CONSTANTS } from 'src/app/features/shared/constant/API-CONSTANTS';
 
 @Component({
   selector: 'app-report-manage-filter',
@@ -82,16 +83,20 @@ export class ReportManageFilterComponent {
       id: 7,
       title: 'Duration Report',
     },
+    {
+      id: 8,
+      title: 'Alert Report',
+    },
     // {
-    //   id: 8,
+    //   id: 9,
     //   title: 'AC Report',
     // },
     // {
-    //   id: 9,
+    //   id: 10,
     //   title: 'Temperature Report',
     // },
     {
-      id: 10,
+      id: 11,
       title: 'Movement Summary',
     },
   ];
@@ -101,6 +106,50 @@ export class ReportManageFilterComponent {
   timeformate: boolean = false;
   formValueData: any;
   selectDealerCustomer: any;
+  readonly alertTypeOptions: string[] = [
+    'ignitionOn',
+    'ignitionOff',
+    'geofenceEnter',
+    'geofenceExit',
+    'powerCut',
+    'powerRestored',
+    'deviceOverspeed',
+    'parking',
+    'commandResult',
+    'alarm',
+    'acOff',
+    'acOn',
+    'deviceUnknown',
+    'tampering',
+    'lowBattery',
+    'doorClose',
+    'hardBraking',
+    'hardAcceleration',
+    'routeDeviation',
+    'routeDeviationStart',
+    'routeDeviationEnd',
+    'doorOpen',
+    'removing',
+    'overSpeedEnd',
+    'overSpeedStart',
+    'wheelUnLock',
+    'continuousDrive',
+    'wheelLock',
+    'sos',
+    'hardCornering',
+    'jamming',
+    'lowPower',
+    'powerOff',
+    'door',
+    'lock',
+    'unlock',
+    'secOff',
+    'secOn',
+    'pirAlert',
+    'bootAlert',
+    'accident',
+    'nightDrive'
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -111,6 +160,23 @@ export class ReportManageFilterComponent {
     private storageService: StorageService,
     private deviceManageService: DeviceManageService
   ) {}
+
+  isAllAlertTypesSelected(): boolean {
+    const selected = this.reportForm?.get('alertType')?.value || [];
+    if (!Array.isArray(selected) || this.alertTypeOptions.length === 0) {
+      return false;
+    }
+    return this.alertTypeOptions.every((type) => selected.includes(type));
+  }
+
+  toggleAlertTypeSelectAll(checked: boolean): void {
+    const control = this.reportForm?.get('alertType');
+    if (!control) {
+      return;
+    }
+    control.setValue(checked ? [...this.alertTypeOptions] : []);
+    control.markAsTouched();
+  }
 
   ngOnInit() {
     // Skip dealer/customer - directly load vehicles from device API
@@ -171,6 +237,7 @@ export class ReportManageFilterComponent {
       locationType: [1],
       vehicledata: [null],
       movement: [0],
+      alertType: [[]],
     });
 
     this.reportForm.get('filtername')?.valueChanges.subscribe((value) => {
@@ -178,6 +245,7 @@ export class ReportManageFilterComponent {
       const movementControl = this.reportForm.get('movement');
       const vehicleDataControl = this.reportForm.get('vehicledata');
       const vehicleControl = this.reportForm.get('vehicle');
+      const alertTypeControl = this.reportForm.get('alertType');
       if (value === 'Overspeed Report') {
         speedControl?.setValidators([Validators.required, Validators.min(1)]);
       } else {
@@ -199,6 +267,14 @@ export class ReportManageFilterComponent {
       movementControl?.updateValueAndValidity();
       vehicleDataControl?.updateValueAndValidity();
       vehicleControl?.updateValueAndValidity();
+
+      if (value === 'Alert Report') {
+        alertTypeControl?.setValidators([Validators.required]);
+      } else {
+        alertTypeControl?.clearValidators();
+        alertTypeControl?.setValue([], { emitEvent: false });
+      }
+      alertTypeControl?.updateValueAndValidity();
 
     });
 
@@ -398,6 +474,112 @@ export class ReportManageFilterComponent {
     const toDate = new Date(formValue.toDate);
     const fromDateISO = formatDateWithTimezone(fromDate);
     const toDateISO = formatDateWithTimezone(toDate);
+
+    if (formValue.filtername === 'Alert Report') {
+      const selectedAlertType = Array.isArray(formValue.alertType)
+        ? formValue.alertType
+        : formValue.alertType
+          ? [formValue.alertType]
+          : [];
+      const alertPayload = {
+        deviceId: deviceData.map((val) => Number(val)),
+        fromTime: fromDateISO,
+        toTime: toDateISO,
+        alertType: selectedAlertType.length > 0
+          ? selectedAlertType
+          : this.alertTypeOptions
+      };
+
+      this.repotManageService
+        .allReportTypeDynamically(alertPayload, API_CONSTANTS.alertDurationUrl)
+        .pipe(
+          tap((res: any) => {
+            this.spinnerLoading = false;
+
+            const rawData =
+              res?.body?.data ||
+              res?.body?.Data ||
+              res?.body?.result?.data ||
+              res?.body ||
+              res?.data ||
+              [];
+
+            const normalized = Array.isArray(rawData) ? rawData : [];
+            this.data = normalized.map((item: any) => {
+              const alert = item?.alert || {};
+              const device = item?.device || {};
+              let attributes: any = alert?.attributes;
+
+              if (typeof attributes === 'string') {
+                try {
+                  attributes = JSON.parse(attributes);
+                } catch {
+                  attributes = null;
+                }
+              }
+
+              const alertType = alert?.type || item?.type || '';
+              const eventTime = alert?.eventtime || attributes?.dTime || item?.eventtime || null;
+              const normalizedType = String(alertType).toLowerCase();
+              const status =
+                normalizedType.endsWith('off') || normalizedType.includes('off')
+                  ? 'Off'
+                  : normalizedType.endsWith('on') || normalizedType.includes('on')
+                    ? 'On'
+                    : '';
+              const latitude =
+                attributes?.lat ??
+                attributes?.latitude ??
+                alert?.lat ??
+                alert?.latitude ??
+                item?.lat ??
+                item?.latitude ??
+                null;
+              const longitude =
+                attributes?.lng ??
+                attributes?.longitude ??
+                alert?.lng ??
+                alert?.longitude ??
+                item?.lng ??
+                item?.longitude ??
+                null;
+
+              return {
+                vehicle_no: device?.vehicleNo || attributes?.vNo || '',
+                alert_type_name: alertType,
+                alert_timestamp: eventTime,
+                latitude,
+                longitude,
+                alert_creationtime: eventTime,
+                narration: status || alertType || '-'
+              };
+            });
+
+            this.ReportsDetails.setData(
+              this.data,
+              formValue.filtername,
+              formValue,
+              type,
+              this.isLocation
+            );
+          }),
+          catchError((error) => {
+            this.spinnerLoading = false;
+            console.error('Alert report API error:', error);
+            this.data = [];
+            this.ReportsDetails.setData(
+              this.data,
+              formValue.filtername,
+              formValue,
+              type,
+              this.isLocation
+            );
+            return of(null);
+          })
+        )
+        .subscribe();
+      return;
+    }
 
     // Use FromTime/ToTime for reports that need it, FromDate/ToDate for Distance only
     const useTimeFields = formValue.filtername === 'Stop' ||

@@ -29,7 +29,7 @@ export class AddUserComponent {
   setInitialValue() {
     this.userForm = this.fb.group({
       userName: ['', [Validators.required, Validators.pattern('')]],
-      password: ['', [Validators.required, Validators.pattern('')]],
+      password: ['Abc@123', [Validators.required, Validators.pattern('')]],
       phn: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       status: [1, [Validators.required, Validators.pattern('')]],
     })
