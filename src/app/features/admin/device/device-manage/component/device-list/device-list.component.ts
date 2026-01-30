@@ -103,6 +103,7 @@ export class DeviceListComponent {
   index: any;
   selectColor: any;
   fitmentDetail: any;
+  deviceTypeMap: Map<number, string> = new Map();
 
   constructor(
     private subUserService: SubUserService,
@@ -122,7 +123,9 @@ export class DeviceListComponent {
 
     this.getuserDetail()
     this.setInitialValue();
-    // Call getDeviceList by default when page loads
+    
+    this.loadDeviceTypes();
+   
     this.getDeviceList();
     this.refreshCustomerService.customerAdded$.subscribe(() => {
       this.getDeviceList()
@@ -169,6 +172,28 @@ export class DeviceListComponent {
   //   this.selectedCustomerId = event?.customerId
   //   this.getDeviceList()
   // }
+
+  loadDeviceTypes() {
+    this.deviceManageService.getDeviceTypes().subscribe((res: any) => {
+      if (res?.status === 200 && res?.body?.result === true) {
+        const deviceTypes = res?.body?.data || [];
+        this.deviceTypeMap.clear();
+        deviceTypes.forEach((type: any) => {
+          if (type?.id && type?.name) {
+            const port = type?.serverPort || '';
+            const displayName = port ? `${type.name} (${port})` : type.name;
+            this.deviceTypeMap.set(type.id, displayName);
+          }
+        });
+      }
+    });
+  }
+
+  getDeviceTypeName(deviceTypeId: any): string {
+    if (!deviceTypeId) return 'N/A';
+    const id = typeof deviceTypeId === 'number' ? deviceTypeId : parseInt(deviceTypeId);
+    return this.deviceTypeMap.get(id) || deviceTypeId.toString();
+  }
 
   getDeviceList() {
     this.spinnerLoading = true

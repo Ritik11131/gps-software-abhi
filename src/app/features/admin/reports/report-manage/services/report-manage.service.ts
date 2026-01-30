@@ -15,4 +15,10 @@ export class ReportManageService {
       .post(url, payload)
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
+
+  postFullUrl(url: string, payload: any): Observable<any> {
+    return this.apiService
+      .postFullUrl(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
 }

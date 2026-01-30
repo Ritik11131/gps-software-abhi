@@ -47,7 +47,9 @@
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Device Type <span class="text-danger">*</span></label>
                         <ng-select placeholder="Select Device Type" formControlName="fkDeviceType">
-                            <ng-option *ngFor="let item of deviceTypeData" [value]="item?.id">{{ item?.name }}</ng-option>
+                            <ng-option *ngFor="let item of deviceTypeData" [value]="item?.id">
+                                {{ item?.name }} ({{ item?.serverPort || '-' }})
+                            </ng-option>
                         </ng-select>
                         <div *ngIf="deviceForm.get('fkDeviceType')?.invalid && (deviceForm.get('fkDeviceType')?.dirty || deviceForm.get('fkDeviceType')?.touched)"
                             class="text-danger">
@@ -219,7 +221,9 @@
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Device Type <span class="text-danger">*</span></label>
                         <ng-select placeholder="Select Device Type" formControlName="fkDeviceType">
-                            <ng-option *ngFor="let item of deviceTypeData" [value]="item?.id">{{ item?.name }}</ng-option>
+                            <ng-option *ngFor="let item of deviceTypeData" [value]="item?.id">
+                                {{ item?.name }} ({{ item?.serverPort || '-' }})
+                            </ng-option>
                         </ng-select>
                         <div *ngIf="deviceForm.get('fkDeviceType')?.invalid && (deviceForm.get('fkDeviceType')?.dirty || deviceForm.get('fkDeviceType')?.touched)"
                             class="text-danger">
