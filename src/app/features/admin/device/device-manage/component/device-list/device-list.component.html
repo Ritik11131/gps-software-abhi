@@ -45,7 +45,7 @@
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <span>{{ row?.deviceTypeName || row?.deviceType?.name || row?.fkDeviceType || 'N/A' }}</span>
+                                                        <span>{{ getDeviceTypeName(row?.fkDeviceType) }}</span>
                                                     </td>
                                                     <td>
                                                         <span>{{ row?.simPhoneNumber || 'N/A' }}</span>
