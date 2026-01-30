@@ -692,10 +692,10 @@
                                             {{ data?.alert_timestamp | date : 'dd-MM-yyyy HH:mm:ss' }}
                                         </td>
                                         <td>
-                                            {{ data?.alert_creationtime | date : 'dd-MM-yyyy HH:mm:ss' }}
-                                        </td>
-                                        <td>
-                                            {{ data?.narration }}
+                                            {{ data?.latitude != null || data?.longitude != null
+                                                ? (data?.latitude != null ? data?.latitude : '-') + ', ' +
+                                                  (data?.longitude != null ? data?.longitude : '-')
+                                                : '-' }}
                                         </td>
                                     </tr>
                                 </tbody>

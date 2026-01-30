@@ -61,7 +61,7 @@ export class AddUserComponent implements OnInit {
       contect_per_no: ['', [Validators.required, Validators.pattern('')]],
       agreement: ['', [Validators.required, Validators.pattern('')]],
       comp_id: ['', [Validators.required, Validators.pattern('')]],
-      password: ['', [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[a-z])?(?=.*[A-Z])?(?=.*[\\W]).{5,16}$')]]
+      password: ['Abc@123', [Validators.required, Validators.pattern('^(?=.*\\d)(?=.*[a-z])?(?=.*[A-Z])?(?=.*[\\W]).{5,16}$')]]
     })
   }
 

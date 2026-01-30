@@ -106,7 +106,50 @@ export class ReportManageFilterComponent {
   timeformate: boolean = false;
   formValueData: any;
   selectDealerCustomer: any;
-  readonly alertTypeOptions: string[] = API_CONSTANTS.alertDurationTypes;
+  readonly alertTypeOptions: string[] = [
+    'ignitionOn',
+    'ignitionOff',
+    'geofenceEnter',
+    'geofenceExit',
+    'powerCut',
+    'powerRestored',
+    'deviceOverspeed',
+    'parking',
+    'commandResult',
+    'alarm',
+    'acOff',
+    'acOn',
+    'deviceUnknown',
+    'tampering',
+    'lowBattery',
+    'doorClose',
+    'hardBraking',
+    'hardAcceleration',
+    'routeDeviation',
+    'routeDeviationStart',
+    'routeDeviationEnd',
+    'doorOpen',
+    'removing',
+    'overSpeedEnd',
+    'overSpeedStart',
+    'wheelUnLock',
+    'continuousDrive',
+    'wheelLock',
+    'sos',
+    'hardCornering',
+    'jamming',
+    'lowPower',
+    'powerOff',
+    'door',
+    'lock',
+    'unlock',
+    'secOff',
+    'secOn',
+    'pirAlert',
+    'bootAlert',
+    'accident',
+    'nightDrive'
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -444,7 +487,7 @@ export class ReportManageFilterComponent {
         toTime: toDateISO,
         alertType: selectedAlertType.length > 0
           ? selectedAlertType
-          : API_CONSTANTS.alertDurationTypes
+          : this.alertTypeOptions
       };
 
       this.repotManageService
@@ -484,11 +527,29 @@ export class ReportManageFilterComponent {
                   : normalizedType.endsWith('on') || normalizedType.includes('on')
                     ? 'On'
                     : '';
+              const latitude =
+                attributes?.lat ??
+                attributes?.latitude ??
+                alert?.lat ??
+                alert?.latitude ??
+                item?.lat ??
+                item?.latitude ??
+                null;
+              const longitude =
+                attributes?.lng ??
+                attributes?.longitude ??
+                alert?.lng ??
+                alert?.longitude ??
+                item?.lng ??
+                item?.longitude ??
+                null;
 
               return {
                 vehicle_no: device?.vehicleNo || attributes?.vNo || '',
                 alert_type_name: alertType,
                 alert_timestamp: eventTime,
+                latitude,
+                longitude,
                 alert_creationtime: eventTime,
                 narration: status || alertType || '-'
               };

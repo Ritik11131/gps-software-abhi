@@ -561,8 +561,7 @@ export class ReportManageListComponent {
       { key: 'keyValue', val: 'Vehicle No' },
       { key: 'keyValue', val: 'Alert Type Name' },
       { key: 'keyValue', val: 'Alert Time' },
-      { key: 'keyValue', val: 'Creation Time' },
-      { key: 'keyValue', val: 'Status' },
+      { key: 'keyValue', val: 'Location' },
     ];
   }
   @ViewChild('TABLE', { static: false }) table: ElementRef | any;

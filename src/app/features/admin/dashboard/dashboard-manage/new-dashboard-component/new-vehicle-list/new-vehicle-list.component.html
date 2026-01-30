@@ -18,14 +18,8 @@
                             <div class="vehicle-follow mt-3" >
                                 <ul class="vehicle-data" *ngIf="vehicleData && vehicleData.length > 0">
                                     <li class="vehicle-value" *ngFor="let vehicle of vehicleData; let i = index" style="cursor: pointer;" (click)="onSelectVehicle(vehicle)">
-                                        <span [class]="getVehicleColor(vehicle)">{{vehicle?.Device?.VehicleNo}}</span>
-                                        <span [class]="getVehicleColor(vehicle)">{{formatVehicleStatusDuration(vehicle)}}</span>
-                                        <!-- <button [class]="getVehicleColor(vehicle)"  mat-icon-button (click)="onContextMenu($event, vehicle, i)">
-                                            <mat-icon>more_vert</mat-icon>
-                                        </button> -->
-                                         <button [class]="getVehicleColor(vehicle)"  mat-icon-button>
-                                            <mat-icon>more_vert</mat-icon>
-                                        </button>
+                                        <span class="vehicle-no" [class]="getVehicleColor(vehicle)">{{vehicle?.Device?.VehicleNo}}</span>
+                                        <span class="vehicle-status" [class]="getVehicleColor(vehicle)">{{formatVehicleStatusDuration(vehicle)}}</span>
                                     </li>
                                 </ul>
                                 <ul class="vehicle-data" *ngIf="!vehicleData || vehicleData.length == 0 || vehicleData== null">
@@ -34,17 +28,6 @@
                                     </li>                
                                 </ul>
                             </div>
-                            <div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
-                            [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
-                          </div>
-                          <mat-menu #contextMenu="matMenu">
-                            <ng-template matMenuContent let-item="item">
-                              <button mat-menu-item *ngFor="let menuItem of urlPath" (click)="redirectTo(menuItem.type === 'Recharge' && selectedVehicleValue?.PointValidity?.CurrentPointType === 0 ? 'activate' : menuItem.type)">
-                                {{ menuItem.type === 'Recharge' && selectedVehicleValue?.PointValidity?.CurrentPointType === 0 ? 'Activate Point' : menuItem.name }}
-                              </button>
-              
-                            </ng-template>
-                          </mat-menu>
                         </div>
                     </div>
                 </div>
