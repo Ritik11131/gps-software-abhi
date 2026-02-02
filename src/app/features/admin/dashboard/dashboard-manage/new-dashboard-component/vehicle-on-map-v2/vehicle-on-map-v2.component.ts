@@ -209,7 +209,7 @@ export class VehicleOnMapV2Component {
           Id: item?.device?.id || 0,
           SoftOdometer: item?.position?.details?.odometer ?? item?.device?.details?.lastOdometer ?? 0
         },
-        TotalDistance: item?.position?.details?.totalDistance ?? 0,
+        TotalDistance: (item?.position?.details?.totalDistance - (item?.device?.details?.lastOdometer ?? 0)) ?? 0,
         Eventdata: {
           Latitude: item?.position?.latitude || 0,
           Longitude: item?.position?.longitude || 0,
@@ -217,7 +217,7 @@ export class VehicleOnMapV2Component {
           Heading: item?.position?.heading || 0,
           GpsTimestamp: item?.position?.deviceTime || item?.position?.servertime || new Date().toISOString(),
           GpsStatus: item?.position?.valid === 1 ? 1 : 0,
-          EPC: item?.position?.details?.extVolt || 0
+          EPC: item?.position?.details?.extVolt ?? item?.position?.details?.adc1 ?? 0
         },
         Status: statusInfo.Status,
         SubStatus: statusInfo.SubStatus,
@@ -225,12 +225,13 @@ export class VehicleOnMapV2Component {
         isexpired: isExpired ? 1 : 0,
         isexpiredsoon: isExpiredSoon ? 1 : 0,
         neverConnected: neverConnected,
-        // Map peripherial data if available
+        // Map peripherial data from position.details
         Peripherial: {
           AC: item?.position?.details?.in1 === 1 ? 1 : 0,
           Door: item?.position?.details?.door === true ? 1 : 0,
           Temp: item?.position?.details?.temp || 0,
-          ACC: item?.position?.details?.ign === true ? 1 : 0
+          ACC: item?.position?.details?.ign === true ? 1 : 0,
+          Immobilizer: (item?.position?.details?.immobilizer === true || item?.position?.details?.blocked === true) ? 1 : 0
         },
         Battery: {
           status: item?.position?.details?.bmsSOC ? `${item.position.details.bmsSOC.toFixed(1)}%` : null,
@@ -556,6 +557,15 @@ export class VehicleOnMapV2Component {
       return '';
     };
 
+    const generateImmobilizerIcon = (v: any) => {
+      const isImmobilized = v?.Peripherial?.Immobilizer === 1 ||
+        v?._original?.position?.details?.immobilizer === true ||
+        v?._original?.position?.details?.blocked === true;
+      const label = isImmobilized ? 'Immobilized' : 'Mobilized';
+      const color = isImmobilized ? 'red' : 'green';
+      return `<li><a><i class="fa fa-lock" style="color:${color} !important"></i><br/><span class="live-value" style="color:black !important">${label}</span></a></li>`;
+    };
+
     const truncatedWordsContent = truncateLongWords(address, 20);
     const processedAddress =
       truncatedWordsContent.length > 80
@@ -566,42 +576,34 @@ export class VehicleOnMapV2Component {
         <div class="">
           <div class="live-data pl-2 mt-1">
             <div class="row mb-2">
-              <div class="col-md-7">
-                <span style="font-size:16px" class="label"><strong>${vehicle?.Device?.VehicleNo
-      }</strong></span>
-              </div>
-              <div class="col-md-5">
-            <span> <strong>Date: </strong> ${vehicle?.Eventdata
-        ? this.formateDateValue(vehicle.Eventdata.GpsTimestamp)
-        : ''
-      }</span>
-              </div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-md-7">
-                <span><strong>Status:</strong> ${this.checkStauts(
-        vehicle
-      )}</span>
-              </div> 
-               <div class="col-md-5">
-                <span ><strong>Speed: </strong>${vehicle?.Eventdata?.Speed
-      } Km/H</span>
-              </div>             
-            </div>
-            <div class="row mb-2">
-              <div class="col-md-7">
-                <span><strong>External Voltage:</strong>${this.checkvoltage(
-        vehicle?.Eventdata?.EPC
-      )}</span>
-              </div>
-              <div class="col-md-5">
-                <span> <strong>Day Distance:</strong> ${this.formatDayDistance(vehicle?.TotalDistance ?? vehicle?._original?.position?.details?.totalDistance ?? this.dayDistanceValue)
-      } Km</span>
+              <div class="col-md-12">
+                <span style="font-size:16px" class="label"><strong>${vehicle?.Device?.VehicleNo}</strong></span>
               </div>
             </div>
             <div class="row mb-2">
               <div class="col-md-12">
-                <span><strong>Odometer:</strong> ${this.updateOdometer(vehicle?.Device?.SoftOdometer ?? vehicle?._original?.position?.details?.odometer)}</span>
+                <span><strong>Last Update:</strong> ${vehicle?.Eventdata ? this.formateDateValue(vehicle.Eventdata.GpsTimestamp) : ''}</span>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <span><strong>Status:</strong> ${this.checkStauts(vehicle)}</span>
+              </div>
+              <div class="col-md-6">
+                <span><strong>Speed:</strong> ${vehicle?.Eventdata?.Speed ?? 0} Km/H</span>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <span><strong>External Voltage:</strong> ${this.checkvoltage(vehicle?.Eventdata?.EPC ?? vehicle?._original?.position?.details?.extVolt ?? vehicle?._original?.position?.details?.adc1)}</span>
+              </div>
+              <div class="col-md-6">
+                <span><strong>Total Distance:</strong> ${this.updateOdometer(vehicle?._original?.device?.details?.lastOdometer)}</span>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-md-12">
+                <span><strong>Odometer:</strong> ${this.formatDayDistance(vehicle?.TotalDistance ?? vehicle?._original?.position?.details?.totalDistance ?? this.dayDistanceValue)} Km</span>
               </div>
             </div>
             <div class="row mb-2">
@@ -612,29 +614,23 @@ export class VehicleOnMapV2Component {
             <hr />
         <div class="icon-part">
           <ul class="icon">
-            ${generateIcon('fa-snowflake-o', 'AC', vehicle?.Peripherial?.AC)}
-            ${generateIcon('fa-map-signs', 'Door', vehicle?.Peripherial?.Door)}
-            ${generateIcon(
-        'fa-thermometer-empty',
-        'Temperature',
-        vehicle?.Peripherial?.Temp
-      )}         
-         ${generateIcon(
-        'fa-key',
-        'Ignition',
-        vehicle?.Peripherial?.ACC
-      )}
-            ${generateIcon(
-        'fa-location-dot',
-        'GPS',
-        vehicle?.Eventdata?.GpsStatus
-      )}
-            ${generateIcon('fa-plug', 'Power', vehicle?.Eventdata?.EPC)}
-            ${vehicle?.Battery?.status
-        ? `<li><a><i class="fa fa-battery-full" style="color:${vehicle.Battery.color} !important"></i><br/><span class="live-value" style="color:black !important">${vehicle.Battery.status}</span></a></li>`
-        : ''
-      }
-            <li><a  id="adminReplayId" title="Replay" style="cursor:pointer"><i class="fa fa-undo" ></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>
+            ${(() => {
+              const keyPresent = vehicle?.Peripherial?.ACC === 1 || vehicle?._original?.position?.details?.ign === true;
+              let html = '';
+              if (keyPresent) {
+                html += generateIcon('fa-snowflake-o', 'AC', vehicle?.Peripherial?.AC);
+                html += generateIcon('fa-map-signs', 'Door', vehicle?.Peripherial?.Door);
+                html += generateIcon('fa-thermometer-empty', 'Temperature', vehicle?.Peripherial?.Temp);
+              }
+              html += generateImmobilizerIcon(vehicle);
+              html += generateIcon('fa-location-dot', 'GPS', vehicle?.Eventdata?.GpsStatus);
+              html += generateIcon('fa-plug', 'Power', vehicle?.Eventdata?.EPC);
+              if (vehicle?.Battery?.status) {
+                html += `<li><a><i class="fa fa-battery-full" style="color:${vehicle.Battery.color} !important"></i><br/><span class="live-value" style="color:black !important">${vehicle.Battery.status}</span></a></li>`;
+              }
+              html += `<li><a id="adminReplayId" title="Replay" style="cursor:pointer"><i class="fa fa-undo"></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>`;
+              return html;
+            })()}
           </ul>
         </div>
           </div>
