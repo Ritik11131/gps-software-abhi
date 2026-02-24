@@ -40,19 +40,25 @@
                                                 <td>
                                                     <span>{{ (page - 1) * tableSize + i + 1 }}</span>
                                                 </td>
-                                                <td>
+                                                <td [class.missing-data]="isValueMissing(row, 'id')">
+                                                    <span>{{ row?.id ?? row?.userId ?? 'N/A' }}</span>
+                                                </td>
+                                                <td [class.missing-data]="isValueMissing(row, 'name')">
                                                     <span>{{ row?.userName || 'N/A' }}</span>
                                                 </td>
-                                                <td>
+                                                <td [class.missing-data]="isValueMissing(row, 'loginId')">
                                                     <span>{{ row?.loginId || 'N/A' }}</span>
                                                 </td>
-                                                <td>
+                                                <td [class.missing-data]="isValueMissing(row, 'email')">
+                                                    <span>{{ row?.email || 'N/A' }}</span>
+                                                </td>
+                                                <td [class.missing-data]="isValueMissing(row, 'mobileNo')">
                                                     <span>{{ row?.mobileNo || 'N/A' }}</span>
                                                 </td>
-                                                <td>
+                                                <td [class.missing-data]="isValueMissing(row, 'userType')">
                                                     <span>{{ row?.userType === 1 ? 'Dealer' : row?.userType === 2 ? 'Customer' : 'N/A' }}</span>
                                                 </td>
-                                                <td>
+                                                <td [class.missing-data]="isValueMissing(row, 'creationTime')">
                                                     <span>{{ row?.creationTime ? (row.creationTime * 1000 | date : "dd/MM/yyyy HH:mm:ss") : 'N/A' }}</span>
                                                 </td>
                                                 <td>

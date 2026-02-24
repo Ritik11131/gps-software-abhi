@@ -70,13 +70,42 @@ export class SubuserListComponent {
   setInitialValue() {
     this.columns = [
       { key: 'sno', title: 'Sno.' },
+      { key: 'id', title: 'User Id' },
       { key: 'name', title: 'Name' },
       { key: 'loginId', title: 'Login Id' },
+      { key: 'email', title: 'Email' },
       { key: 'mobileNo', title: 'Mobile No' },
       { key: 'userType', title: 'User Type' },
       { key: 'creationTime', title: 'Creation Time' },
       { key: 'action', title: 'Action' },
     ]
+  }
+
+  /**
+   * Returns true if the value for the given column is missing/empty for this row.
+   * Used to highlight incomplete user details in the list.
+   */
+  isValueMissing(row: any, key: string): boolean {
+    if (!row) return true;
+    switch (key) {
+      case 'id':
+        const id = row?.id ?? row?.userId;
+        return id == null || id === '';
+      case 'name':
+        return row?.userName == null || String(row?.userName || '').trim() === '';
+      case 'loginId':
+        return row?.loginId == null || String(row?.loginId || '').trim() === '';
+      case 'email':
+        return row?.email == null || String(row?.email || '').trim() === '';
+      case 'mobileNo':
+        return row?.mobileNo == null || String(row?.mobileNo || '').trim() === '';
+      case 'userType':
+        return row?.userType == null || row?.userType === '';
+      case 'creationTime':
+        return row?.creationTime == null || row?.creationTime === '';
+      default:
+        return false;
+    }
   }
 
   // Commented out - no longer using filter dropdowns

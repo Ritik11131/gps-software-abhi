@@ -7,8 +7,9 @@
         <div class="row">
             <div class="col-md-12">
                 <label class="form-label">Device </label>
-                <ng-select placeholder="Select Device" [multiple]="true" [(ngModel)]="selectedDevice" (change)="selectDevice($event)">
-                    <ng-option *ngFor="let item of deviceData" [value]="item?.Id">{{ item?.VehicleNo }}</ng-option>
+                <ng-select placeholder="Select Device" [multiple]="true" [(ngModel)]="selectedDevice" (change)="selectDevice($event)"
+                    [loading]="deviceLoading" [disabled]="deviceLoading">
+                    <ng-option *ngFor="let item of deviceData" [value]="item?.id ?? item?.Id">{{ item?.vehicleNo || item?.VehicleNo || item?.deviceUid || item?.deviceId || 'N/A' }}</ng-option>
                 </ng-select>
                 <div class="text-danger text-right">You can select multiple Device!</div>
             </div>
