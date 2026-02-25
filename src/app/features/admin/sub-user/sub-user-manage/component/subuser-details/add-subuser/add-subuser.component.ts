@@ -165,7 +165,7 @@ export class AddSubuserComponent implements OnDestroy {
       userName: ['', [Validators.required]],
       password: ['Abc@123', [Validators.required]],
       mobileNo: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.email]],
       userType: [2, [Validators.required]], // 2 = Customer, 1 = Dealer
       address: [''],
       isActive: [1, [Validators.required]], // 1 = Active in new API format

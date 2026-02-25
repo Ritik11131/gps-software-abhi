@@ -43,6 +43,12 @@
   display: block;
 }
 
+// Highlight columns where user details are missing (incomplete records)
+.missing-data {
+  background-color: #fff3cd !important; // warning/amber tint
+  border-left: 2px solid #ff9800;
+}
+
 // .dataTables_scrollBody{
 //   overflow: visible !important;
 // }

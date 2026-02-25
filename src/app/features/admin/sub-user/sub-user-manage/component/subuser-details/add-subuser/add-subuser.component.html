@@ -50,12 +50,11 @@
                     <small class="text-muted" *ngIf="subUserId">Leave blank to keep existing password</small>
                 </div>
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                    <label class="form-label">Email</label>
                     <input type="email" class="form-control" placeholder="Enter Email" formControlName="email"
                         aria-describedby="button-addon2" />
                     <div *ngIf="subuserForm.get('email')?.invalid && (subuserForm.get('email')?.dirty || subuserForm.get('email')?.touched)"
                         class="text-danger">
-                        <div *ngIf="subuserForm.get('email')?.errors?.['required']">Email is required</div>
                         <div *ngIf="subuserForm.get('email')?.errors?.['email']">Invalid email format</div>
                     </div>
                 </div>
