@@ -19,6 +19,7 @@ import { StorageService } from 'src/app/features/http-services/storage.service';
 import { ShowFitmentComponent } from '../device/show-fitment/show-fitment.component';
 import { RefreshpageService } from 'src/app/features/http-services/refreshpage.service';
 import { LinkUserComponent } from '../device/link-user/link-user.component';
+import { ViewLinkedUsersComponent } from '../device/view-linked-users/view-linked-users.component';
 
 
 @Component({
@@ -45,6 +46,10 @@ export class DeviceListComponent {
     {
       name: 'Link User',
       path: 'link-user',
+    },
+    {
+      name: 'View Linked Users',
+      path: 'view-linked-users',
     },
     {
       name: 'Delete Device',
@@ -260,6 +265,9 @@ export class DeviceListComponent {
     } else if (path == 'link-user') {
       // Open modal to link users to device
       this.linkUserToDevice(this.selectedDeviceValue);
+      return;
+    } else if (path == 'view-linked-users') {
+      this.viewLinkedUsers(this.selectedDeviceValue);
       return;
     } else if (path == 'recharge-point') {
       url = `/admin/device/device-manage`
@@ -505,6 +513,27 @@ export class DeviceListComponent {
           this.refreshCustomerService.announceCustomerAdded();
         }
       }
+    );
+  }
+
+  viewLinkedUsers(device: any) {
+    const deviceId = device?.id || device?.Id;
+    if (!deviceId) {
+      this.notificationService.showError('Device ID is required');
+      return;
+    }
+    const deviceLabel = device?.vehicleNo || device?.VehicleNo || device?.deviceUid || device?.deviceId || `Device ${deviceId}`;
+
+    const initialState = {
+      deviceId: Number(deviceId),
+      deviceLabel
+    };
+    this.bsModelRef = this.bsmodelService.show(
+      ViewLinkedUsersComponent,
+      Object.assign({ initialState }, {
+        id: 'view-linked-users',
+        class: 'modal-lg modal-dialog-centered'
+      })
     );
   }
 }

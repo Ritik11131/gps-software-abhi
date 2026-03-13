@@ -272,4 +272,18 @@ export class DeviceManageService {
       .post(url, payload)
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
+
+  getLinkedUsersByDeviceId(deviceId: number): Observable<any> {
+    const url = API_CONSTANTS.getLinkedUsersByDeviceId.replace('{deviceId}', deviceId.toString());
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  unlinkMapping(payload: { mappingId: number; deviceId: number; userId: number }): Observable<any> {
+    const url = API_CONSTANTS.unlinkMapping;
+    return this.apiService
+      .post(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
 }
