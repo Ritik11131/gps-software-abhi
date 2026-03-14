@@ -96,7 +96,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <br>
-                    <button class="btn btn-success" type="submit" [disabled]="spinnerLoading || isLoginIdDuplicate || subuserForm.invalid || isCheckingLoginId">
+                    <button class="btn btn-success" type="submit" [disabled]="spinnerLoading || isLoginIdDuplicate || isCheckingLoginId">
                         <span *ngIf="spinnerLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                         {{buttonValue}}
                     </button>

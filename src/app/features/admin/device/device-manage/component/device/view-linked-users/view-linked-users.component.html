@@ -1,0 +1,75 @@
+<div class="modal-header text-center" style="color: #fff;">
+    View Linked Users
+    <div class="close-modal">
+        <i class="fa fa-close" style="color: white; cursor: pointer;" (click)="close()"></i>
+    </div>
+</div>
+<div class="modal-body p-20">
+    <div class="_card white-bg">
+        <div class="row mb-3" *ngIf="deviceLabel">
+            <div class="col-md-12">
+                <h6 class="text-muted">Device: {{ deviceLabel }}</h6>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="loading">
+            <div class="col-md-12 text-center py-4">
+                <i class="fa fa-spinner fa-spin fa-2x"></i>
+                <p class="mt-2">Loading linked users...</p>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="!loading && linkedUsers.length === 0">
+            <div class="col-md-12 text-center py-4">
+                <p class="text-muted">No linked users for this device</p>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="!loading && linkedUsers.length > 0">
+            <div class="col-md-12">
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 10;">
+                            <tr>
+                                <th>User Id</th>
+                                <th>User Name</th>
+                                <th>Login Id</th>
+                                <th>Email</th>
+                                <th>Mobile No</th>
+                                <th>User Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of linkedUsers">
+                                <td>{{ user?.userId ?? 'N/A' }}</td>
+                                <td>{{ user?.userName || 'N/A' }}</td>
+                                <td>{{ user?.loginId || 'N/A' }}</td>
+                                <td>{{ user?.email || 'N/A' }}</td>
+                                <td>{{ user?.mobileNo || 'N/A' }}</td>
+                                <td>{{ getUserTypeLabel(user?.userType) }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                        (click)="unlinkUser(user)"
+                                        [disabled]="unlinkingId === (user?.userId ?? user?.user_id)">
+                                        <span *ngIf="unlinkingId === (user?.userId ?? user?.user_id)">
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                        </span>
+                                        <span *ngIf="unlinkingId !== (user?.userId ?? user?.user_id)">Unlink</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer mt-3">
+        <div class="row">
+            <div class="col-md-12 text-end">
+                <button class="btn btn-secondary" (click)="close()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -74,6 +74,8 @@ export const API_CONSTANTS: any = {
   deviceMapping : 'DeviceMapping',
   selectedDevice: 'DeviceMapping/{userId}',
   createDeviceMapping: 'DeviceMapping/CreateMapping',
+  getLinkedUsersByDeviceId: 'DeviceMapping/GetUserListByDeviceId/{deviceId}',
+  unlinkMapping: 'DeviceMapping/UnlinkMapping',
   deleteSubuser: 'DeviceMapping/{dealerId}/{cusId}/{subuserId}',
   deleteDevice: 'v1/CustomerDevice/{dealerId}/{cusId}/{deviceId}',
   // New device APIs

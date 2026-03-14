@@ -1,0 +1,28 @@
+<div class="modal-header unlink-confirm-header">
+    <h5 class="modal-title">Confirm Unlink</h5>
+    <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="cancel()"></button>
+</div>
+<div class="modal-body">
+    <p class="mb-3" *ngIf="user">
+        Unlink <strong>"{{ userName }}"</strong>
+        <span *ngIf="deviceLabel"> from device <strong>{{ deviceLabel }}</strong></span>?
+    </p>
+    <p class="text-muted small mb-2">Type <strong>UNLINK</strong> below to confirm.</p>
+    <input type="text"
+           class="form-control mb-3"
+           [(ngModel)]="unlinkConfirmText"
+           placeholder="Type UNLINK"
+           (keyup.enter)="canConfirmUnlink && confirm()"
+           autocomplete="off">
+</div>
+<div class="modal-footer unlink-confirm-footer">
+    <div class="unlink-confirm-footer-btns">
+        <!-- <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button> -->
+        <button type="button"
+                class="btn btn-danger"
+                [disabled]="!canConfirmUnlink"
+                (click)="confirm()">
+            Unlink
+        </button>
+    </div>
+</div>
