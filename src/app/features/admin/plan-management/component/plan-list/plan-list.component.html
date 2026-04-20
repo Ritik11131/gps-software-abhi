@@ -1,284 +1,282 @@
-<div class="plan-management-container">
-
-  <!-- ═══ Header ═══ -->
-  <div class="page-header">
-    <div class="header-left">
-      <h4 class="page-title">Plan Management</h4>
-      <span class="badge-count">{{ planList.length }} Plans</span>
-    </div>
-    <div class="header-right">
-      <div class="search-box">
-        <i class="fa fa-search search-icon"></i>
-        <input type="text" [(ngModel)]="searchText" placeholder="Search plans..." class="form-control search-input" />
-      </div>
-      <button class="btn btn-add" (click)="openCreatePlanModal()">
-        <i class="fa fa-plus"></i> Add Plan
-      </button>
-    </div>
-  </div>
-
-  <!-- ═══ Loading ═══ -->
-  <div *ngIf="isLoading" class="loading-container">
-    <div class="spinner"></div>
-    <p>Loading plans...</p>
-  </div>
-
-  <!-- ═══ Empty State ═══ -->
-  <div *ngIf="!isLoading && filteredPlans.length === 0" class="empty-state">
-    <i class="fa fa-folder-open-o empty-icon"></i>
-    <h5>No Plans Found</h5>
-    <p>{{ searchText ? 'No plans match your search.' : 'Get started by creating your first plan.' }}</p>
-    <button *ngIf="!searchText" class="btn btn-add" (click)="openCreatePlanModal()">
-      <i class="fa fa-plus"></i> Create Plan
-    </button>
-  </div>
-
-  <!-- ═══ Plan Table ═══ -->
-  <div *ngIf="!isLoading && filteredPlans.length > 0" class="table-container">
-    <table class="table plan-table">
-      <thead>
-        <tr>
-          <th style="width: 50px;">#</th>
-          <th>Plan Name</th>
-          <th>Created On</th>
-          <th>Last Updated</th>
-          <th style="width: 200px;" class="text-center">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let plan of filteredPlans; let i = index">
-          <!-- Plan Row -->
-          <tr [class.expanded-row]="expandedPlanId === plan.id">
-            <td>{{ i + 1 }}</td>
-            <td>
-              <div class="plan-name-cell">
-                <i class="fa" [class.fa-chevron-down]="expandedPlanId === plan.id"
-                  [class.fa-chevron-right]="expandedPlanId !== plan.id" (click)="toggleSubPlans(plan)"
-                  class="expand-icon"></i>
-                <span class="plan-name">{{ plan.planName }}</span>
-              </div>
-            </td>
-            <td>{{ formatDate(plan.creationTime) }}</td>
-            <td>{{ formatDate(plan.lastUpdateTime) }}</td>
-            <td class="text-center">
-              <div class="action-buttons">
-                <button class="btn btn-sm btn-action btn-view" title="View Sub Plans" (click)="toggleSubPlans(plan)">
-                  <i class="fa fa-eye"></i>
-                </button>
-                <button class="btn btn-sm btn-action btn-edit" title="Edit Plan" (click)="openEditPlanModal(plan)">
-                  <i class="fa fa-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-action btn-delete" title="Delete Plan"
-                  (click)="openDeletePlanModal(plan)">
-                  <i class="fa fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Sub-Plans Expanded Section -->
-          <tr *ngIf="expandedPlanId === plan.id" class="sub-plan-row">
-            <td colspan="5" class="sub-plan-container">
-              <div class="sub-plan-section">
-                <div class="sub-plan-header">
-                  <h6>
-                    <i class="fa fa-clock-o"></i> Sub Plans / Durations
-                    <span class="sub-badge">{{ subPlanList.length }}</span>
-                  </h6>
-                  <button class="btn btn-sm btn-add-sub" (click)="openCreateSubPlanModal()">
-                    <i class="fa fa-plus"></i> Add Sub Plan
-                  </button>
+<app-loader *ngIf="isLoading"></app-loader>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                Plan Management
+            </div>
+            <div class="card-body">
+                <!-- Add Plan Button -->
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <button class="btn btn-primary" (click)="openCreatePlanModal()"
+                            style="width: 100% !important;">
+                            + ADD NEW PLAN
+                        </button>
+                    </div>
                 </div>
 
-                <div *ngIf="isLoadingSubPlans" class="sub-loading">
-                  <div class="spinner-sm"></div>
-                  <span>Loading sub plans...</span>
+                <!-- Search -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" [(ngModel)]="searchText"
+                            placeholder="Search plans..." />
+                    </div>
                 </div>
 
-                <div *ngIf="!isLoadingSubPlans && subPlanList.length === 0" class="sub-empty">
-                  <p>No sub plans found. Add one to get started.</p>
-                </div>
-
-                <table *ngIf="!isLoadingSubPlans && subPlanList.length > 0" class="table sub-plan-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Name</th>
-                      <th>Duration</th>
-                      <th>Amount (₹)</th>
-                      <th>Tax (%)</th>
-                      <th>Platform Fee (%)</th>
-                      <th class="text-center">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let sp of subPlanList; let j = index">
-                      <td>{{ j + 1 }}</td>
-                      <td>{{ sp.name }}</td>
-                      <td>
-                        <span class="duration-badge">{{ sp.duration }} {{ sp.durationUnit }}</span>
-                      </td>
-                      <td>₹ {{ sp.amount | number:'1.2-2' }}</td>
-                      <td>{{ sp.tax }}%</td>
-                      <td>{{ sp.platformFee }}%</td>
-                      <td class="text-center">
-                        <div class="action-buttons">
-                          <button class="btn btn-sm btn-action btn-edit" title="Edit" (click)="openEditSubPlanModal(sp)">
-                            <i class="fa fa-pencil"></i>
-                          </button>
-                          <button class="btn btn-sm btn-action btn-delete" title="Delete"
-                            (click)="openDeleteSubPlanModal(sp)">
-                            <i class="fa fa-trash"></i>
-                          </button>
+                <!-- Plan Table -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="datatable_wrapper" class="dataTables_wrapper no-footer">
+                            <div class="dataTables_scroll">
+                                <div class="dataTables_scrollBody">
+                                    <table id="datatable"
+                                        class="table table-striped nowrap dataTable no-footer dtr-inline"
+                                        role="grid" style="width: 100%" width="100%">
+                                        <thead>
+                                            <tr role="row">
+                                                <th><strong>#</strong></th>
+                                                <th><strong>Plan Name</strong></th>
+                                                <th><strong>Created On</strong></th>
+                                                <th><strong>Last Updated</strong></th>
+                                                <th><strong>Sub Plans</strong></th>
+                                                <th><strong>Actions</strong></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let plan of filteredPlans | paginate : {
+                                                    itemsPerPage: tableSize,
+                                                    currentPage: page,
+                                                    totalItems: count }; let i = index"
+                                                [ngClass]="{'active': expandedPlanId === plan.id}">
+                                                <td>{{ (page - 1) * tableSize + i + 1 }}</td>
+                                                <td>
+                                                    <strong>{{ plan.planName }}</strong>
+                                                </td>
+                                                <td>
+                                                    {{ plan.creationTime ? (plan.creationTime | date: 'dd/MM/yyyy') : 'N/A' }}
+                                                </td>
+                                                <td>
+                                                    {{ plan.lastUpdateTime ? (plan.lastUpdateTime | date: 'dd/MM/yyyy') : 'N/A' }}
+                                                </td>
+                                                <td>
+                                                    <a style="cursor: pointer; color: blue;"
+                                                        (click)="toggleSubPlans(plan)">
+                                                        <i class="fa"
+                                                            [ngClass]="expandedPlanId === plan.id ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+                                                        View
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <button mat-icon-button [matMenuTriggerFor]="planMenu">
+                                                        <mat-icon>more_vert</mat-icon>
+                                                    </button>
+                                                    <mat-menu #planMenu="matMenu">
+                                                        <button mat-menu-item (click)="openEditPlanModal(plan)">
+                                                            <mat-icon>edit</mat-icon> Edit
+                                                        </button>
+                                                        <button mat-menu-item (click)="openDeletePlanModal(plan)">
+                                                            <mat-icon>delete</mat-icon> Delete
+                                                        </button>
+                                                    </mat-menu>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center"
+                                        *ngIf="!isLoading && filteredPlans && filteredPlans.length === 0"
+                                        style="width: 100%; padding: 20px;">
+                                        No Data Available
+                                    </div>
+                                </div>
+                                <div class="pagination-data" *ngIf="filteredPlans && filteredPlans.length > 0">
+                                    <pagination-controls previousLabel="Prev" nextLabel="Next"
+                                        (pageChange)="onTableDataChange($event)">
+                                    </pagination-controls>
+                                </div>
+                            </div>
                         </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
-  </div>
+                    </div>
+                </div>
+
+                <!-- Sub Plans Expanded Section -->
+                <div *ngIf="expandedPlanId !== null" class="card mt-3">
+                    <div class="card-header">
+                        Sub Plans / Durations — {{ getExpandedPlanName() }}
+                        <button class="btn btn-success btn-sm float-end" (click)="openCreateSubPlanModal()"
+                            style="width: auto !important; height: auto; padding: 4px 12px; text-transform: none;">
+                            + Add Sub Plan
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <app-loader *ngIf="isLoadingSubPlans"></app-loader>
+
+                        <div *ngIf="!isLoadingSubPlans && subPlanList.length === 0" class="text-center"
+                            style="padding: 20px;">
+                            No sub plans found. Click "Add Sub Plan" to create one.
+                        </div>
+
+                        <table *ngIf="!isLoadingSubPlans && subPlanList.length > 0"
+                            class="table table-striped nowrap dataTable no-footer dtr-inline"
+                            style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th><strong>#</strong></th>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Duration</strong></th>
+                                    <th><strong>Amount (₹)</strong></th>
+                                    <th><strong>Tax (%)</strong></th>
+                                    <th><strong>Platform Fee (%)</strong></th>
+                                    <th><strong>Actions</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let sp of subPlanList; let j = index">
+                                    <td>{{ j + 1 }}</td>
+                                    <td>{{ sp.name }}</td>
+                                    <td>{{ sp.duration }} {{ sp.durationUnit }}</td>
+                                    <td>₹ {{ sp.amount | number:'1.2-2' }}</td>
+                                    <td>{{ sp.tax }}%</td>
+                                    <td>{{ sp.platformFee }}%</td>
+                                    <td>
+                                        <button mat-icon-button [matMenuTriggerFor]="subPlanMenu">
+                                            <mat-icon>more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu #subPlanMenu="matMenu">
+                                            <button mat-menu-item (click)="openEditSubPlanModal(sp)">
+                                                <mat-icon>edit</mat-icon> Edit
+                                            </button>
+                                            <button mat-menu-item (click)="openDeleteSubPlanModal(sp)">
+                                                <mat-icon>delete</mat-icon> Delete
+                                            </button>
+                                        </mat-menu>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!--  Plan Create / Edit Modal                          -->
-<!-- ═══════════════════════════════════════════════════ -->
-<div class="modal-overlay" *ngIf="showPlanModal" (click)="closePlanModal()">
-  <div class="modal-box" (click)="$event.stopPropagation()">
-    <div class="modal-header-custom">
-      <h5>{{ isEditMode ? 'Edit Plan' : 'Create Plan' }}</h5>
-      <button class="btn-close-modal" (click)="closePlanModal()"><i class="fa fa-times"></i></button>
+<!-- ═══ Plan Create / Edit Modal ═══ -->
+<ng-template #planModal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Edit Plan' : 'Create Plan' }}</h5>
+        <button type="button" class="btn-close" (click)="closePlanModal()"></button>
     </div>
-    <div class="modal-body-custom">
-      <div class="form-group">
-        <label class="form-label">Plan Name <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" [(ngModel)]="planName" placeholder="Enter plan name"
-          (keyup.enter)="savePlan()" />
-      </div>
+    <div class="modal-body">
+        <div class="mb-3">
+            <label class="form-label">Plan Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="planName" placeholder="Enter plan name"
+                (keyup.enter)="savePlan()" />
+        </div>
     </div>
-    <div class="modal-footer-custom">
-      <button class="btn btn-cancel" (click)="closePlanModal()">Cancel</button>
-      <button class="btn btn-save" (click)="savePlan()" [disabled]="isSaving || !planName.trim()">
-        <span *ngIf="isSaving" class="spinner-sm-inline"></span>
-        {{ isSaving ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }}
-      </button>
+    <div class="modal-footer">
+        <button class="btn btn-danger" (click)="closePlanModal()"
+            style="width: auto !important; height: auto; padding: 6px 20px;">Cancel</button>
+        <button class="btn btn-success" (click)="savePlan()" [disabled]="isSaving || !planName.trim()"
+            style="width: auto !important; height: auto; padding: 6px 20px;">
+            {{ isSaving ? 'Saving...' : (isEditMode ? 'Update' : 'Create') }}
+        </button>
     </div>
-  </div>
-</div>
+</ng-template>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!--  Plan Delete Confirmation Modal                    -->
-<!-- ═══════════════════════════════════════════════════ -->
-<div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
-  <div class="modal-box modal-box-sm" (click)="$event.stopPropagation()">
-    <div class="modal-header-custom modal-header-danger">
-      <h5>Delete Plan</h5>
-      <button class="btn-close-modal" (click)="closeDeleteModal()"><i class="fa fa-times"></i></button>
+<!-- ═══ Plan Delete Confirmation Modal ═══ -->
+<ng-template #deletePlanModal>
+    <div class="modal-header">
+        <h5 class="modal-title">Delete Plan</h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
     </div>
-    <div class="modal-body-custom text-center">
-      <i class="fa fa-exclamation-triangle warning-icon"></i>
-      <p>Are you sure you want to delete <strong>{{ deletingPlan?.planName }}</strong>?</p>
-      <p class="text-muted small">This action cannot be undone. All sub plans will also be removed.</p>
+    <div class="modal-body text-center">
+        <i class="fa fa-exclamation-triangle text-danger" style="font-size: 40px;"></i>
+        <p class="mt-3">Are you sure you want to delete <strong>{{ deletingPlan?.planName }}</strong>?</p>
+        <p class="text-muted" style="font-size: 13px;">This action cannot be undone.</p>
     </div>
-    <div class="modal-footer-custom">
-      <button class="btn btn-cancel" (click)="closeDeleteModal()">Cancel</button>
-      <button class="btn btn-danger-confirm" (click)="confirmDeletePlan()" [disabled]="isDeleting">
-        <span *ngIf="isDeleting" class="spinner-sm-inline"></span>
-        {{ isDeleting ? 'Deleting...' : 'Delete' }}
-      </button>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeleteModal()"
+            style="width: auto !important; height: auto; padding: 6px 20px;">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDeletePlan()" [disabled]="isDeleting"
+            style="width: auto !important; height: auto; padding: 6px 20px;">
+            {{ isDeleting ? 'Deleting...' : 'Delete' }}
+        </button>
     </div>
-  </div>
-</div>
+</ng-template>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!--  Sub Plan Create / Edit Modal                      -->
-<!-- ═══════════════════════════════════════════════════ -->
-<div class="modal-overlay" *ngIf="showSubPlanModal" (click)="closeSubPlanModal()">
-  <div class="modal-box modal-box-lg" (click)="$event.stopPropagation()">
-    <div class="modal-header-custom">
-      <h5>{{ isSubPlanEditMode ? 'Edit Sub Plan' : 'Add Sub Plan' }}</h5>
-      <button class="btn-close-modal" (click)="closeSubPlanModal()"><i class="fa fa-times"></i></button>
+<!-- ═══ Sub Plan Create / Edit Modal ═══ -->
+<ng-template #subPlanModal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{ isSubPlanEditMode ? 'Edit Sub Plan' : 'Add Sub Plan' }}</h5>
+        <button type="button" class="btn-close" (click)="closeSubPlanModal()"></button>
     </div>
-    <div class="modal-body-custom">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label class="form-label">Name <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" [(ngModel)]="subPlanForm.name" placeholder="e.g. Half Yearly" />
-          </div>
+    <div class="modal-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" [(ngModel)]="subPlanForm.name"
+                    placeholder="e.g. Half Yearly" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Duration <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" [(ngModel)]="subPlanForm.duration"
+                    placeholder="e.g. 180" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Unit</label>
+                <select class="form-control" [(ngModel)]="subPlanForm.durationUnit">
+                    <option value="days">Days</option>
+                    <option value="months">Months</option>
+                    <option value="years">Years</option>
+                </select>
+            </div>
         </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="form-label">Duration <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" [(ngModel)]="subPlanForm.duration" placeholder="e.g. 180" />
-          </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Amount (₹) <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" [(ngModel)]="subPlanForm.amount"
+                    placeholder="e.g. 1200" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Tax (%)</label>
+                <input type="number" class="form-control" [(ngModel)]="subPlanForm.tax"
+                    placeholder="e.g. 18" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Platform Fee (%)</label>
+                <input type="number" class="form-control" [(ngModel)]="subPlanForm.platformFee"
+                    placeholder="e.g. 2" />
+            </div>
         </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="form-label">Unit</label>
-            <select class="form-control" [(ngModel)]="subPlanForm.durationUnit">
-              <option value="days">Days</option>
-              <option value="months">Months</option>
-              <option value="years">Years</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="form-label">Amount (₹) <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" [(ngModel)]="subPlanForm.amount" placeholder="e.g. 1200" />
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="form-label">Tax (%)</label>
-            <input type="number" class="form-control" [(ngModel)]="subPlanForm.tax" placeholder="e.g. 18" />
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="form-label">Platform Fee (%)</label>
-            <input type="number" class="form-control" [(ngModel)]="subPlanForm.platformFee" placeholder="e.g. 2" />
-          </div>
-        </div>
-      </div>
     </div>
-    <div class="modal-footer-custom">
-      <button class="btn btn-cancel" (click)="closeSubPlanModal()">Cancel</button>
-      <button class="btn btn-save" (click)="saveSubPlan()"
-        [disabled]="isSavingSubPlan || !subPlanForm.name.trim() || !subPlanForm.duration || !subPlanForm.amount">
-        <span *ngIf="isSavingSubPlan" class="spinner-sm-inline"></span>
-        {{ isSavingSubPlan ? 'Saving...' : (isSubPlanEditMode ? 'Update' : 'Create') }}
-      </button>
+    <div class="modal-footer">
+        <button class="btn btn-danger" (click)="closeSubPlanModal()"
+            style="width: auto !important; height: auto; padding: 6px 20px;">Cancel</button>
+        <button class="btn btn-success" (click)="saveSubPlan()"
+            [disabled]="isSavingSubPlan || !subPlanForm.name.trim() || !subPlanForm.duration || !subPlanForm.amount"
+            style="width: auto !important; height: auto; padding: 6px 20px;">
+            {{ isSavingSubPlan ? 'Saving...' : (isSubPlanEditMode ? 'Update' : 'Create') }}
+        </button>
     </div>
-  </div>
-</div>
+</ng-template>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!--  Sub Plan Delete Confirmation Modal                -->
-<!-- ═══════════════════════════════════════════════════ -->
-<div class="modal-overlay" *ngIf="showDeleteSubPlanModal" (click)="closeDeleteSubPlanModal()">
-  <div class="modal-box modal-box-sm" (click)="$event.stopPropagation()">
-    <div class="modal-header-custom modal-header-danger">
-      <h5>Delete Sub Plan</h5>
-      <button class="btn-close-modal" (click)="closeDeleteSubPlanModal()"><i class="fa fa-times"></i></button>
+<!-- ═══ Sub Plan Delete Confirmation Modal ═══ -->
+<ng-template #deleteSubPlanModal>
+    <div class="modal-header">
+        <h5 class="modal-title">Delete Sub Plan</h5>
+        <button type="button" class="btn-close" (click)="closeDeleteSubPlanModal()"></button>
     </div>
-    <div class="modal-body-custom text-center">
-      <i class="fa fa-exclamation-triangle warning-icon"></i>
-      <p>Are you sure you want to delete <strong>{{ deletingSubPlan?.name }}</strong>?</p>
+    <div class="modal-body text-center">
+        <i class="fa fa-exclamation-triangle text-danger" style="font-size: 40px;"></i>
+        <p class="mt-3">Are you sure you want to delete <strong>{{ deletingSubPlan?.name }}</strong>?</p>
     </div>
-    <div class="modal-footer-custom">
-      <button class="btn btn-cancel" (click)="closeDeleteSubPlanModal()">Cancel</button>
-      <button class="btn btn-danger-confirm" (click)="confirmDeleteSubPlan()" [disabled]="isDeletingSubPlan">
-        <span *ngIf="isDeletingSubPlan" class="spinner-sm-inline"></span>
-        {{ isDeletingSubPlan ? 'Deleting...' : 'Delete' }}
-      </button>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeleteSubPlanModal()"
+            style="width: auto !important; height: auto; padding: 6px 20px;">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDeleteSubPlan()" [disabled]="isDeletingSubPlan"
+            style="width: auto !important; height: auto; padding: 6px 20px;">
+            {{ isDeletingSubPlan ? 'Deleting...' : 'Delete' }}
+        </button>
     </div>
-  </div>
-</div>
+</ng-template>

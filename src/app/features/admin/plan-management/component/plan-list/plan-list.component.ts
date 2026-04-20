@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { PlanManagementService } from '../../service/plan-management.service';
 import { NotificationService } from 'src/app/features/http-services/notification.service';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
@@ -10,19 +10,30 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 })
 export class PlanListComponent implements OnInit {
 
+  @ViewChild('planModal') planModal!: TemplateRef<any>;
+  @ViewChild('deletePlanModal') deletePlanModal!: TemplateRef<any>;
+  @ViewChild('subPlanModal') subPlanModal!: TemplateRef<any>;
+  @ViewChild('deleteSubPlanModal') deleteSubPlanModal!: TemplateRef<any>;
+
   planList: any[] = [];
   isLoading = false;
   searchText = '';
 
-  // Create / Edit plan modal state
-  showPlanModal = false;
+  // Pagination
+  page = 1;
+  count = 0;
+  tableSize = 10;
+
+  // Modal ref
+  bsModalRef!: BsModalRef;
+
+  // Create / Edit plan
   isEditMode = false;
   editingPlan: any = null;
   planName = '';
   isSaving = false;
 
-  // Delete confirmation
-  showDeleteModal = false;
+  // Delete plan
   deletingPlan: any = null;
   isDeleting = false;
 
@@ -31,8 +42,7 @@ export class PlanListComponent implements OnInit {
   subPlanList: any[] = [];
   isLoadingSubPlans = false;
 
-  // Sub-plan create/edit modal
-  showSubPlanModal = false;
+  // Sub-plan create/edit
   isSubPlanEditMode = false;
   editingSubPlan: any = null;
   subPlanForm = {
@@ -46,13 +56,13 @@ export class PlanListComponent implements OnInit {
   isSavingSubPlan = false;
 
   // Sub-plan delete
-  showDeleteSubPlanModal = false;
   deletingSubPlan: any = null;
   isDeletingSubPlan = false;
 
   constructor(
     private planService: PlanManagementService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private modalService: BsModalService
   ) { }
 
   ngOnInit(): void {
@@ -64,16 +74,18 @@ export class PlanListComponent implements OnInit {
   loadPlans(): void {
     this.isLoading = true;
     this.planService.getPlanList().subscribe((res: any) => {
+      this.isLoading = false;
       if (res?.body?.data) {
-        this.planList = res.body.data;
-      } else if (res?.body?.result && Array.isArray(res.body.data)) {
         this.planList = res.body.data;
       } else if (Array.isArray(res?.body)) {
         this.planList = res.body;
+      } else {
+        this.planList = [];
       }
-      this.isLoading = false;
+      this.count = this.planList.length;
     }, () => {
       this.isLoading = false;
+      this.planList = [];
     });
   }
 
@@ -85,22 +97,32 @@ export class PlanListComponent implements OnInit {
     );
   }
 
+  onTableDataChange(event: number): void {
+    this.page = event;
+  }
+
+  // ── Plan Modal ────────────────────────────────────
+
   openCreatePlanModal(): void {
     this.isEditMode = false;
     this.editingPlan = null;
     this.planName = '';
-    this.showPlanModal = true;
+    this.bsModalRef = this.modalService.show(this.planModal, {
+      class: 'modal-md modal-dialog-centered'
+    });
   }
 
   openEditPlanModal(plan: any): void {
     this.isEditMode = true;
     this.editingPlan = plan;
     this.planName = plan.planName;
-    this.showPlanModal = true;
+    this.bsModalRef = this.modalService.show(this.planModal, {
+      class: 'modal-md modal-dialog-centered'
+    });
   }
 
   closePlanModal(): void {
-    this.showPlanModal = false;
+    this.bsModalRef?.hide();
     this.planName = '';
     this.editingPlan = null;
   }
@@ -148,13 +170,17 @@ export class PlanListComponent implements OnInit {
     }
   }
 
+  // ── Delete Plan ───────────────────────────────────
+
   openDeletePlanModal(plan: any): void {
     this.deletingPlan = plan;
-    this.showDeleteModal = true;
+    this.bsModalRef = this.modalService.show(this.deletePlanModal, {
+      class: 'modal-md modal-dialog-centered'
+    });
   }
 
   closeDeleteModal(): void {
-    this.showDeleteModal = false;
+    this.bsModalRef?.hide();
     this.deletingPlan = null;
   }
 
@@ -165,12 +191,11 @@ export class PlanListComponent implements OnInit {
       this.isDeleting = false;
       if (res?.status === 204 || res?.status === 200) {
         this.notificationService.showSuccess('Plan deleted successfully');
-        this.closeDeleteModal();
-        // If we had sub-plans expanded for this plan, collapse
         if (this.expandedPlanId === this.deletingPlan.id) {
           this.expandedPlanId = null;
           this.subPlanList = [];
         }
+        this.closeDeleteModal();
         this.loadPlans();
       } else {
         this.notificationService.showError('Failed to delete plan');
@@ -208,20 +233,23 @@ export class PlanListComponent implements OnInit {
     });
   }
 
+  getExpandedPlanName(): string {
+    const plan = this.planList.find((p: any) => p.id === this.expandedPlanId);
+    return plan?.planName || '';
+  }
+
   // ── Sub-Plan CRUD ─────────────────────────────────
 
   openCreateSubPlanModal(): void {
     this.isSubPlanEditMode = false;
     this.editingSubPlan = null;
     this.subPlanForm = {
-      name: '',
-      duration: '',
-      durationUnit: 'days',
-      amount: '',
-      tax: '',
-      platformFee: ''
+      name: '', duration: '', durationUnit: 'days',
+      amount: '', tax: '', platformFee: ''
     };
-    this.showSubPlanModal = true;
+    this.bsModalRef = this.modalService.show(this.subPlanModal, {
+      class: 'modal-lg modal-dialog-centered'
+    });
   }
 
   openEditSubPlanModal(subPlan: any): void {
@@ -235,11 +263,13 @@ export class PlanListComponent implements OnInit {
       tax: subPlan.tax?.toString() || '',
       platformFee: subPlan.platformFee?.toString() || ''
     };
-    this.showSubPlanModal = true;
+    this.bsModalRef = this.modalService.show(this.subPlanModal, {
+      class: 'modal-lg modal-dialog-centered'
+    });
   }
 
   closeSubPlanModal(): void {
-    this.showSubPlanModal = false;
+    this.bsModalRef?.hide();
     this.editingSubPlan = null;
   }
 
@@ -299,13 +329,17 @@ export class PlanListComponent implements OnInit {
     }
   }
 
+  // ── Delete Sub Plan ───────────────────────────────
+
   openDeleteSubPlanModal(subPlan: any): void {
     this.deletingSubPlan = subPlan;
-    this.showDeleteSubPlanModal = true;
+    this.bsModalRef = this.modalService.show(this.deleteSubPlanModal, {
+      class: 'modal-md modal-dialog-centered'
+    });
   }
 
   closeDeleteSubPlanModal(): void {
-    this.showDeleteSubPlanModal = false;
+    this.bsModalRef?.hide();
     this.deletingSubPlan = null;
   }
 
@@ -325,13 +359,5 @@ export class PlanListComponent implements OnInit {
       this.isDeletingSubPlan = false;
       this.notificationService.showError('Failed to delete sub plan');
     });
-  }
-
-  // ── Helpers ───────────────────────────────────────
-
-  formatDate(dateStr: string): string {
-    if (!dateStr) return '—';
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 }
