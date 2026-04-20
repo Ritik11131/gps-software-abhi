@@ -134,6 +134,19 @@ export const admin = [
       
     ],
   },
+  {
+    name: "Plan Management",
+    path: "",
+    iconClass: "assets/icons/icon_ReportsReports.svg",
+    subNav: [
+      {
+        "id": 139,
+        "name": "Plans",
+        "path": "admin/plan/plan-manage",
+        "icon_Url": "MenuLeft.png"
+      },
+    ],
+  },
   // {
   //   name: "Point Summary",
   //   path: "",

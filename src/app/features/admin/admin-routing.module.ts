@@ -72,6 +72,13 @@ const routes: Routes = [
       import("./sim-operator/sim-operator.module").then(
         (m) => m.SimOperatorModule
       ),
+  },
+  {
+    path: "plan",
+    loadChildren: () =>
+      import("./plan-management/plan-management.module").then(
+        (m) => m.PlanManagementModule
+      ),
   }
 ];
 
