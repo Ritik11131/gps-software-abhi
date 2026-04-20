@@ -11,7 +11,7 @@
             <div class="filter-part">
                 <div class="row">
                     <div class="col-md-3">
-                        <button class="btn btn-primary" style="padding: 0;" (click)="downloadExcel()">
+                        <button class="btn btn-primary" style="padding: 0;" (click)="downloadExcel()" [disabled]="spinnerLoading">
                             <i class="fa fa-arrow-down" aria-hidden="true"></i> Download Sample Excel
                         </button>
                     </div>
@@ -23,14 +23,24 @@
                     </div>
                     
                     <div class="col-md-3">
-                        <button class="btn btn-success" (click)="getBulkDeviceList()" [disabled]="!parsedRows.length || spinnerLoading">
-                            upload File
+                        <button class="btn btn-success" (click)="getBulkDeviceList()" [disabled]="!selectedFile || spinnerLoading">
+                            Upload File
                         </button>
                     </div>
                     <div class="col-md-3">
                         <span *ngIf="selectedFileName" class="text-muted">{{ selectedFileName }}</span>
                     </div>
                    
+                </div>
+            </div>
+
+            <!-- Upload Result Summary -->
+            <div class="row mt-2" *ngIf="uploadResult">
+                <div class="col-md-12">
+                    <div class="alert" [ngClass]="{'alert-success': uploadResult?.result === true, 'alert-danger': uploadResult?.result !== true}">
+                        <strong>{{ uploadResult?.result === true ? 'Success' : 'Error' }}:</strong>
+                        {{ uploadResult?.message || uploadResult?.data || 'Upload completed' }}
+                    </div>
                 </div>
             </div>
 
@@ -70,7 +80,14 @@
                                                 <td><a>{{ row?.vehicleNo }}</a></td>
                                                 <td><a>{{ row?.nextRecharge }}</a></td>
                                                 <td><a>{{ row?.description }}</a></td>
-                                                <td><a>{{ row?.entry_status_message }}</a></td>
+                                                <td>
+                                                    <a [ngClass]="{
+                                                        'text-success': row?.entry_status_message === 'Success',
+                                                        'text-danger': row?.entry_status_message === 'Failed',
+                                                        'text-warning': row?.entry_status_message === 'Uploading...',
+                                                        'text-muted': row?.entry_status_message === 'Pending'
+                                                    }">{{ row?.entry_status_message }}</a>
+                                                </td>
                                                
                                             </tr>
                                         </tbody>

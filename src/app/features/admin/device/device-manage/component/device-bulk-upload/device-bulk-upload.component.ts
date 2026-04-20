@@ -18,6 +18,7 @@ export class DeviceBulkUploadComponent {
   tableSize = 10;
   selectedFileName: any = '';
   parsedRows: any[] = [];
+  uploadResult: any = null;
   readonly sampleColumns: string[] = [
     'deviceId',
     'deviceImei',
@@ -62,43 +63,41 @@ export class DeviceBulkUploadComponent {
     ];
   }
 
+  /**
+   * Downloads the sample Excel file from the API (GET /api/BulkUpload)
+   */
   downloadExcel() {
-    const sampleRows = [
-      {
-        deviceId: 'DEV-1001',
-        deviceImei: '356938035643809',
-        deviceUid: 'UID-1001',
-        simPhoneNumber: '9876543210',
-        fkSimOperator: '1',
-        simSecPhoneNumber: '9988776655',
-        fkSecSimOperator: '2',
-        fkDeviceType: '3',
-        fkVehicleType: '4',
-        vehicleNo: 'MH12AB1234',
-        installationOn: '2026-04-01',
-        nextRecharge: '2026-05-01',
-        description: 'Demo device 1'
-      },
-      {
-        deviceId: 'DEV-1002',
-        deviceImei: '356938035643810',
-        deviceUid: 'UID-1002',
-        simPhoneNumber: '9123456780',
-        fkSimOperator: '1',
-        simSecPhoneNumber: '9112233445',
-        fkSecSimOperator: '2',
-        fkDeviceType: '3',
-        fkVehicleType: '5',
-        vehicleNo: 'DL8CAF1234',
-        installationOn: '2026-04-02',
-        nextRecharge: '2026-05-02',
-        description: 'Demo device 2'
+    this.spinnerLoading = true;
+    this.deviceManageService.downloadBulkUploadSample().subscribe((res: any) => {
+      this.spinnerLoading = false;
+      if (res?.status === 200 && res?.body) {
+        const blob = res.body;
+        // Extract filename from Content-Disposition header, fallback to default
+        let filename = 'device_upload_sample.xlsx';
+        const contentDisposition = res.headers?.get('Content-Disposition');
+        if (contentDisposition) {
+          const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+          if (match && match[1]) {
+            filename = match[1].replace(/['"]/g, '');
+          }
+        }
+        // Trigger browser download
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        this.notificationService.showSuccess('Sample file downloaded successfully');
+      } else {
+        this.notificationService.showError('Failed to download sample file');
       }
-    ];
-    const ws = XLSX.utils.json_to_sheet(sampleRows, { header: this.sampleColumns });
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'DeviceUpload');
-    XLSX.writeFile(wb, 'Device_Bulk_Upload_Sample.xlsx');
+    }, (err: any) => {
+      this.spinnerLoading = false;
+      this.notificationService.showError('Failed to download sample file');
+    });
   }
 
   selectFile(event: any): void {
@@ -122,45 +121,69 @@ export class DeviceBulkUploadComponent {
     }
   }
 
+  /**
+   * Uploads the selected file to the API (POST /api/BulkUpload)
+   */
   getBulkDeviceList() {
-    if (!this.parsedRows.length) {
-      this.notificationService.showError('No data found to upload');
+    if (!this.selectedFile) {
+      this.notificationService.showError('No file selected to upload');
       return;
     }
-    // Prevent duplicate rows/statuses when user clicks upload again
-    this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Pending');
     this.spinnerLoading = true;
-    this.uploadRowsSequentially(0, 0, 0);
+    this.uploadResult = null;
+    // Reset result column
+    this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Uploading...');
+
+    this.deviceManageService.bulkUploadNewApi(this.selectedFile).subscribe((res: any) => {
+      this.spinnerLoading = false;
+      if (res?.status === 200 || res?.status === 201) {
+        const body = res?.body;
+        this.uploadResult = body;
+
+        if (body?.result === true) {
+          this.notificationService.showSuccess(body?.message || 'Bulk upload completed successfully');
+          // Mark all rows as success
+          this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Success');
+
+          // If the API returns detailed per-row results, update accordingly
+          if (body?.data && Array.isArray(body.data)) {
+            this.handleDetailedResults(body.data);
+          }
+        } else {
+          // Partial failure or error
+          const errorMsg = body?.message || body?.data || 'Upload completed with errors';
+          this.notificationService.showError(errorMsg);
+          this.bulkDeviceData.forEach((row) => row.entry_status_message = errorMsg);
+
+          if (body?.data && Array.isArray(body.data)) {
+            this.handleDetailedResults(body.data);
+          }
+        }
+      } else {
+        const errorMsg = res?.error?.message || res?.error?.data || res?.message || 'Bulk upload failed';
+        this.notificationService.showError(errorMsg);
+        this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Failed');
+      }
+    }, (err: any) => {
+      this.spinnerLoading = false;
+      const errorMsg = err?.error?.message || err?.error?.data || err?.message || 'Bulk upload failed';
+      this.notificationService.showError(errorMsg);
+      this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Failed');
+    });
   }
 
-  private uploadRowsSequentially(index: number, successCount: number, failureCount: number) {
-    if (index >= this.parsedRows.length) {
-      this.spinnerLoading = false;
-      this.count = this.bulkDeviceData.length;
-      if (failureCount === 0) {
-        this.notificationService.showSuccess(`All ${successCount} devices uploaded successfully`);
-        this.router.navigateByUrl('/admin/device/device-manage');
-      } else {
-        this.notificationService.showError(`${failureCount} failed, ${successCount} uploaded successfully`);
+  /**
+   * Handle detailed per-row results from the API response
+   */
+  private handleDetailedResults(results: any[]) {
+    results.forEach((result: any, index: number) => {
+      if (index < this.bulkDeviceData.length) {
+        if (result?.result === true || result?.status === 'Success' || result?.success === true) {
+          this.bulkDeviceData[index].entry_status_message = 'Success';
+        } else {
+          this.bulkDeviceData[index].entry_status_message = result?.message || result?.error || 'Failed';
+        }
       }
-      return;
-    }
-
-    const rawRow = this.parsedRows[index];
-    const payload = this.createPayload(rawRow);
-    const rowView = this.bulkDeviceData[index];
-
-    this.deviceManageService.addDevice(payload).subscribe((res: any) => {
-      const isSuccess = !!(res?.status === 200 || res?.status === 201) && (res?.body?.result !== false);
-      rowView.entry_status_message = isSuccess
-        ? 'Success'
-        : (res?.body?.data || res?.error?.data || res?.error?.message || 'Failed');
-      this.count = this.bulkDeviceData.length;
-      this.uploadRowsSequentially(index + 1, isSuccess ? successCount + 1 : successCount, isSuccess ? failureCount : failureCount + 1);
-    }, (err: any) => {
-      rowView.entry_status_message = err?.error?.data || err?.error?.message || 'Failed';
-      this.count = this.bulkDeviceData.length;
-      this.uploadRowsSequentially(index + 1, successCount, failureCount + 1);
     });
   }
 
@@ -169,6 +192,7 @@ export class DeviceBulkUploadComponent {
     this.bulkDeviceData = [];
     this.parsedRows = [];
     this.count = 0;
+    this.uploadResult = null;
 
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
@@ -202,6 +226,10 @@ export class DeviceBulkUploadComponent {
     this.bulkDeviceData = [];
     this.parsedRows = [];
     this.count = 0;
+    this.uploadResult = null;
+    // Reset file input
+    const fileInput = document.getElementById('excelFileInput') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
   }
 
   /**
@@ -210,42 +238,6 @@ export class DeviceBulkUploadComponent {
   */
   onTableDataChange(event: any) {
     this.page = event;
-  }
-
-  private createPayload(row: any) {
-    const get = (keys: string[]) => {
-      for (const key of keys) {
-        if (row?.[key] !== undefined && row?.[key] !== null && row?.[key] !== '') return row[key];
-      }
-      return '';
-    };
-
-    const toNumber = (value: any, fallback = 0) => {
-      const n = Number(value);
-      return Number.isFinite(n) ? n : fallback;
-    };
-
-    const installationDate = this.formatExcelDate(get(['installationOn', 'InstallationOn', 'installation_date']));
-    const nextRecharge = get(['nextRecharge', 'NextRecharge', 'next_recharge']);
-
-    return {
-      deviceId: String(get(['deviceId', 'DeviceId', 'device_id'])),
-      deviceImei: String(get(['deviceImei', 'DeviceImei', 'imei'])),
-      deviceUid: String(get(['deviceUid', 'DeviceUid', 'uid'])),
-      simPhoneNumber: String(get(['simPhoneNumber', 'SimPhoneNumber', 'sim_number'])),
-      fkSimOperator: toNumber(get(['fkSimOperator', 'SimOperatorId', 'sim_operator_id']), 0),
-      simSecPhoneNumber: String(get(['simSecPhoneNumber', 'SimSecPhoneNumber', 'sec_sim_number'])),
-      fkSecSimOperator: toNumber(get(['fkSecSimOperator', 'SecSimOperatorId', 'sec_sim_operator_id']), 1),
-      fkDeviceType: toNumber(get(['fkDeviceType', 'DeviceTypeId', 'device_type_id']), 0),
-      fkVehicleType: toNumber(get(['fkVehicleType', 'VehicleTypeId', 'vehicle_type_id']), 0),
-      vehicleNo: String(get(['vehicleNo', 'VehicleNo', 'vehicle_number'])),
-      nextRecharge: String(nextRecharge || ''),
-      description: String(get(['description', 'Description'])),
-      installationOn: installationDate,
-      lastUpdateOn: new Date().toISOString(),
-      creationTime: new Date().toISOString(),
-      attributes: JSON.stringify({ nextRecharge: String(nextRecharge || '') }),
-    };
   }
 
   private parseSheetRows(worksheet: XLSX.WorkSheet): any[] {
@@ -301,6 +293,39 @@ export class DeviceBulkUploadComponent {
     return {
       ...payload,
       entry_status_message: '',
+    };
+  }
+
+  private createPayload(row: any) {
+    const get = (keys: string[]) => {
+      for (const key of keys) {
+        if (row?.[key] !== undefined && row?.[key] !== null && row?.[key] !== '') return row[key];
+      }
+      return '';
+    };
+
+    const toNumber = (value: any, fallback = 0) => {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : fallback;
+    };
+
+    const installationDate = this.formatExcelDate(get(['installationOn', 'InstallationOn', 'installation_date']));
+    const nextRecharge = get(['nextRecharge', 'NextRecharge', 'next_recharge']);
+
+    return {
+      deviceId: String(get(['deviceId', 'DeviceId', 'device_id'])),
+      deviceImei: String(get(['deviceImei', 'DeviceImei', 'imei'])),
+      deviceUid: String(get(['deviceUid', 'DeviceUid', 'uid'])),
+      simPhoneNumber: String(get(['simPhoneNumber', 'SimPhoneNumber', 'sim_number'])),
+      fkSimOperator: toNumber(get(['fkSimOperator', 'SimOperatorId', 'sim_operator_id']), 0),
+      simSecPhoneNumber: String(get(['simSecPhoneNumber', 'SimSecPhoneNumber', 'sec_sim_number'])),
+      fkSecSimOperator: toNumber(get(['fkSecSimOperator', 'SecSimOperatorId', 'sec_sim_operator_id']), 1),
+      fkDeviceType: toNumber(get(['fkDeviceType', 'DeviceTypeId', 'device_type_id']), 0),
+      fkVehicleType: toNumber(get(['fkVehicleType', 'VehicleTypeId', 'vehicle_type_id']), 0),
+      vehicleNo: String(get(['vehicleNo', 'VehicleNo', 'vehicle_number'])),
+      nextRecharge: String(nextRecharge || ''),
+      description: String(get(['description', 'Description'])),
+      installationOn: installationDate,
     };
   }
 

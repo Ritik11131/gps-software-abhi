@@ -129,6 +129,18 @@ export class ApiService {
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
 
+  getBlob(url: any): Observable<any> {
+    return this.http
+      .get(this.setBaseSiteId(url), { responseType: 'blob', observe: 'response' })
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  postFormData(url: any, formData: FormData): Observable<any> {
+    return this.http
+      .post(this.setBaseSiteId(url), formData, { observe: 'response' })
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
 
 
 

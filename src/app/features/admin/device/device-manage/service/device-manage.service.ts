@@ -286,4 +286,20 @@ export class DeviceManageService {
       .post(url, payload)
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
+
+  downloadBulkUploadSample(): Observable<any> {
+    let url = API_CONSTANTS.bulkUploadSampleDownload;
+    return this.apiService
+      .getBlob(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  bulkUploadNewApi(file: File): Observable<any> {
+    let url = API_CONSTANTS.bulkUploadNew;
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return this.apiService
+      .postFormData(url, formData)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
 }
