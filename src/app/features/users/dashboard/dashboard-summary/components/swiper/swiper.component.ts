@@ -89,8 +89,8 @@ export class SwiperComponent {
       {
         src: "/assets/icons/zocial-call.svg",
         label: this.stopCount.length,
-        class: 'blue',
-        color: '#4861ED',
+        class: 'red',
+        color: '#c00e0e',
         status: "Stop",
         data: this.stopCount
       },

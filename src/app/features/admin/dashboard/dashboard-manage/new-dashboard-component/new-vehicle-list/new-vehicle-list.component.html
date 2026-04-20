@@ -15,16 +15,27 @@
                             <div>
                                 <swiper *ngIf="swiperList" [vehicleStauts]="swiperList" (onConfirm)="confirm($event)"></swiper>
                             </div>
+                            <div class="search-container mt-3 mb-3">
+                                <input 
+                                    type="text" 
+                                    class="search-input" 
+                                    placeholder="Search by Vehicle No or Device ID..."
+                                    [(ngModel)]="searchText"
+                                    (keyup)="getFilteredVehicles()">
+                                <span *ngIf="searchText" class="clear-search" (click)="clearSearch()" title="Clear search">
+                                    <i class="fa fa-times"></i>
+                                </span>
+                            </div>
                             <div class="vehicle-follow mt-3" >
-                                <ul class="vehicle-data" *ngIf="vehicleData && vehicleData.length > 0">
-                                    <li class="vehicle-value" *ngFor="let vehicle of vehicleData; let i = index" style="cursor: pointer;" (click)="onSelectVehicle(vehicle)">
+                                <ul class="vehicle-data" *ngIf="getFilteredVehicles() && getFilteredVehicles().length > 0">
+                                    <li class="vehicle-value" *ngFor="let vehicle of getFilteredVehicles(); let i = index" style="cursor: pointer;" (click)="onSelectVehicle(vehicle)">
                                         <span class="vehicle-no" [class]="getVehicleColor(vehicle)">{{vehicle?.Device?.VehicleNo}}</span>
                                         <span class="vehicle-status" [class]="getVehicleColor(vehicle)">{{formatVehicleStatusDuration(vehicle)}}</span>
                                     </li>
                                 </ul>
-                                <ul class="vehicle-data" *ngIf="!vehicleData || vehicleData.length == 0 || vehicleData== null">
+                                <ul class="vehicle-data" *ngIf="!getFilteredVehicles() || getFilteredVehicles().length == 0">
                                     <li class="vehicle-value" style="text-align: center;padding: 8px;">
-                                        <span style="color: black; width: 100% !important;">No Data Available</span>
+                                        <span style="color: black; width: 100% !important;">{{ searchText ? 'No vehicles found matching your search' : 'No Data Available' }}</span>
                                     </li>                
                                 </ul>
                             </div>

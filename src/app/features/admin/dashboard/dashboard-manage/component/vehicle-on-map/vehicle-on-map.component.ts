@@ -403,7 +403,7 @@ export class VehicleOnMapComponent {
     if (vehicle?.Status === 1 && vehicle?.SubStatus === 1) {
       return 'rgb(25 173 0)';
     } else if (vehicle?.Status === 1 && vehicle?.SubStatus === 2) {
-      return '#4861ED';
+      return '#c00e0e';
     } else if (vehicle?.Status === 1 && vehicle?.SubStatus === 3) {
       return '#FFAF1D';
     } else if (vehicle?.Status === 0) {

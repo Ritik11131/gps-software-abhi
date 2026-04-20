@@ -71,8 +71,7 @@ export class NewVehicleListComponent {
   newPointCount: any;
   renewalPointCount: any;
   selectDealerCustomer: any;
-
-
+  searchText: string = '';
 
   constructor(
     private dashboardService: AdminDashboardService,
@@ -83,7 +82,7 @@ export class NewVehicleListComponent {
     private adminProfileService: AdminProfileService,
     private storageService : StorageService
 
-  ) { };
+  ) { }
 
   ngOnInit() {
     // Removed dealer/customer selection - showing all vehicles directly
@@ -96,7 +95,24 @@ export class NewVehicleListComponent {
 
   ngOnChanges() {
     this.swiperList = this.vehicleDatacount;
+    this.searchText = '';
     this.updateVehicleListHeight()
+  }
+
+  getFilteredVehicles(): any[] {
+    if (!this.vehicleData || !this.searchText.trim()) {
+      return this.vehicleData;
+    }
+    const searchLower = this.searchText.toLowerCase().trim();
+    return this.vehicleData.filter((vehicle: any) => {
+      const vehicleNo = vehicle?.Device?.VehicleNo?.toLowerCase() || '';
+      const deviceId = vehicle?.Device?.DeviceImei?.toLowerCase() || '';
+      return vehicleNo.includes(searchLower) || deviceId.includes(searchLower);
+    });
+  }
+
+  clearSearch() {
+    this.searchText = '';
   }
 
   getDealerList() {

@@ -230,7 +230,7 @@
 }
 
 .status-1-substatus-2 {
-    color: #4861ED !important;
+    color: #c00e0e !important;
 }
 
 .status-2-substatus-3 {
@@ -268,5 +268,47 @@ span.login-user {
         background-image: url('/assets/icons/down-new.png');
         background-size: contain;
         background-repeat: no-repeat;
+    }
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .search-input {
+        width: 100%;
+        padding: 10px 35px 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        background-color: #f9f9f9;
+        color: #333;
+        transition: all 0.3s ease;
+
+        &:focus {
+            outline: none;
+            border-color: #4861ED;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(72, 97, 237, 0.2);
+        }
+
+        &::placeholder {
+            color: #999;
+        }
+    }
+
+    .clear-search {
+        position: absolute;
+        right: 12px;
+        cursor: pointer;
+        color: #999;
+        font-size: 16px;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: #333;
+        }
     }
 }

@@ -209,7 +209,7 @@ export class VehicleOnMapV2Component {
           Id: item?.device?.id || 0,
           SoftOdometer: item?.position?.details?.odometer ?? item?.device?.details?.lastOdometer ?? 0
         },
-        TotalDistance: (item?.position?.details?.totalDistance - (item?.device?.details?.lastOdometer ?? 0)) ?? 0,
+        TotalDistance: (item?.position?.details?.totalDistance - (item?.device?.details?.lastOdometer ?? 0)) || 0,
         Eventdata: {
           Latitude: item?.position?.latitude || 0,
           Longitude: item?.position?.longitude || 0,
@@ -663,7 +663,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_car_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_car_blue.png';
+        return 'assets/drawable/rp_marker_car_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_car_yellow.png';
       } else if (status === 0) {
@@ -673,7 +673,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_bus_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_bus_blue.png';
+        return 'assets/drawable/rp_marker_bus_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_bus_yellow.png';
       } else if (status === 0) {
@@ -683,7 +683,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_truck_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_truck_blue.png';
+        return 'assets/drawable/rp_marker_truck_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_truck_yellow.png';
       } else if (status === 0) {
@@ -693,7 +693,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_bike_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_bike_blue.png';
+        return 'assets/drawable/rp_marker_bike_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_bike_yellow.png';
       } else if (status === 0) {
@@ -703,7 +703,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_jcb_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_jcb_blue.png';
+        return 'assets/drawable/rp_marker_jcb_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_jcb_yellow.png';
       } else if (status === 0) {
@@ -713,7 +713,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_lifter_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_lifter_blue.png';
+        return 'assets/drawable/rp_marker_lifter_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_lifter_yellow.png';
       } else if (status === 0) {
@@ -723,7 +723,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_loader_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_loader_blue.png';
+        return 'assets/drawable/rp_marker_loader_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_loader_yellow.png';
       } else if (status === 0) {
@@ -733,7 +733,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_marker_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_marker_blue.png';
+        return 'assets/drawable/rp_marker_marker_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_marker_yellow.png';
       } else if (status === 0) {
@@ -743,7 +743,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_person_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_person_blue.png';
+        return 'assets/drawable/rp_marker_person_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_person_yellow.png';
       } else if (status === 0) {
@@ -753,7 +753,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_pet_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_pet_blue.png';
+        return 'assets/drawable/rp_marker_pet_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_pet_yellow.png';
       } else if (status === 0) {
@@ -763,7 +763,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_ship_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_ship_blue.png';
+        return 'assets/drawable/rp_marker_ship_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_ship_yellow.png';
       } else if (status === 0) {
@@ -773,7 +773,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_tanker_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_tanker_blue.png';
+        return 'assets/drawable/rp_marker_tanker_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_tanker_yellow.png';
       } else if (status === 0) {
@@ -783,7 +783,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/geen_taxi_f.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/blue_taxi_f.png';
+        return 'assets/drawable/red_taxi_f.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/yellow_taxi_f.png';
       } else if (status === 0) {
@@ -793,7 +793,7 @@ export class VehicleOnMapV2Component {
       if (status === 1 && subStatus === 1) {
         return 'assets/drawable/rp_marker_tractor_green.png';
       } else if (status === 1 && subStatus === 2) {
-        return 'assets/drawable/rp_marker_tractor_blue.png';
+        return 'assets/drawable/rp_marker_tractor_red.png';
       } else if (status === 1 && subStatus === 3) {
         return 'assets/drawable/rp_marker_tractor_yellow.png';
       } else if (status === 0) {

@@ -29,6 +29,7 @@ export class DeviceBulkUploadComponent {
     'fkDeviceType',
     'fkVehicleType',
     'vehicleNo',
+    'installationOn',
     'nextRecharge',
     'description'
   ];
@@ -62,21 +63,39 @@ export class DeviceBulkUploadComponent {
   }
 
   downloadExcel() {
-    const sampleRow = {
-      deviceId: '',
-      deviceImei: '',
-      deviceUid: '',
-      simPhoneNumber: '',
-      fkSimOperator: '',
-      simSecPhoneNumber: '',
-      fkSecSimOperator: '',
-      fkDeviceType: '',
-      fkVehicleType: '',
-      vehicleNo: '',
-      nextRecharge: '',
-      description: ''
-    };
-    const ws = XLSX.utils.json_to_sheet([sampleRow], { header: this.sampleColumns });
+    const sampleRows = [
+      {
+        deviceId: 'DEV-1001',
+        deviceImei: '356938035643809',
+        deviceUid: 'UID-1001',
+        simPhoneNumber: '9876543210',
+        fkSimOperator: '1',
+        simSecPhoneNumber: '9988776655',
+        fkSecSimOperator: '2',
+        fkDeviceType: '3',
+        fkVehicleType: '4',
+        vehicleNo: 'MH12AB1234',
+        installationOn: '2026-04-01',
+        nextRecharge: '2026-05-01',
+        description: 'Demo device 1'
+      },
+      {
+        deviceId: 'DEV-1002',
+        deviceImei: '356938035643810',
+        deviceUid: 'UID-1002',
+        simPhoneNumber: '9123456780',
+        fkSimOperator: '1',
+        simSecPhoneNumber: '9112233445',
+        fkSecSimOperator: '2',
+        fkDeviceType: '3',
+        fkVehicleType: '5',
+        vehicleNo: 'DL8CAF1234',
+        installationOn: '2026-04-02',
+        nextRecharge: '2026-05-02',
+        description: 'Demo device 2'
+      }
+    ];
+    const ws = XLSX.utils.json_to_sheet(sampleRows, { header: this.sampleColumns });
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'DeviceUpload');
     XLSX.writeFile(wb, 'Device_Bulk_Upload_Sample.xlsx');
