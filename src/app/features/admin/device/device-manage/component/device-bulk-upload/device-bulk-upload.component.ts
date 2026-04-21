@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { DeviceManageService } from '../../service/device-manage.service';
 import * as XLSX from 'xlsx';
 import { NotificationService } from 'src/app/features/http-services/notification.service';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   templateUrl: './device-bulk-upload.component.html',
   styleUrls: ['./device-bulk-upload.component.scss']
 })
-export class DeviceBulkUploadComponent {
+export class DeviceBulkUploadComponent implements OnDestroy {
   spinnerLoading: boolean = false;
   selectedFile: File | null = null;
   columns: any;
@@ -19,6 +19,11 @@ export class DeviceBulkUploadComponent {
   selectedFileName: any = '';
   parsedRows: any[] = [];
   uploadResult: any = null;
+  requestId: string = '';
+  isPolling: boolean = false;
+  pollingTimer: any = null;
+  pollingIntervalMs: number = 5000; // Poll every 5 seconds
+
   readonly sampleColumns: string[] = [
     'deviceId',
     'deviceImei',
@@ -45,6 +50,10 @@ export class DeviceBulkUploadComponent {
     this.setInitialValue();
   }
 
+  ngOnDestroy() {
+    this.stopPolling();
+  }
+
   setInitialValue() {
     this.columns = [
       { key: 'deviceId', title: 'Device Id' },
@@ -57,9 +66,10 @@ export class DeviceBulkUploadComponent {
       { key: 'fkDeviceType', title: 'Device Type' },
       { key: 'fkVehicleType', title: 'Vehicle Type' },
       { key: 'vehicleNo', title: 'Vehicle Number' },
-      { key: 'nextRecharge', title: 'Next Recharge' },
-      { key: 'description', title: 'Description' },
-      { key: 'Result', title: 'Result' },
+      { key: 'installationOn', title: 'Installation Date' },
+      { key: 'expiryDate', title: 'Expiry Date' },
+      { key: 'status', title: 'Status' },
+      { key: 'errorMessage', title: 'Error' },
     ];
   }
 
@@ -123,68 +133,153 @@ export class DeviceBulkUploadComponent {
 
   /**
    * Uploads the selected file to the API (POST /api/BulkUpload)
+   * Then starts polling for status using the returned requestId
    */
   getBulkDeviceList() {
     if (!this.selectedFile) {
       this.notificationService.showError('No file selected to upload');
       return;
     }
+
+    this.stopPolling();
     this.spinnerLoading = true;
     this.uploadResult = null;
-    // Reset result column
-    this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Uploading...');
+    this.requestId = '';
 
     this.deviceManageService.bulkUploadNewApi(this.selectedFile).subscribe((res: any) => {
       this.spinnerLoading = false;
+
       if (res?.status === 200 || res?.status === 201) {
         const body = res?.body;
         this.uploadResult = body;
 
-        if (body?.result === true) {
-          this.notificationService.showSuccess(body?.message || 'Bulk upload completed successfully');
-          // Mark all rows as success
-          this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Success');
-
-          // If the API returns detailed per-row results, update accordingly
-          if (body?.data && Array.isArray(body.data)) {
-            this.handleDetailedResults(body.data);
+        // Response format: {"requestId":"...","count":1}
+        if (body?.requestId) {
+          this.requestId = body.requestId;
+          const count = body?.count || 0;
+          this.notificationService.showSuccess(`File uploaded successfully. ${count} device(s) queued for processing...`);
+          this.startPolling();
+        } else if (body?.result === true) {
+          this.notificationService.showSuccess(body?.message || 'File uploaded successfully.');
+          const extractedRequestId = this.extractRequestId(body);
+          if (extractedRequestId) {
+            this.requestId = extractedRequestId;
+            this.startPolling();
           }
         } else {
-          // Partial failure or error
-          const errorMsg = body?.message || body?.data || 'Upload completed with errors';
+          const errorMsg = body?.message || body?.data || 'Upload failed';
           this.notificationService.showError(errorMsg);
-          this.bulkDeviceData.forEach((row) => row.entry_status_message = errorMsg);
-
-          if (body?.data && Array.isArray(body.data)) {
-            this.handleDetailedResults(body.data);
-          }
         }
       } else {
         const errorMsg = res?.error?.message || res?.error?.data || res?.message || 'Bulk upload failed';
         this.notificationService.showError(errorMsg);
-        this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Failed');
       }
     }, (err: any) => {
       this.spinnerLoading = false;
       const errorMsg = err?.error?.message || err?.error?.data || err?.message || 'Bulk upload failed';
       this.notificationService.showError(errorMsg);
-      this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Failed');
     });
   }
 
   /**
-   * Handle detailed per-row results from the API response
+   * Extract requestId from various possible response shapes
    */
-  private handleDetailedResults(results: any[]) {
-    results.forEach((result: any, index: number) => {
-      if (index < this.bulkDeviceData.length) {
-        if (result?.result === true || result?.status === 'Success' || result?.success === true) {
-          this.bulkDeviceData[index].entry_status_message = 'Success';
+  private extractRequestId(body: any): string | null {
+    // Direct requestId field
+    if (body?.requestId) return body.requestId;
+    // Nested in data
+    if (body?.data?.requestId) return body.data.requestId;
+    // data is an array with requestId
+    if (Array.isArray(body?.data) && body.data.length > 0 && body.data[0]?.requestId) {
+      return body.data[0].requestId;
+    }
+    // data is a string (requestId itself)
+    if (typeof body?.data === 'string' && body.data.length > 10) return body.data;
+    return null;
+  }
+
+  /**
+   * Start polling the status endpoint
+   */
+  startPolling() {
+    if (this.isPolling || !this.requestId) return;
+    this.isPolling = true;
+    this.pollStatus();
+  }
+
+  /**
+   * Stop polling
+   */
+  stopPolling() {
+    this.isPolling = false;
+    if (this.pollingTimer) {
+      clearTimeout(this.pollingTimer);
+      this.pollingTimer = null;
+    }
+  }
+
+  /**
+   * Poll the status endpoint and update the table
+   */
+  private pollStatus() {
+    if (!this.isPolling || !this.requestId) return;
+
+    this.deviceManageService.getBulkUploadStatus(this.requestId).subscribe((res: any) => {
+      if (res?.status === 200 && res?.body?.result === true) {
+        const statusData: any[] = res.body.data || [];
+        this.updateTableFromStatus(statusData);
+
+        // Check if all items are processed (not PENDING)
+        const hasPending = statusData.some((item: any) => item.status === 'PENDING');
+        if (hasPending) {
+          // Continue polling
+          this.pollingTimer = setTimeout(() => this.pollStatus(), this.pollingIntervalMs);
         } else {
-          this.bulkDeviceData[index].entry_status_message = result?.message || result?.error || 'Failed';
+          // All done
+          this.isPolling = false;
+          const failedCount = statusData.filter((item: any) =>
+            item.status !== 'SUCCESS' && item.status !== 'COMPLETED'
+          ).length;
+          const successCount = statusData.length - failedCount;
+
+          if (failedCount === 0) {
+            this.notificationService.showSuccess(`All ${successCount} devices processed successfully`);
+          } else {
+            this.notificationService.showError(`${failedCount} failed, ${successCount} succeeded`);
+          }
         }
+      } else {
+        // Error polling, retry after delay
+        this.pollingTimer = setTimeout(() => this.pollStatus(), this.pollingIntervalMs);
       }
+    }, (err: any) => {
+      // Error polling, retry after delay
+      this.pollingTimer = setTimeout(() => this.pollStatus(), this.pollingIntervalMs);
     });
+  }
+
+  /**
+   * Update the table data from the polling status response
+   */
+  private updateTableFromStatus(statusData: any[]) {
+    // Replace the table data with the API response data
+    this.bulkDeviceData = statusData.map((item: any) => ({
+      deviceId: item.deviceId || '',
+      deviceImei: item.imei || '',
+      deviceUid: item.deviceUid || '',
+      simPhoneNumber: item.primaryPhoneNumber || '',
+      fkSimOperator: item.primaryPhoneOperator || '',
+      simSecPhoneNumber: item.secondaryPhoneNumber || '',
+      fkSecSimOperator: item.secondaryPhoneOperator || '',
+      fkDeviceType: item.deviceType || '',
+      fkVehicleType: item.vehicleType || '',
+      vehicleNo: item.vehicleNo || '',
+      installationOn: item.installationOn ? new Date(item.installationOn).toLocaleDateString() : '',
+      expiryDate: item.expiryDate ? new Date(item.expiryDate).toLocaleDateString() : '',
+      status: item.status || 'PENDING',
+      errorMessage: item.errorMessage || '',
+    }));
+    this.count = this.bulkDeviceData.length;
   }
 
   private previewSelectedFile() {
@@ -193,6 +288,8 @@ export class DeviceBulkUploadComponent {
     this.parsedRows = [];
     this.count = 0;
     this.uploadResult = null;
+    this.requestId = '';
+    this.stopPolling();
 
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
@@ -207,7 +304,6 @@ export class DeviceBulkUploadComponent {
           return;
         }
         this.bulkDeviceData = this.parsedRows.map((row) => this.createResultRow(row));
-        this.bulkDeviceData.forEach((row) => row.entry_status_message = 'Pending');
         this.count = this.bulkDeviceData.length;
         this.page = 1;
       } catch (error) {
@@ -221,12 +317,14 @@ export class DeviceBulkUploadComponent {
   }
 
   refreshPage() {
+    this.stopPolling();
     this.selectedFile = null;
     this.selectedFileName = '';
     this.bulkDeviceData = [];
     this.parsedRows = [];
     this.count = 0;
     this.uploadResult = null;
+    this.requestId = '';
     // Reset file input
     const fileInput = document.getElementById('excelFileInput') as HTMLInputElement;
     if (fileInput) fileInput.value = '';
@@ -234,7 +332,7 @@ export class DeviceBulkUploadComponent {
 
   /**
   * table data change
-  * @param event 
+  * @param event
   */
   onTableDataChange(event: any) {
     this.page = event;
@@ -289,14 +387,6 @@ export class DeviceBulkUploadComponent {
   }
 
   private createResultRow(row: any) {
-    const payload = this.createPayload(row);
-    return {
-      ...payload,
-      entry_status_message: '',
-    };
-  }
-
-  private createPayload(row: any) {
     const get = (keys: string[]) => {
       for (const key of keys) {
         if (row?.[key] !== undefined && row?.[key] !== null && row?.[key] !== '') return row[key];
@@ -304,50 +394,21 @@ export class DeviceBulkUploadComponent {
       return '';
     };
 
-    const toNumber = (value: any, fallback = 0) => {
-      const n = Number(value);
-      return Number.isFinite(n) ? n : fallback;
-    };
-
-    const installationDate = this.formatExcelDate(get(['installationOn', 'InstallationOn', 'installation_date']));
-    const nextRecharge = get(['nextRecharge', 'NextRecharge', 'next_recharge']);
-
     return {
       deviceId: String(get(['deviceId', 'DeviceId', 'device_id'])),
       deviceImei: String(get(['deviceImei', 'DeviceImei', 'imei'])),
       deviceUid: String(get(['deviceUid', 'DeviceUid', 'uid'])),
       simPhoneNumber: String(get(['simPhoneNumber', 'SimPhoneNumber', 'sim_number'])),
-      fkSimOperator: toNumber(get(['fkSimOperator', 'SimOperatorId', 'sim_operator_id']), 0),
+      fkSimOperator: String(get(['fkSimOperator', 'SimOperatorId', 'sim_operator_id'])),
       simSecPhoneNumber: String(get(['simSecPhoneNumber', 'SimSecPhoneNumber', 'sec_sim_number'])),
-      fkSecSimOperator: toNumber(get(['fkSecSimOperator', 'SecSimOperatorId', 'sec_sim_operator_id']), 1),
-      fkDeviceType: toNumber(get(['fkDeviceType', 'DeviceTypeId', 'device_type_id']), 0),
-      fkVehicleType: toNumber(get(['fkVehicleType', 'VehicleTypeId', 'vehicle_type_id']), 0),
+      fkSecSimOperator: String(get(['fkSecSimOperator', 'SecSimOperatorId', 'sec_sim_operator_id'])),
+      fkDeviceType: String(get(['fkDeviceType', 'DeviceTypeId', 'device_type_id'])),
+      fkVehicleType: String(get(['fkVehicleType', 'VehicleTypeId', 'vehicle_type_id'])),
       vehicleNo: String(get(['vehicleNo', 'VehicleNo', 'vehicle_number'])),
-      nextRecharge: String(nextRecharge || ''),
-      description: String(get(['description', 'Description'])),
-      installationOn: installationDate,
+      installationOn: String(get(['installationOn', 'InstallationOn', 'installation_date'])),
+      expiryDate: String(get(['nextRecharge', 'NextRecharge', 'expiryDate'])),
+      status: 'Pending',
+      errorMessage: '',
     };
   }
-
-  private formatExcelDate(value: any): string {
-    if (!value) return new Date().toISOString().slice(0, 10);
-    if (typeof value === 'number') {
-      const parsed = XLSX.SSF.parse_date_code(value);
-      if (parsed) {
-        const y = parsed.y;
-        const m = String(parsed.m).padStart(2, '0');
-        const d = String(parsed.d).padStart(2, '0');
-        return `${y}-${m}-${d}`;
-      }
-    }
-    if (value instanceof Date) {
-      return value.toISOString().slice(0, 10);
-    }
-    const str = String(value).trim();
-    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
-    const dt = new Date(str);
-    if (!Number.isNaN(dt.getTime())) return dt.toISOString().slice(0, 10);
-    return new Date().toISOString().slice(0, 10);
-  }
-
 }

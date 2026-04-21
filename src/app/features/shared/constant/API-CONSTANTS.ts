@@ -165,4 +165,5 @@ export const API_CONSTANTS: any = {
   bulkModified:'Points/AllocateToDevicebulk',
   bulkUploadSampleDownload: 'BulkUpload',
   bulkUploadNew: 'BulkUpload',
+  bulkUploadStatus: 'BulkUpload/by-request-id',
 };

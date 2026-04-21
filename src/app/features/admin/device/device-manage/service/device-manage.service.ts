@@ -302,4 +302,11 @@ export class DeviceManageService {
       .postFormData(url, formData)
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
+
+  getBulkUploadStatus(requestId: string): Observable<any> {
+    let url = `${API_CONSTANTS.bulkUploadStatus}?requestId=${requestId}`;
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
 }

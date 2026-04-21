@@ -18,28 +18,39 @@
                     <div class="col-md-3">
                         <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none"
                             (change)="uploadExcel($event)">
-                        <button class="btn btn-primary" (click)="selectFile($event)"><i *ngIf="selectedFile" class="fa fa-check" aria-hidden="true"></i> Browse</button>
-                       
+                        <button class="btn btn-primary" (click)="selectFile($event)" [disabled]="isPolling">
+                            <i *ngIf="selectedFile" class="fa fa-check" aria-hidden="true"></i> Browse
+                        </button>
                     </div>
                     
                     <div class="col-md-3">
-                        <button class="btn btn-success" (click)="getBulkDeviceList()" [disabled]="!selectedFile || spinnerLoading">
+                        <button class="btn btn-success" (click)="getBulkDeviceList()" [disabled]="!selectedFile || spinnerLoading || isPolling">
                             Upload File
                         </button>
                     </div>
                     <div class="col-md-3">
                         <span *ngIf="selectedFileName" class="text-muted">{{ selectedFileName }}</span>
                     </div>
-                   
+                </div>
+            </div>
+
+            <!-- Polling Status Indicator -->
+            <div class="row mt-2" *ngIf="isPolling">
+                <div class="col-md-12">
+                    <div class="alert alert-info d-flex align-items-center">
+                        <i class="fa fa-spinner fa-spin mr-2" style="margin-right: 8px;"></i>
+                        <span>Processing devices... Auto-refreshing every {{ pollingIntervalMs / 1000 }} seconds</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Upload Result Summary -->
-            <div class="row mt-2" *ngIf="uploadResult">
+            <div class="row mt-2" *ngIf="uploadResult && !isPolling">
                 <div class="col-md-12">
-                    <div class="alert" [ngClass]="{'alert-success': uploadResult?.result === true, 'alert-danger': uploadResult?.result !== true}">
-                        <strong>{{ uploadResult?.result === true ? 'Success' : 'Error' }}:</strong>
-                        {{ uploadResult?.message || uploadResult?.data || 'Upload completed' }}
+                    <div class="alert" [ngClass]="{'alert-success': uploadResult?.requestId || uploadResult?.result === true, 'alert-danger': !uploadResult?.requestId && uploadResult?.result !== true}">
+                        <strong *ngIf="uploadResult?.requestId">Completed:</strong>
+                        <strong *ngIf="!uploadResult?.requestId">{{ uploadResult?.result === true ? 'Success' : 'Error' }}:</strong>
+                        {{ uploadResult?.message || (uploadResult?.requestId ? uploadResult?.count + ' device(s) processed' : 'Upload completed') }}
                     </div>
                 </div>
             </div>
@@ -56,44 +67,46 @@
                                         width="100%">
                                         <thead>
                                             <tr role="row">
-                                                <th *ngFor="let vehicleHeading of columns">
-                                                    <strong>{{vehicleHeading?.title}}</strong>
+                                                <th *ngFor="let heading of columns">
+                                                    <strong>{{ heading?.title }}</strong>
                                                 </th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                            <tr *ngFor="let row of bulkDeviceData |  paginate : {
+                                            <tr *ngFor="let row of bulkDeviceData | paginate : {
                                                       itemsPerPage: tableSize,
                                                       currentPage: page,
-                                                      totalItems: count} let i= index"
-                                                     >
-                                                <td><a>{{ row?.deviceId }}</a></td>
-                                                <td><a>{{ row?.deviceImei }}</a></td>
-                                                <td><a>{{ row?.deviceUid }}</a></td>
-                                                <td><a>{{ row?.simPhoneNumber }}</a></td>
-                                                <td><a>{{ row?.fkSimOperator }}</a></td>
-                                                <td><a>{{ row?.simSecPhoneNumber }}</a></td>
-                                                <td><a>{{ row?.fkSecSimOperator }}</a></td>
-                                                <td><a>{{ row?.fkDeviceType }}</a></td>
-                                                <td><a>{{ row?.fkVehicleType }}</a></td>
-                                                <td><a>{{ row?.vehicleNo }}</a></td>
-                                                <td><a>{{ row?.nextRecharge }}</a></td>
-                                                <td><a>{{ row?.description }}</a></td>
+                                                      totalItems: count}; let i = index">
+                                                <td>{{ row?.deviceId }}</td>
+                                                <td>{{ row?.deviceImei }}</td>
+                                                <td>{{ row?.deviceUid }}</td>
+                                                <td>{{ row?.simPhoneNumber }}</td>
+                                                <td>{{ row?.fkSimOperator }}</td>
+                                                <td>{{ row?.simSecPhoneNumber }}</td>
+                                                <td>{{ row?.fkSecSimOperator }}</td>
+                                                <td>{{ row?.fkDeviceType }}</td>
+                                                <td>{{ row?.fkVehicleType }}</td>
+                                                <td>{{ row?.vehicleNo }}</td>
+                                                <td>{{ row?.installationOn }}</td>
+                                                <td>{{ row?.expiryDate }}</td>
                                                 <td>
-                                                    <a [ngClass]="{
-                                                        'text-success': row?.entry_status_message === 'Success',
-                                                        'text-danger': row?.entry_status_message === 'Failed',
-                                                        'text-warning': row?.entry_status_message === 'Uploading...',
-                                                        'text-muted': row?.entry_status_message === 'Pending'
-                                                    }">{{ row?.entry_status_message }}</a>
+                                                    <span class="badge" [ngClass]="{
+                                                        'badge-warning': row?.status === 'PENDING' || row?.status === 'Pending',
+                                                        'badge-success': row?.status === 'SUCCESS' || row?.status === 'COMPLETED',
+                                                        'badge-danger': row?.status === 'FAILED' || row?.status === 'ERROR'
+                                                    }">
+                                                        {{ row?.status }}
+                                                    </span>
                                                 </td>
-                                               
+                                                <td>
+                                                    <span *ngIf="row?.errorMessage" class="text-danger">{{ row?.errorMessage }}</span>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                     <div class="text-center"
-                                        *ngIf="bulkDeviceData && bulkDeviceData.length == 0 || bulkDeviceData == null "
+                                        *ngIf="bulkDeviceData && bulkDeviceData.length == 0 || bulkDeviceData == null"
                                         style="width: 100%;">No Data Available</div>
                                 </div>
                                 <div class="pagination-data" *ngIf="bulkDeviceData && bulkDeviceData.length > 0">
@@ -102,7 +115,6 @@
                                     </pagination-controls>
                                 </div>
                             </div>
-                           
                         </div>
                     </div>
                 </div>
