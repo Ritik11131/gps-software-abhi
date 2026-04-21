@@ -7,6 +7,7 @@ import { DeleteConfirmationComponent } from 'src/app/features/shared/components/
 import { NotificationService } from 'src/app/features/http-services/notification.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RefreshpageService } from 'src/app/features/http-services/refreshpage.service';
+import { UserSwitchService } from 'src/app/features/shared/services/user-switch.service';
 
 @Component({
   selector: 'subuser-list',
@@ -35,6 +36,10 @@ export class SubuserListComponent {
       name: 'vehicle'
     },
     {
+      name: 'Login User',
+      path: 'LoginUser',
+    },
+    {
       name: 'Delete',
       path: 'Delete',
     },
@@ -46,13 +51,16 @@ export class SubuserListComponent {
   selectedSubUserValue: any;
   selectColor: any;
 
+  isSwitchingUser: boolean = false;
+
   constructor(
     private subUserService: SubUserService,
     private router: Router,
     private refreshCustomerService: RefreshCustomerService,
     private bsmodelService: BsModalService,
     private notificationService: NotificationService,
-    private refreshpage: RefreshpageService
+    private refreshpage: RefreshpageService,
+    private userSwitchService: UserSwitchService
   ) { }
 
   ngOnInit() {
@@ -205,6 +213,9 @@ export class SubuserListComponent {
       url = `/admin/subuser/customer-sub-user`
       this.deletSubUser(this.selectedSubUserValue);
       return; // Return early for delete, announceCustomerAdded is called in deletSubUser
+    } else if (path == 'LoginUser') {
+      this.loginAsUser(this.selectedSubUserValue);
+      return;
     } else {
       // Use fkCustomerId and fkParentId from the selected user data
       const customerId = this.selectedSubUserValue?.fkCustomerId || 0;
@@ -213,6 +224,64 @@ export class SubuserListComponent {
     }
     // Don't call announceCustomerAdded() when navigating - only call it after successful save/update
     this.router.navigateByUrl(url);
+  }
+
+  /**
+   * Login as the selected user.
+   * Fetches the user's password via getUserById, then calls login API via UserSwitchService.
+   */
+  loginAsUser(user: any): void {
+    if (!user?.id) {
+      this.notificationService.showError('User ID is missing');
+      return;
+    }
+
+    this.isSwitchingUser = true;
+    this.notificationService.showSuccess('Fetching user credentials...');
+
+    // Fetch user details (includes password) via getUserById
+    this.subUserService.getUserById(user.id).subscribe(
+      (res: any) => {
+        if (res?.status === 200 && res?.body?.result === true) {
+          const userData = res.body.data;
+          const loginId = userData?.loginId || user?.loginId || '';
+          const password = userData?.password || '';
+          const displayName = userData?.userName || user?.userName || loginId;
+
+          if (!loginId || !password) {
+            this.isSwitchingUser = false;
+            this.notificationService.showError('Could not retrieve user credentials');
+            return;
+          }
+
+          // Determine role based on userType
+          const role: 'dealer' | 'customer' | 'subuser' = 
+            (userData?.userType === 1 || user?.userType === 1) ? 'dealer' : 'customer';
+
+          this.userSwitchService.loginAsUser(loginId, password, displayName, role)
+            .subscribe(
+              (success: boolean) => {
+                this.isSwitchingUser = false;
+                if (success) {
+                  // No reload needed — interceptor already uses the new token from the stack.
+                  // Just refresh the user list so data loads under the new user context.
+                  this.getUserList();
+                }
+              },
+              () => {
+                this.isSwitchingUser = false;
+              }
+            );
+        } else {
+          this.isSwitchingUser = false;
+          this.notificationService.showError('Failed to fetch user details');
+        }
+      },
+      (error: any) => {
+        this.isSwitchingUser = false;
+        this.notificationService.showError('Error fetching user details');
+      }
+    );
   }
 
   addSubUser(event: any) {

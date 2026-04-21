@@ -11,6 +11,7 @@ import { StorageService } from 'src/app/features/http-services/storage.service';
 import { SessionService } from 'src/app/features/http-services/session.service';
 import { LogoutConfirmationDialogeComponent } from '../../../components/logout-confirmation-dialoge/logout-confirmation-dialoge.component';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { UserSwitchService } from '../../../services/user-switch.service';
 
 @Component({
   selector: 'site-header',
@@ -71,6 +72,7 @@ export class SiteHeaderComponent implements OnInit {
     public storageService : StorageService,
     private sessionService : SessionService,
     private modalService: BsModalService,
+    public userSwitchService: UserSwitchService,
     ) { }
 
     toggleMobileTopNav() {

@@ -1,0 +1,120 @@
+<div class="login-as-modal">
+  <!-- Header -->
+  <div class="modal-header">
+    <div class="header-content">
+      <i class="fa fa-sign-in header-icon"></i>
+      <h5 class="modal-title">{{ modalTitle }}</h5>
+    </div>
+    <button class="close-btn" (click)="cancel()">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="modal-body">
+    <!-- Search Section -->
+    <div class="search-section">
+      <div class="search-input-group">
+        <div class="search-input-wrapper">
+          <i class="fa fa-search search-icon"></i>
+          <input
+            type="text"
+            class="form-control search-input"
+            [(ngModel)]="searchKeyword"
+            [placeholder]="searchPlaceholder"
+            (keypress)="onSearchKeypress($event)"
+            [disabled]="isSwitching"
+            autofocus
+          />
+          <button
+            class="clear-btn"
+            *ngIf="searchKeyword"
+            (click)="searchKeyword = ''; searchResults = []; hasSearched = false; selectedUser = null"
+          >
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        <button
+          class="btn search-btn"
+          (click)="searchUsers()"
+          [disabled]="isSearching || isSwitching || !searchKeyword?.trim()"
+        >
+          <i class="fa fa-spinner fa-spin" *ngIf="isSearching"></i>
+          <span *ngIf="!isSearching">Search</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section" *ngIf="hasSearched">
+      <!-- Loading -->
+      <div class="loading-state" *ngIf="isSearching">
+        <div class="spinner-border text-warning" role="status"></div>
+        <span>Searching users...</span>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!isSearching && searchResults.length === 0">
+        <i class="fa fa-user-times"></i>
+        <p>No users found for "<strong>{{ searchKeyword }}</strong>"</p>
+      </div>
+
+      <!-- Results List -->
+      <div class="results-list" *ngIf="!isSearching && searchResults.length > 0">
+        <div
+          *ngFor="let user of searchResults; let i = index"
+          class="user-card"
+          [class.selected]="selectedUser === user"
+          (click)="selectUser(user)"
+        >
+          <div class="user-avatar">
+            <i class="fa fa-user-circle"></i>
+          </div>
+          <div class="user-info">
+            <div class="user-primary">
+              <span class="user-name">{{ getUserName(user) }}</span>
+              <span class="user-login-id">{{ getUserLoginId(user) }}</span>
+            </div>
+            <div class="user-secondary">
+              <span class="user-meta" *ngIf="getDealerName(user) !== 'N/A'">
+                <i class="fa fa-store"></i> {{ getDealerName(user) }}
+              </span>
+              <span class="user-meta" *ngIf="getUserContact(user) !== 'N/A'">
+                <i class="fa fa-phone"></i> {{ getUserContact(user) }}
+              </span>
+              <span class="user-meta" *ngIf="getUserEmail(user) !== 'N/A'">
+                <i class="fa fa-envelope"></i> {{ getUserEmail(user) }}
+              </span>
+            </div>
+          </div>
+          <div class="user-select-indicator">
+            <i class="fa" [ngClass]="selectedUser === user ? 'fa-check-circle' : 'fa-circle-o'"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Notice -->
+    <div class="info-notice" *ngIf="!hasSearched">
+      <i class="fa fa-info-circle"></i>
+      <p>Search for a user by their login ID to switch into their account. You can navigate back to your original session at any time using the breadcrumb trail.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary" (click)="cancel()" [disabled]="isSwitching">
+      Cancel
+    </button>
+    <button
+      class="btn btn-login-as"
+      (click)="loginAsSelected()"
+      [disabled]="!selectedUser || isSwitching"
+    >
+      <i class="fa fa-spinner fa-spin" *ngIf="isSwitching"></i>
+      <i class="fa fa-sign-in" *ngIf="!isSwitching"></i>
+      <span *ngIf="!isSwitching">Login As {{ selectedUser ? getUserName(selectedUser) : roleLabel }}</span>
+      <span *ngIf="isSwitching">Switching...</span>
+    </button>
+  </div>
+</div>

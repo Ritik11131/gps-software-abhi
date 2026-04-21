@@ -95,6 +95,7 @@ import { OpenTrackingComponent } from './user/open-tracking/open-tracking.compon
 import { LogoutConfirmationDialogeComponent } from './components/logout-confirmation-dialoge/logout-confirmation-dialoge.component';
 import { LocationInMapComponent } from './components/location-in-map/location-in-map.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { UserSwitchBreadcrumbComponent } from './components/user-switch-breadcrumb/user-switch-breadcrumb.component';
 @NgModule({
   declarations: [
     SkyLogoComponent,
@@ -153,7 +154,8 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
     OpenTrackingComponent,
     LogoutConfirmationDialogeComponent,
     LocationInMapComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    UserSwitchBreadcrumbComponent
 
 
   ],
@@ -258,7 +260,8 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
-    LocationInMapComponent
+    LocationInMapComponent,
+    UserSwitchBreadcrumbComponent
   ],
 
   providers: [DatePipe]

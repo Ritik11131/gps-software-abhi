@@ -301,6 +301,14 @@
         color: #ff9934;
       }
 
+      .user-switch-section {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        max-width: 600px;
+        margin: 0 12px;
+      }
+
       .fa-desktop {
         height: 14px;
         width: 16px;

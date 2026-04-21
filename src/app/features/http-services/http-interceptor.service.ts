@@ -12,6 +12,7 @@ import { catchError, switchMap } from "rxjs/operators";
 import { SessionService } from "./session.service";
 import { TokenService } from "./token.service";
 import { StorageService } from "./storage.service";
+import { UserSwitchService } from "../shared/services/user-switch.service";
 
 @Injectable({
   providedIn: "root",
@@ -22,6 +23,7 @@ export class HttpInterceptorsService implements HttpInterceptor {
     private tokenService: TokenService,
     private sessionService: SessionService,
     private storageService: StorageService,
+    private userSwitchService: UserSwitchService,
   ) {}
 
   intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -31,12 +33,15 @@ export class HttpInterceptorsService implements HttpInterceptor {
       return next.handle(httpRequest); 
     }
     
-    // Add authorization header if token exists
-    if (this.tokenService.getToken()) {
-      const token = this.tokenService.getToken();
+    // Use the active token from the user switch stack (last entry).
+    // This ensures that when we switch users, the interceptor immediately
+    // picks up the new user's JWT without needing a page reload.
+    const token = this.userSwitchService.getActiveToken() || this.tokenService.getToken();
+
+    if (token) {
       const authReq = httpRequest.clone({
         setHeaders: {
-          Authorization: token ? `Bearer ${token}` : ""
+          Authorization: `Bearer ${token}`
         }
       });
 

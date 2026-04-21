@@ -10,6 +10,7 @@ import { StorageService } from 'src/app/features/http-services/storage.service';
 import { Location } from '@angular/common';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { LogoutConfirmationDialogeComponent } from '../../components/logout-confirmation-dialoge/logout-confirmation-dialoge.component';
+import { UserSwitchService } from '../../services/user-switch.service';
 @Component({
   selector: 'app-admin-main-layout',
   templateUrl: './admin-main-layout.component.html',
@@ -80,7 +81,8 @@ export class AdminMainLayoutComponent {
     public tabService : TabsService,
     public storageService : StorageService,
     private location : Location,
-    private modalService : BsModalService
+    private modalService : BsModalService,
+    public userSwitchService : UserSwitchService
   ) {
     document.body.classList.add("add-scroll");
     this.hideSideBar = false;
@@ -114,6 +116,10 @@ export class AdminMainLayoutComponent {
       this.tabs = tabs;
     })
     this.userType = localStorage.getItem("userType")
+
+    // Initialize user switch root session if not already done
+    this.userSwitchService.initRootSession();
+
     const scrollerElement = document.getElementsByClassName(
       "ng-sidebar__content"
     )[0];

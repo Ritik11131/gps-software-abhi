@@ -12,6 +12,7 @@ import { SharedService } from './shared.service';
 import { NotificationService } from './notification.service';
 import { JwtService } from './jwt.service';
 import { ActivityService } from '../shared/user/services/activity.service';
+import { UserSwitchService } from '../shared/services/user-switch.service';
 import { isPlatformBrowser } from '@angular/common';
 
 
@@ -39,6 +40,7 @@ export class TokenService {
     private NotificationService: NotificationService,
     private jwtService : JwtService,
     private activityService : ActivityService ,
+    private userSwitchService: UserSwitchService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -190,6 +192,9 @@ export class TokenService {
             this.NotificationService.showSuccess('Login Successfully');
             this.router.navigateByUrl('admin/overview/admin-overview');
           }
+
+          // Initialize the user switch root session
+          this.userSwitchService.initRootSession();
         }
       }),
       catchError((error: any) => {

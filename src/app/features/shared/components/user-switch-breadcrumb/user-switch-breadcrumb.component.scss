@@ -1,0 +1,156 @@
+.user-switch-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #fff8f0, #fff3e6);
+  border: 1px solid #ffe0b3;
+  border-radius: 8px;
+  font-size: 13px;
+  min-height: 38px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    height: 2px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #ff9934;
+    border-radius: 2px;
+  }
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border: 1px solid #ff9934;
+  border-radius: 6px;
+  background: white;
+  color: #ff9934;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+
+  &:hover:not(:disabled) {
+    background: #ff9934;
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.breadcrumb-trail {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  white-space: nowrap;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  .fa {
+    font-size: 12px;
+  }
+
+  .role-badge {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #ff9934;
+    background: rgba(255, 153, 52, 0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .user-name {
+    font-weight: 500;
+    color: #333;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .separator {
+    color: #ccc;
+    font-size: 10px;
+    margin-left: 4px;
+  }
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 153, 52, 0.1);
+
+      .user-name {
+        color: #ff9934;
+      }
+    }
+  }
+
+  &.active {
+    background: rgba(255, 153, 52, 0.15);
+
+    .user-name {
+      color: #e67300;
+      font-weight: 600;
+    }
+
+    .role-badge {
+      background: rgba(255, 153, 52, 0.2);
+    }
+  }
+}
+
+.login-as-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #ff9934;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  min-width: fit-content;
+
+  &:hover:not(:disabled) {
+    background: #e67300;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 153, 52, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .fa {
+    font-size: 12px;
+  }
+}

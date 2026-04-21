@@ -1,0 +1,28 @@
+<div class="user-switch-breadcrumb" *ngIf="sessionStack.length > 1">
+  <!-- Back button -->
+  <button
+    class="back-btn"
+    (click)="goBack()"
+    [disabled]="isSwitching"
+    title="Go back to previous user"
+  >
+    <i class="fa fa-arrow-left"></i>
+  </button>
+
+  <!-- Breadcrumb trail -->
+  <div class="breadcrumb-trail">
+    <div
+      *ngFor="let session of sessionStack; let i = index; let last = last"
+      class="breadcrumb-item"
+      [class.active]="last"
+      [class.clickable]="!last"
+      (click)="switchToLevel(i)"
+      [title]="userSwitchService.getRoleLabel(session.role) + ': ' + session.displayName"
+    >
+      <i class="fa" [ngClass]="getRoleIcon(session.role)"></i>
+      <span class="role-badge">{{ userSwitchService.getRoleLabel(session.role) }}</span>
+      <span class="user-name">{{ session.displayName }}</span>
+      <i class="fa fa-chevron-right separator" *ngIf="!last"></i>
+    </div>
+  </div>
+</div>

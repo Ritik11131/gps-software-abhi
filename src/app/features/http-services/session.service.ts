@@ -5,13 +5,16 @@ import { Router } from "@angular/router";
 import { UserService } from "../shared/user/services/user.service";
 import { BsModalRef, BsModalService, ModalOptions } from "ngx-bootstrap/modal";
 import { ConfirmationDialogComponent } from "../shared/components/confirmation-dialog/confirmation-dialog.component";
+import { UserSwitchService } from "../shared/services/user-switch.service";
 
 @Injectable({ providedIn: "root" })
 export class SessionService {
     constructor(private indexedDB: StorageService,
-        private router: Router, private userService: UserService, private modalService: BsModalService) { }
+        private router: Router, private userService: UserService, private modalService: BsModalService,
+        private userSwitchService: UserSwitchService) { }
 
     logout() {
+        this.userSwitchService.clearStack();
         localStorage.clear();
         sessionStorage.clear();
         this.indexedDB.clear();
@@ -77,6 +80,7 @@ export class SessionService {
         sessionStorage.setItem("redirectURL", currentURL);
     }
     adminlogout(){
+        this.userSwitchService.clearStack();
         localStorage.clear();
         sessionStorage.clear();
         this.indexedDB.clear();

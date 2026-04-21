@@ -204,7 +204,37 @@
     text-decoration: underline;
 }
 
+.login-as-action {
+    color: #ff9934 !important;
+    margin-left: 8px;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 2px 8px;
+    border: 1px solid #ff9934;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 
+    &:hover {
+        background: #ff9934;
+        color: white !important;
+    }
 
+    &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
 
+    .fa {
+        font-size: 11px;
+    }
+}
+
+.user-switch-header-section {
+    flex: 1;
+    margin-right: 12px;
+}
 
