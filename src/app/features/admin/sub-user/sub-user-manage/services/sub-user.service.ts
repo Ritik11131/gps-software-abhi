@@ -97,4 +97,11 @@ export class SubUserService {
       .delete(url)
       .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
+
+  getDevicesByUserId(userId: number): Observable<any> {
+    let url = API_CONSTANTS.getDevicesByUserId.replace('{userId}', userId.toString());
+    return this.apiService
+      .get(url)
+      .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
 }

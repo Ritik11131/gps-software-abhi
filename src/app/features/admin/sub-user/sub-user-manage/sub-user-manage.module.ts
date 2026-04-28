@@ -9,6 +9,7 @@ import { SharedModule } from 'src/app/features/shared/shared.module';
 import { ModifySubuserComponent } from './component/subuser-details/modify-subuser/modify-subuser.component';
 import { SubuserVehicleComponent } from './component/subuser-details/subuser-vehicle/subuser-vehicle.component';
 import { AddSubuserComponent } from './component/subuser-details/add-subuser/add-subuser.component';
+import { SubuserLinkedVehiclesComponent } from './component/subuser-linked-vehicles/subuser-linked-vehicles.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { AddSubuserComponent } from './component/subuser-details/add-subuser/add
     SubuserFilterComponent,
     ModifySubuserComponent,
     SubuserVehicleComponent,
-    AddSubuserComponent
+    AddSubuserComponent,
+    SubuserLinkedVehiclesComponent
   ],
   imports: [
     CommonModule,

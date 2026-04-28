@@ -81,7 +81,7 @@ export class DeviceDetailsComponent implements OnDestroy {
     this.dealerId = this.activeRoute.snapshot.paramMap.get("id");
     this.customerId = this.activeRoute.snapshot.paramMap.get("CustomerId");
     this.deviceId = this.activeRoute.snapshot.paramMap.get('deviceId');
-    
+
     // If deviceId is not in params, check if we're in add mode
     if (!this.deviceId) {
       const url = this.router.url;
@@ -90,16 +90,16 @@ export class DeviceDetailsComponent implements OnDestroy {
         this.deviceId = null; // Add mode
       }
     }
-    
+
     this.setInitialValue();
     this.setupUniqueIdDebounce();
-    
+
     // Load master data
     this.getDeviceTypes();
     this.getVehicleTypes();
     this.getOperatorTypes();
     this.getPlans();
-    
+
     // Load device data if editing (deviceId exists and is not 'add-device')
     if (this.deviceId && this.deviceId !== 'add-device' && this.deviceId !== 'null') {
       this.getDeviceData();
@@ -176,7 +176,7 @@ export class DeviceDetailsComponent implements OnDestroy {
       this.deviceForm.patchValue({ fkVehicleType: selectedVehicleType.id });
     }
   }
-  
+
   selectedVehicle(event:any){
     this.selectedColor = event
   }
@@ -233,7 +233,7 @@ export class DeviceDetailsComponent implements OnDestroy {
   // }
 
 
-  getDeviceData() {
+    getDeviceData() {
     this.buttonValue = 'Update';
     this.labelName = 'Update';
     this.spinnerLoading = true;
@@ -242,9 +242,9 @@ export class DeviceDetailsComponent implements OnDestroy {
       if (res?.status === 200 && res?.body?.result === true) {
         const deviceData = res?.body?.data?.[0] || res?.body?.data; // API returns array or object
         this.selectedDeviceData = deviceData;
-        
+
         this.deviceForm.patchValue({
-          deviceUid: deviceData?.deviceUid || '',
+          deviceUid: deviceData?.deviceId || '',
           deviceImei: deviceData?.deviceImei || '',
           serialNumber: deviceData?.attribute?.batterySerialNo || '',
           fkDeviceType: deviceData?.fkDeviceType || null,
@@ -265,7 +265,7 @@ export class DeviceDetailsComponent implements OnDestroy {
 
   checkaplpha(value: string): boolean {
     const alphanumericRegex = /^[a-zA-Z0-9 ]*$/;
-    return !alphanumericRegex.test(value); 
+    return !alphanumericRegex.test(value);
   }
 
 
@@ -321,7 +321,7 @@ export class DeviceDetailsComponent implements OnDestroy {
     }
 
     const currentDate = new Date().toISOString();
-    const installationDate = formvalue?.installationOn 
+    const installationDate = formvalue?.installationOn
       ? formatDate(formvalue.installationOn, 'yyyy-MM-dd', 'en-US')
       : formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
 
@@ -342,14 +342,14 @@ export class DeviceDetailsComponent implements OnDestroy {
       installationOn: installationDate,
       lastUpdateOn: currentDate,
       creationTime: this.selectedDeviceData?.creationTime || currentDate,
-      attributes: this.selectedDeviceData?.attribute 
+      attributes: this.selectedDeviceData?.attribute
         ? JSON.stringify({ ...this.selectedDeviceData.attribute, batterySerialNo: formvalue?.serialNumber || '' })
         : JSON.stringify({ batterySerialNo: formvalue?.serialNumber || '' })
     };
 
     this.spinnerLoading = true;
     let service;
-    
+
     if (this.deviceId && this.deviceId !== 'add-device') {
       // Update existing device
       service = this.deviceManageService.updateDevice(parseInt(this.deviceId), payload);
@@ -395,7 +395,7 @@ export class DeviceDetailsComponent implements OnDestroy {
     }, (error: any) => {
       this.spinnerLoading = false;
       let errorMsg = error?.error?.message || error?.message || 'Failed to save device';
-      
+
       // Handle error response in error object
       if (error?.error?.result === false && error?.error?.data) {
         errorMsg = error.error.data;
@@ -406,7 +406,7 @@ export class DeviceDetailsComponent implements OnDestroy {
           this.deviceForm.get('deviceUid')?.markAsTouched();
         }
       }
-      
+
       this.notificationService.showError(errorMsg);
     });
   }

@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h5 class="modal-title">Linked Vehicles - {{ userName }}</h5>
+  <button type="button" class="btn-close" (click)="close()"></button>
+</div>
+<div class="modal-body">
+  <app-loader *ngIf="loading"></app-loader>
+  <div *ngIf="!loading">
+    <div *ngIf="vehicles.length === 0" class="text-center text-muted py-3">
+      No vehicles linked to this user.
+    </div>
+    <table class="table table-striped" *ngIf="vehicles.length > 0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Vehicle No</th>
+          <th>IMEI</th>
+          <th>SIM Number</th>
+          <th>Installation Date</th>
+          <th>Next Recharge</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let v of vehicles; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ v.vehicleNo || 'N/A' }}</td>
+          <td>{{ v.deviceImei || 'N/A' }}</td>
+          <td>{{ v.simPhoneNumber || 'N/A' }}</td>
+          <td>{{ v.installationOn || 'N/A' }}</td>
+          <td>{{ v.validity?.nextRechargeDate || 'N/A' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="close()">Close</button>
+</div>
