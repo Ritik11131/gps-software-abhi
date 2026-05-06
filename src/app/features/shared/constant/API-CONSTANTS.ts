@@ -154,6 +154,8 @@ export const API_CONSTANTS: any = {
   addOdometer :'Odometer',
   deviceLogData:'DeviceData/GetDeviceLog',
   lastlocationData  :'ShareLocation/GetLastLocation/{key}',
+  publicTrack: 'VehicleList/Track/{key}',
+  shareUrl: 'ShareUrl',
   bulkDeviceActivated:'v1/CustomerDevice/Active/{dealerId}/{customerId}',
   duplicateLoginId: 'v1/Customer/DuplicateCustomerLoginId',
   deviceDetail: 'DeviceData/GetdistanceReport',

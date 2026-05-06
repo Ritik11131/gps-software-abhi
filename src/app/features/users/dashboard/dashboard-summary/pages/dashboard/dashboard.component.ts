@@ -40,6 +40,7 @@ import { StorageService } from 'src/app/features/http-services/storage.service';
 import { DatePipe, Location } from '@angular/common';
 import { GeofanceService } from 'src/app/features/users/geofance/geofance-manage/services/geofance.service';
 import { RefreshCustomerService } from 'src/app/features/shared/services/refresh-customer.service';
+import { UserService } from 'src/app/features/shared/user/services/user.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -117,7 +118,8 @@ export class DashboardComponent {
     private CommonService: CommonService,
     private dashboardService: DashboardService,
     private location: Location,
-    private refreshCustomerService : RefreshCustomerService
+    private refreshCustomerService : RefreshCustomerService,
+    private userService: UserService
   ) {
     this.router.events
       .pipe(
@@ -518,11 +520,15 @@ export class DashboardComponent {
       infoWindow.addListener('domready', () => {
         const playLink = document.getElementById('playId');
         const replayLink = document.getElementById('replayId');
+        const shareLink = document.getElementById('shareId');
         if (playLink) {
           playLink.addEventListener('click', (event) => this.handlePlayClickData(event, vehicle));
         }
         if (replayLink) {
           replayLink.addEventListener('click', (event) => this.handleRePlayClick(event, vehicle));
+        }
+        if (shareLink) {
+          shareLink.addEventListener('click', (event) => this.handleShareClick(event, vehicle));
         }
       });
       infoWindow.setContent(initialContent);
@@ -677,6 +683,7 @@ export class DashboardComponent {
             <li><a  id="geofanceId" title="Geofance" style="cursor:pointer"><i class="fa fa-map-o" ></i><br/><span class="live-value" style="color:black !important">Geofance</span></a></li>
             <li><a  id="playId" title="Live" style="cursor:pointer"><i class="fa fa-circle-play" ></i><br/><span class="live-value" style="color:black !important">Live</span></a></li>
             <li><a  id="replayId" title="Replay" style="cursor:pointer"><i class="fa fa-undo" ></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>
+            <li><a  id="shareId" title="Share" style="cursor:pointer"><i class="fa fa-share-alt" ></i><br/><span class="live-value" style="color:black !important">Share</span></a></li>
           </ul>
         </div>
           </div>
@@ -1325,6 +1332,7 @@ export class DashboardComponent {
             <li><a  id="geofance" title="Geofance" style="cursor:pointer"><i class="fa fa-map-o" ></i><br/><span class="live-value" style="color:black !important">Geofance</span></a></li>
             <li><a  id="play" title="Live" style="cursor:pointer"><i class="fa fa-circle-play" ></i><br/><span class="live-value" style="color:black !important">Live</span></a></li>
             <li><a  id="replay" title="Replay" style="cursor:pointer"><i class="fa fa-undo" ></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>
+            <li><a  id="shareBtn" title="Share" style="cursor:pointer"><i class="fa fa-share-alt" ></i><br/><span class="live-value" style="color:black !important">Share</span></a></li>
           </ul>
         </div>
       </div>`;
@@ -1372,6 +1380,7 @@ export class DashboardComponent {
         const geofanceLink = document.getElementById('geofance');
         const playLink = document.getElementById('play');
         const replayLink = document.getElementById('replay');
+        const shareBtnLink = document.getElementById('shareBtn');
 
         if (geofanceLink) {
           geofanceLink.addEventListener(
@@ -1384,6 +1393,9 @@ export class DashboardComponent {
         }
         if (replayLink) {
           replayLink.addEventListener('click', (event) => this.handleRePlayClick(event, data));
+        }
+        if (shareBtnLink) {
+          shareBtnLink.addEventListener('click', (event) => this.handleShareClick(event, data));
         }
       });
     }
@@ -1519,6 +1531,29 @@ export class DashboardComponent {
     this.liveData = vehilce
     let url = `/user/tracking/replay/${this.liveData?.Device?.Id}`;
     this.router.navigateByUrl(url);
+  }
+
+  handleShareClick(event: MouseEvent, vehicle?: any) {
+    event.preventDefault();
+    const validTill = new Date();
+    validTill.setHours(validTill.getHours() + 24);
+    const payload = {
+      DeviceId: vehicle?.Device?.Id,
+      validTill: validTill.toISOString()
+    };
+    this.userService.createShareUrl(payload).subscribe((res: any) => {
+      const path = res?.body?.data || res?.data;
+      if (path) {
+        const shareUrl = `${window.location.origin}${path}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          this.NotificationService.showInfo('Share link copied! Valid for 24 hours.');
+        }).catch(() => {
+          prompt('Copy this tracking link:', shareUrl);
+        });
+      } else {
+        this.NotificationService.showError('Failed to create share link');
+      }
+    });
   }
 
   createGeofance(

@@ -23,6 +23,7 @@ const routes: Routes = [
     component: LoginComponent
   },
   { path: 'oT/:key', component: OpenTrackingComponent },
+  { path: 'track', component: OpenTrackingComponent },
 
   {
     path: "admin",

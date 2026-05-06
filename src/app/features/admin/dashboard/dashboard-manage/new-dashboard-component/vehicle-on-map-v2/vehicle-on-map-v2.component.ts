@@ -6,6 +6,8 @@ import { AdminDashboardService } from '../../services/admin-dashboard.service';
 import { CommonService } from 'src/app/features/shared/services/common.service';
 import { StorageService } from 'src/app/features/http-services/storage.service';
 import { NavigationEnd, Router } from '@angular/router';
+import { UserService } from 'src/app/features/shared/user/services/user.service';
+import { NotificationService } from 'src/app/features/http-services/notification.service';
 
 
 @Component({
@@ -54,7 +56,8 @@ export class VehicleOnMapV2Component {
     private storageService: StorageService,
     private router: Router,
     private datePipe: DatePipe,
-
+    private userService: UserService,
+    private notificationService: NotificationService,
   ) {
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
@@ -501,6 +504,7 @@ export class VehicleOnMapV2Component {
     popup.on('contentupdate', () => {
       const playLink = document.getElementById('adminPlayId');
       const replayLink = document.getElementById('adminReplayId');
+      const shareLink = document.getElementById('adminShareId');
       const geoButton = document.getElementById('geofanceId')
 
       if (playLink) {
@@ -508,6 +512,9 @@ export class VehicleOnMapV2Component {
       }
       if (replayLink) {
         replayLink.addEventListener('click', (event) => this.handleRePlayClick(event, vehicle));
+      }
+      if (shareLink) {
+        shareLink.addEventListener('click', (event) => this.handleShareClick(event, vehicle));
       }
 
       // if (geoButton) {
@@ -632,6 +639,7 @@ export class VehicleOnMapV2Component {
                 html += `<li><a><i class="fa fa-battery-full" style="color:${vehicle.Battery.color} !important"></i><br/><span class="live-value" style="color:black !important">${vehicle.Battery.status}</span></a></li>`;
               }
               html += `<li><a id="adminReplayId" title="Replay" style="cursor:pointer"><i class="fa fa-undo"></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>`;
+              html += `<li><a id="adminShareId" title="Share" style="cursor:pointer"><i class="fa fa-share-alt"></i><br/><span class="live-value" style="color:black !important">Share</span></a></li>`;
               return html;
             })()}
           </ul>
@@ -1251,6 +1259,7 @@ export class VehicleOnMapV2Component {
     popup.on('contentupdate', () => {
       const playLink = document.getElementById('adminPlayId');
       const replayLink = document.getElementById('adminReplayId');
+      const shareLink = document.getElementById('adminShareId');
       const geoButton = document.getElementById('geofanceId')
 
       if (playLink) {
@@ -1258,6 +1267,9 @@ export class VehicleOnMapV2Component {
       }
       if (replayLink) {
         replayLink.addEventListener('click', (event) => this.handleRePlayClick(event, data));
+      }
+      if (shareLink) {
+        shareLink.addEventListener('click', (event) => this.handleShareClick(event, data));
       }
 
       // if (geoButton) {
@@ -1280,6 +1292,29 @@ export class VehicleOnMapV2Component {
     this.liveData = vehilce
     let url = `admin/history-tracking/${this.liveData?.Device?.Id}`;
     this.router.navigateByUrl(url);
+  }
+
+  handleShareClick(event: MouseEvent, vehicle?: any) {
+    event.preventDefault();
+    const validTill = new Date();
+    validTill.setHours(validTill.getHours() + 24);
+    const payload = {
+      DeviceId: vehicle?.Device?.Id,
+      validTill: validTill.toISOString()
+    };
+    this.userService.createShareUrl(payload).subscribe((res: any) => {
+      const path = res?.body?.data || res?.data;
+      if (path) {
+        const shareUrl = `${window.location.origin}${path}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          this.notificationService.showInfo('Share link copied! Valid for 24 hours.');
+        }).catch(() => {
+          prompt('Copy this tracking link:', shareUrl);
+        });
+      } else {
+        this.notificationService.showError('Failed to create share link');
+      }
+    });
   }
 
   checkvoltage(value: any) {

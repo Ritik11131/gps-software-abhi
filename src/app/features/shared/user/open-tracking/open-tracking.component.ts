@@ -19,6 +19,9 @@ export class OpenTrackingComponent  implements OnInit, AfterViewInit, OnDestroy{
   marker: any = null;
   polyline: any = null;
   zoom: number = 0;
+  isNewApi: boolean = false;
+  vehicleInfo: any = null;
+
   constructor(
     private commonService: CommonService,
     private cdr: ChangeDetectorRef,
@@ -30,19 +33,19 @@ export class OpenTrackingComponent  implements OnInit, AfterViewInit, OnDestroy{
   ngOnInit(): void {
 
   }
- 
+
   ngOnDestroy(): void {
     if (this.timer) {
       clearInterval(this.timer);
     }
   }
 
-  getAddress(address : any): void {
+  getAddress(lat: number, lng: number): void {
     const addressValue = {
-      Lat:address?.Latitude,
-      Lng:address?.Longitude
+      Lat: lat,
+      Lng: lng
     }
-    
+
     this.commonService.getAddressValue(addressValue)
       .subscribe((d) => {
         var content = this.marker.getPopup().getContent();
@@ -52,7 +55,60 @@ export class OpenTrackingComponent  implements OnInit, AfterViewInit, OnDestroy{
       });
   }
 
-  addMarker(element: any): void {        
+  addMarkerNewApi(data: any): void {
+    const position = data?.position;
+    const device = data?.device;
+    if (!position || !position.latitude || !position.longitude) {
+      this.NotificationService.showError('No position data available');
+      return;
+    }
+
+    this.vehicleInfo = data;
+    const statusText = position?.status?.status || 'Unknown';
+    const duration = position?.status?.duration || '';
+    const speed = position?.speed || 0;
+    const deviceTime = position?.deviceTime ? this.datePipe.transform(position.deviceTime, 'yyyy-MM-dd HH:mm:ss') : '';
+
+    const content = `<b>Vehicle No:</b> ${device?.vehicleNo || 'N/A'}<br/>
+      <b>Status:</b> ${statusText} ${duration ? '(' + duration + ')' : ''}<br/>
+      <b>Last Update:</b> ${deviceTime}<br/>
+      <b>Speed:</b> ${speed} Km/h<br/>`;
+
+    const customIcon = L.icon({
+      iconUrl: 'assets/drawable/rp_marker_marker_blue.png',
+      iconSize: [45, 90],
+    });
+
+    if (this.marker === null) {
+      this.marker = L.marker([position.latitude, position.longitude], { icon: customIcon });
+      this.marker.addTo(this.map);
+      var popup = L.popup().setContent(content);
+      this.marker.bindPopup(popup);
+    } else {
+      this.marker.setLatLng([position.latitude, position.longitude]);
+      this.marker.getPopup().setContent(content);
+      this.marker.getPopup().update();
+    }
+
+    this.getAddress(position.latitude, position.longitude);
+    this.addPointPolyline([position.latitude, position.longitude]);
+
+    var latLngs = [this.marker.getLatLng()];
+    var markerBounds = L.latLngBounds(latLngs);
+    if (this.zoom === 0) {
+      this.map.fitBounds(markerBounds);
+      this.map.setZoom(16);
+      this.map.on("zoomend", () => {
+        this.zoom = this.map.getZoom();
+      });
+    }
+
+    if (!this.map.getBounds().contains([position.latitude, position.longitude])) {
+      this.map.panTo(this.marker.getLatLng());
+    }
+  }
+
+  addMarker(element: any): void {
     if (element?.body?.Result?.Data?.ResultCode !== 1) {
       this.NotificationService.showError(element?.error?.Error?.Data);
       return;
@@ -78,7 +134,7 @@ export class OpenTrackingComponent  implements OnInit, AfterViewInit, OnDestroy{
         this.marker.getPopup().update();
       }
 
-      this.getAddress(eventData?.Eventdata);
+      this.getAddress(eventData?.Eventdata?.Latitude, eventData?.Eventdata?.Longitude);
       this.addPointPolyline([eventData?.Eventdata.Latitude, eventData?.Eventdata?.Longitude]);
 
       var latLngs = [this.marker.getLatLng()];
@@ -114,16 +170,37 @@ export class OpenTrackingComponent  implements OnInit, AfterViewInit, OnDestroy{
   }
 
   getLocation(): void {
-    this.userService.getVehicleLastPoint(this.key)
-      .subscribe((d) => {
-        this.addMarker(d);
-      }, (e) => {
-        this.NotificationService.showError(e?.error?.Error?.Data);
-        if (this.timer) {
-          clearInterval(this.timer);
-        }
-      });
+    if (this.isNewApi) {
+      this.userService.getPublicTrack(this.key)
+        .subscribe((d) => {
+          const data = d?.body?.data || d?.data;
+          if (data) {
+            this.addMarkerNewApi(data);
+          } else {
+            this.NotificationService.showError('Link expired or invalid');
+            if (this.timer) {
+              clearInterval(this.timer);
+            }
+          }
+        }, (e) => {
+          this.NotificationService.showError('Link expired or invalid');
+          if (this.timer) {
+            clearInterval(this.timer);
+          }
+        });
+    } else {
+      this.userService.getVehicleLastPoint(this.key)
+        .subscribe((d) => {
+          this.addMarker(d);
+        }, (e) => {
+          this.NotificationService.showError(e?.error?.Error?.Data);
+          if (this.timer) {
+            clearInterval(this.timer);
+          }
+        });
+    }
   }
+
   ngAfterViewInit(): void {
     this.map = L.map('map', {
       center: [20.593683, 78.962883],
@@ -136,28 +213,27 @@ export class OpenTrackingComponent  implements OnInit, AfterViewInit, OnDestroy{
       attribution: '&copy; <a href="https://gpsvts.in/login">Gps Software</a>'
     });
 
-    // const tiles = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-    //   maxZoom: 18,
-    //   minZoom: 4,
-    //   attribution: '&copy; <a href="http://www.gpssoftware.in">Gps Software</a>',
-    //   subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    // });
-
     tiles.addTo(this.map);
 
-  //   const customIcon = L.icon({
-  //     iconUrl: 'assets/drawable/rp_marker_marker_blue.png',
-  //     iconSize: [45, 90],
-  //   });
-  //  L.marker([20.593683, 78.962883], { icon: customIcon }).addTo(this.map);
-    // marker.bindPopup('');
-    this.route.paramMap
-      .subscribe(params => {
-        this.key = params.get('key');
-        if (this.key) {
-          this.getLocation();
-          this.timer = setInterval(() => { this.getLocation(); }, 10000);
-        }
-      });
+    // Check for query param 'id' (new API) or route param 'key' (old API)
+    this.route.queryParamMap.subscribe(queryParams => {
+      const id = queryParams.get('id');
+      if (id) {
+        this.key = id;
+        this.isNewApi = true;
+        this.getLocation();
+        this.timer = setInterval(() => { this.getLocation(); }, 10000);
+      }
+    });
+
+    this.route.paramMap.subscribe(params => {
+      const key = params.get('key');
+      if (key) {
+        this.key = key;
+        this.isNewApi = false;
+        this.getLocation();
+        this.timer = setInterval(() => { this.getLocation(); }, 10000);
+      }
+    });
   }
 }

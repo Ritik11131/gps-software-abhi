@@ -8,6 +8,8 @@ import { CustomerDeviceDetailsComponent } from '../customer-device-details/custo
 import { StorageService } from 'src/app/features/http-services/storage.service';
 import { Router } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { UserService } from 'src/app/features/shared/user/services/user.service';
+import { NotificationService } from 'src/app/features/http-services/notification.service';
 
 @Component({
   selector: 'vehicle-list',
@@ -120,7 +122,9 @@ export class VehicleListComponent implements OnChanges {
     private cdr: ChangeDetectorRef,
     private modalService: BsModalService,
     private storageService: StorageService,
-    private router: Router
+    private router: Router,
+    private userService: UserService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit() {
@@ -425,7 +429,33 @@ export class VehicleListComponent implements OnChanges {
       this.router.navigate(['/user/reports/vehicle-report/report'], { state: { value: this.selectedVehicleValue?.Device?.Id, text: this.selectedVehicleValue?.Device?.VehicleNo } })
     } else if (type == 'details') {
       this.opneDevice(this.selectedVehicleValue)
+    } else if (type == 'share') {
+      this.createShareLink(this.selectedVehicleValue);
     }
+  }
+
+  createShareLink(vehicle: any) {
+    const validTill = new Date();
+    validTill.setHours(validTill.getHours() + 24);
+
+    const payload = {
+      DeviceId: vehicle?.Device?.Id,
+      validTill: validTill.toISOString()
+    };
+
+    this.userService.createShareUrl(payload).subscribe((res: any) => {
+      const path = res?.body?.data || res?.data;
+      if (path) {
+        const shareUrl = `${window.location.origin}${path}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          this.notificationService.showInfo('Share link copied to clipboard! Valid for 24 hours.');
+        }).catch(() => {
+          prompt('Copy this tracking link:', shareUrl);
+        });
+      } else {
+        this.notificationService.showError('Failed to create share link');
+      }
+    });
   }
 
   opneDevice(selectvalue: any) {

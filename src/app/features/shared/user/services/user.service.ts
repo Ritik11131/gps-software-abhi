@@ -135,4 +135,18 @@ export class UserService {
     .get(url)
     .pipe(catchError((error: HttpErrorResponse) => of(error)));
   }
+
+  getPublicTrack(key: string): Observable<any> {
+    let url = API_CONSTANTS.publicTrack.replace('{key}', key)
+    return this.apiService
+    .get(url)
+    .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
+
+  createShareUrl(payload: any): Observable<any> {
+    let url = API_CONSTANTS.shareUrl
+    return this.apiService
+    .post(url, payload)
+    .pipe(catchError((error: HttpErrorResponse) => of(error)));
+  }
 }
