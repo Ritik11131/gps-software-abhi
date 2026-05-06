@@ -28,6 +28,29 @@
   display: block;
 }
 
+.bulk-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  background: #e8f0fe;
+  border-radius: 4px;
+  border: 1px solid #c5d9f7;
+
+  .selected-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a73e8;
+  }
+
+  .btn {
+    font-size: 12px;
+    padding: 4px 12px;
+    i { margin-right: 4px; }
+  }
+}
+
 
 // .dataTables_scrollBody{
 //   overflow: visible !important;

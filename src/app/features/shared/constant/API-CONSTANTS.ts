@@ -156,6 +156,7 @@ export const API_CONSTANTS: any = {
   lastlocationData  :'ShareLocation/GetLastLocation/{key}',
   publicTrack: 'VehicleList/Track/{key}',
   shareUrl: 'ShareUrl',
+  linkPlan: 'Billing/LinkPlan',
   bulkDeviceActivated:'v1/CustomerDevice/Active/{dealerId}/{customerId}',
   duplicateLoginId: 'v1/Customer/DuplicateCustomerLoginId',
   deviceDetail: 'DeviceData/GetdistanceReport',

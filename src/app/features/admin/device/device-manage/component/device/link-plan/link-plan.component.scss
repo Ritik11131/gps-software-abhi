@@ -1,0 +1,81 @@
+.modal-header {
+  background: #3a3f51;
+  color: #fff;
+  padding: 12px 15px;
+  border-bottom: none;
+
+  .modal-title { font-size: 16px; font-weight: 600; }
+  .close {
+    color: #fff;
+    opacity: 0.8;
+    text-shadow: none;
+    &:hover { opacity: 1; }
+  }
+}
+
+.modal-body {
+  padding: 20px;
+
+  .selected-devices-info {
+    font-size: 13px;
+    color: #555;
+  }
+
+  .device-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+
+    .chip {
+      background: #e8f0fe;
+      color: #1a73e8;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+
+  .form-group {
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .form-control {
+      height: 38px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      &:focus {
+        border-color: #5b9bd5;
+        box-shadow: 0 0 0 0.2rem rgba(91, 155, 213, 0.15);
+      }
+    }
+  }
+
+  .loading-text {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+  }
+}
+
+.modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid #eee;
+
+  .btn {
+    padding: 6px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 4px;
+
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+}

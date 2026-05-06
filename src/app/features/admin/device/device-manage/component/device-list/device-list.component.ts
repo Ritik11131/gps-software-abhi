@@ -20,6 +20,7 @@ import { ShowFitmentComponent } from '../device/show-fitment/show-fitment.compon
 import { RefreshpageService } from 'src/app/features/http-services/refreshpage.service';
 import { LinkUserComponent } from '../device/link-user/link-user.component';
 import { ViewLinkedUsersComponent } from '../device/view-linked-users/view-linked-users.component';
+import { LinkPlanComponent } from '../device/link-plan/link-plan.component';
 
 
 @Component({
@@ -109,6 +110,8 @@ export class DeviceListComponent {
   selectColor: any;
   fitmentDetail: any;
   deviceTypeMap: Map<number, string> = new Map();
+  selectAll: boolean = false;
+  selectedRows: any[] = [];
 
   constructor(
     private subUserService: SubUserService,
@@ -513,6 +516,45 @@ export class DeviceListComponent {
           this.refreshCustomerService.announceCustomerAdded();
         }
       }
+    );
+  }
+
+  toggleAllRows() {
+    this.deviceData?.forEach((row: any) => row.selected = this.selectAll);
+    this.updateSelectedRows();
+  }
+
+  onRowChange(row: any) {
+    if (!row.selected) {
+      this.selectAll = false;
+    } else {
+      this.selectAll = this.deviceData?.every((val: any) => val.selected);
+    }
+    this.updateSelectedRows();
+  }
+
+  updateSelectedRows() {
+    if (this.selectAll) {
+      this.selectedRows = [...this.deviceData];
+    } else {
+      this.selectedRows = this.deviceData?.filter((row: any) => row.selected) || [];
+    }
+  }
+
+  openLinkPlan() {
+    if (!this.selectedRows || this.selectedRows.length === 0) {
+      this.notificationService.showError('Please select at least one device');
+      return;
+    }
+
+    const initialState: ModalOptions = {
+      initialState: {
+        selectedDevices: this.selectedRows
+      }
+    };
+    this.bsModelRef = this.bsmodelService.show(
+      LinkPlanComponent,
+      Object.assign(initialState, { class: 'modal-md modal-dialog-centered' })
     );
   }
 

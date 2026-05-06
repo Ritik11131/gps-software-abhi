@@ -11,6 +11,13 @@
                     <device-fitler (addDevice)="addDevice($event)"></device-fitler>
                 </div>
 
+                <div class="bulk-action-bar" *ngIf="selectedRows && selectedRows.length > 0">
+                    <span class="selected-count">{{ selectedRows.length }} device(s) selected</span>
+                    <button class="btn btn-sm btn-primary" (click)="openLinkPlan()">
+                        <i class="fa fa-link"></i> Link Plan
+                    </button>
+                </div>
+
                 <div class="row">
                     <div class="row">
                         <div class="col-md-12">
@@ -23,6 +30,9 @@
                                             width="100%">
                                             <thead>
                                                 <tr role="row">
+                                                    <th style="width: 40px;">
+                                                        <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleAllRows()">
+                                                    </th>
                                                     <th *ngFor="let vehicleHeading of columns">
                                                         <strong>{{vehicleHeading?.title}}</strong>
                                                     </th>
@@ -35,6 +45,9 @@
                                                           currentPage: page,
                                                           totalItems: count} let i= index"
                                                           [ngClass]="{'active': selectColor?.id === row?.id || selectColor?.Id === row?.id}">
+                                                    <td>
+                                                        <input type="checkbox" [(ngModel)]="row.selected" (change)="onRowChange(row)">
+                                                    </td>
                                                     <td>
                                                         <span>{{ row?.vehicleNo || 'N/A' }}</span>
                                                     </td>

@@ -38,6 +38,7 @@ import { AddDeviceCommandComponent } from './component/device-command/add-device
 import { LinkUserComponent } from './component/device/link-user/link-user.component';
 import { ViewLinkedUsersComponent } from './component/device/view-linked-users/view-linked-users.component';
 import { UnlinkConfirmModalComponent } from './component/device/unlink-confirm-modal/unlink-confirm-modal.component';
+import { LinkPlanComponent } from './component/device/link-plan/link-plan.component';
 
 
 @NgModule({
@@ -76,6 +77,7 @@ import { UnlinkConfirmModalComponent } from './component/device/unlink-confirm-m
     LinkUserComponent,
     ViewLinkedUsersComponent,
     UnlinkConfirmModalComponent,
+    LinkPlanComponent,
   ],
   imports: [
     CommonModule,
