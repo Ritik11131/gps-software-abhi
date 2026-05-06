@@ -39,6 +39,7 @@ import { LinkUserComponent } from './component/device/link-user/link-user.compon
 import { ViewLinkedUsersComponent } from './component/device/view-linked-users/view-linked-users.component';
 import { UnlinkConfirmModalComponent } from './component/device/unlink-confirm-modal/unlink-confirm-modal.component';
 import { LinkPlanComponent } from './component/device/link-plan/link-plan.component';
+import { UpdateRechargeComponent } from './component/device/update-recharge/update-recharge.component';
 
 
 @NgModule({
@@ -78,6 +79,7 @@ import { LinkPlanComponent } from './component/device/link-plan/link-plan.compon
     ViewLinkedUsersComponent,
     UnlinkConfirmModalComponent,
     LinkPlanComponent,
+    UpdateRechargeComponent,
   ],
   imports: [
     CommonModule,

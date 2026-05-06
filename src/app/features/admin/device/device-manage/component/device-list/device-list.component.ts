@@ -21,6 +21,7 @@ import { RefreshpageService } from 'src/app/features/http-services/refreshpage.s
 import { LinkUserComponent } from '../device/link-user/link-user.component';
 import { ViewLinkedUsersComponent } from '../device/view-linked-users/view-linked-users.component';
 import { LinkPlanComponent } from '../device/link-plan/link-plan.component';
+import { UpdateRechargeComponent } from '../device/update-recharge/update-recharge.component';
 
 
 @Component({
@@ -51,6 +52,10 @@ export class DeviceListComponent {
     {
       name: 'View Linked Users',
       path: 'view-linked-users',
+    },
+    {
+      name: 'Update Recharge',
+      path: 'update-recharge',
     },
     {
       name: 'Delete Device',
@@ -287,6 +292,9 @@ export class DeviceListComponent {
       // Use device ID directly for update - route format: :id/:CustomerId/:deviceId/add-device
       const deviceId = this.selectedDeviceValue.id || this.selectedDeviceValue.Id;
       url = `/admin/device/device-manage/0/0/${deviceId}/add-device`;
+    } else if (path == 'update-recharge') {
+      this.openUpdateRecharge(this.selectedDeviceValue);
+      return;
     } else if (path == 'link-user') {
       // Open modal to link users to device
       this.linkUserToDevice(this.selectedDeviceValue);
@@ -561,6 +569,21 @@ export class DeviceListComponent {
     } else {
       this.selectedRows = this.filteredDeviceData?.filter((row: any) => row.selected) || [];
     }
+  }
+
+  openUpdateRecharge(device: any) {
+    const deviceId = device?.id || device?.Id;
+    const initialState: ModalOptions = {
+      initialState: {
+        deviceId: deviceId,
+        vehicleNo: device?.vehicleNo || device?.VehicleNo || '',
+        customerRechargeDate: device?.validity?.customerRechargeDate ? new Date(device.validity.customerRechargeDate) : null
+      }
+    };
+    this.bsModelRef = this.bsmodelService.show(
+      UpdateRechargeComponent,
+      Object.assign(initialState, { class: 'modal-md modal-dialog-centered' })
+    );
   }
 
   openLinkPlan() {
