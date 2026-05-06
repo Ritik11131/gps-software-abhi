@@ -11,6 +11,13 @@
                     <device-fitler (addDevice)="addDevice($event)"></device-fitler>
                 </div>
 
+                <div class="row mb-3" *ngIf="deviceData && deviceData.length > 0">
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" placeholder="Search by Vehicle No, Device ID or Sim No..."
+                            [(ngModel)]="searchTerm" (input)="applySearch()">
+                    </div>
+                </div>
+
                 <div class="bulk-action-bar" *ngIf="selectedRows && selectedRows.length > 0">
                     <span class="selected-count">{{ selectedRows.length }} device(s) selected</span>
                     <button class="btn btn-sm btn-primary" (click)="openLinkPlan()">
@@ -40,7 +47,7 @@
                                             </thead>
 
                                             <tbody>
-                                                <tr *ngFor="let row of deviceData |  paginate : {
+                                                <tr *ngFor="let row of filteredDeviceData |  paginate : {
                                                           itemsPerPage: tableSize,
                                                           currentPage: page,
                                                           totalItems: count} let i= index"
@@ -81,10 +88,10 @@
                                             </tbody>
                                         </table>
                                         <div class="text-center"
-                                            *ngIf="deviceData && deviceData.length == 0 || deviceData == null "
+                                            *ngIf="filteredDeviceData.length === 0 && !spinnerLoading"
                                             style="width: 100%;">No Data Available</div>
                                     </div>
-                                    <div class="pagination-data" *ngIf="deviceData && deviceData?.length > 0">
+                                    <div class="pagination-data" *ngIf="filteredDeviceData && filteredDeviceData.length > 0">
                                         <pagination-controls previousLabel="Prev" nextLabel="Next"
                                             (pageChange)="onTableDataChange($event)">
                                         </pagination-controls>

@@ -112,6 +112,8 @@ export class DeviceListComponent {
   deviceTypeMap: Map<number, string> = new Map();
   selectAll: boolean = false;
   selectedRows: any[] = [];
+  filteredDeviceData: any[] = [];
+  searchTerm: string = '';
 
   constructor(
     private subUserService: SubUserService,
@@ -210,12 +212,32 @@ export class DeviceListComponent {
       this.spinnerLoading = false;
       if (res?.status == 200 && res?.body?.result === true) {
         this.deviceData = res?.body?.data || []
-        this.count = this.deviceData.length;
+        this.applySearch();
       } else {
         this.deviceData = []
+        this.filteredDeviceData = [];
         this.count = 0;
       }
     })
+  }
+
+  applySearch() {
+    const term = (this.searchTerm || '').trim().toLowerCase();
+    if (!term) {
+      this.filteredDeviceData = [...this.deviceData];
+    } else {
+      this.filteredDeviceData = this.deviceData.filter((row: any) => {
+        const vehicleNo = (row?.vehicleNo || '').toLowerCase();
+        const deviceUid = (row?.deviceUid || '').toLowerCase();
+        const deviceId = (row?.deviceId || '').toString().toLowerCase();
+        const simNo = (row?.simPhoneNumber || '').toLowerCase();
+        return vehicleNo.includes(term) || deviceUid.includes(term) || deviceId.includes(term) || simNo.includes(term);
+      });
+    }
+    this.count = this.filteredDeviceData.length;
+    this.page = 1;
+    this.selectAll = false;
+    this.selectedRows = [];
   }
 
   /**
@@ -520,7 +542,7 @@ export class DeviceListComponent {
   }
 
   toggleAllRows() {
-    this.deviceData?.forEach((row: any) => row.selected = this.selectAll);
+    this.filteredDeviceData?.forEach((row: any) => row.selected = this.selectAll);
     this.updateSelectedRows();
   }
 
@@ -528,16 +550,16 @@ export class DeviceListComponent {
     if (!row.selected) {
       this.selectAll = false;
     } else {
-      this.selectAll = this.deviceData?.every((val: any) => val.selected);
+      this.selectAll = this.filteredDeviceData?.every((val: any) => val.selected);
     }
     this.updateSelectedRows();
   }
 
   updateSelectedRows() {
     if (this.selectAll) {
-      this.selectedRows = [...this.deviceData];
+      this.selectedRows = [...this.filteredDeviceData];
     } else {
-      this.selectedRows = this.deviceData?.filter((row: any) => row.selected) || [];
+      this.selectedRows = this.filteredDeviceData?.filter((row: any) => row.selected) || [];
     }
   }
 
