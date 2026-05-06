@@ -39,6 +39,7 @@ export class SwiperComponent {
   stopCount: any;
   idleCount: any;
   offlineCount: any;
+  neverConnectedCount: any;
   expiredCount: any;
   expiresSoonCount: any;
   expiredSoon: any;
@@ -46,7 +47,18 @@ export class SwiperComponent {
   }
 
   ngOnChanges() {    
-    this.offlineCount = this.vehicleStauts?.filter((res: any) => res?.Status == 0);
+    this.neverConnectedCount = this.vehicleStauts?.filter((res: any) => {
+      if (res?.Status != 0) return false;
+      if (!res?.StatusDuration) return true;
+      const parts = res.StatusDuration.split(' ');
+      return parts[0] === 'Never';
+    });
+    this.offlineCount = this.vehicleStauts?.filter((res: any) => {
+      if (res?.Status != 0) return false;
+      if (!res?.StatusDuration) return false;
+      const parts = res.StatusDuration.split(' ');
+      return parts[0] !== 'Never';
+    });
     this.runningCount = this.vehicleStauts?.filter((res: any) => res?.Status == 1 && res?.SubStatus == 1);
     this.stopCount = this.vehicleStauts?.filter((res: any) => res?.Status == 1 && res?.SubStatus == 2);
     this.idleCount = this.vehicleStauts?.filter((res: any) => res?.Status == 1 && res?.SubStatus == 3);
@@ -109,6 +121,14 @@ export class SwiperComponent {
         color: '#414141',
         status: "Offline",
         data: this.offlineCount
+      },
+      {
+        src: "/assets/icons/awesome-box.svg",
+        label: this.neverConnectedCount.length,
+        class: '#8B0000',
+        color: '#8B0000',
+        status: "Never Connected",
+        data: this.neverConnectedCount
       },
       {
         src: "/assets/icons/awesome-box.svg",

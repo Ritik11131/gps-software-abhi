@@ -247,7 +247,10 @@ export class VehicleOnMapV2Component {
     if (this.selectedStatus === 'Offline') {
       this.vehicleData = data.filter((res: any) => {
         const status = res?._original?.position?.status?.status?.toLowerCase() || 'offline';
-        return status === 'offline' || res?.Status == 0;
+        if (!(status === 'offline' || res?.Status == 0)) return false;
+        if (!res?.StatusDuration) return false;
+        const parts = res.StatusDuration.split(' ');
+        return parts[0] !== 'Never';
       });
     } else if (this.selectedStatus === 'Running') {
       this.vehicleData = data.filter((res: any) => {

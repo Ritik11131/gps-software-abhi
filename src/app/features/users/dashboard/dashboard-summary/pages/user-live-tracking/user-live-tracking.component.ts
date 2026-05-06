@@ -176,7 +176,19 @@ export class UserLiveTrackingComponent {
 
   filterout(data: any): Observable<any> {
     if (this.selectedStatus === 'Offline') {
-      this.vehicleData = data.filter((res: any) => res?.Status == 0);
+      this.vehicleData = data.filter((res: any) => {
+        if (res?.Status != 0) return false;
+        if (!res?.StatusDuration) return false;
+        const parts = res.StatusDuration.split(' ');
+        return parts[0] !== 'Never';
+      });
+    } else if (this.selectedStatus === 'Never Connected') {
+      this.vehicleData = data.filter((res: any) => {
+        if (res?.Status != 0) return false;
+        if (!res?.StatusDuration) return true;
+        const parts = res.StatusDuration.split(' ');
+        return parts[0] === 'Never';
+      });
     } else if (this.selectedStatus === 'Running') {
       this.vehicleData = data.filter(
         (res: any) => res?.Status == 1 && res?.SubStatus == 1
