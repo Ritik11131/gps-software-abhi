@@ -8,6 +8,8 @@ import { StorageService } from 'src/app/features/http-services/storage.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { UserService } from 'src/app/features/shared/user/services/user.service';
 import { NotificationService } from 'src/app/features/http-services/notification.service';
+import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { ShareLinkDialogComponent } from 'src/app/features/shared/components/share-link-dialog/share-link-dialog.component';
 
 
 @Component({
@@ -58,6 +60,7 @@ export class VehicleOnMapV2Component {
     private datePipe: DatePipe,
     private userService: UserService,
     private notificationService: NotificationService,
+    private modalService: BsModalService,
   ) {
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
@@ -638,10 +641,15 @@ export class VehicleOnMapV2Component {
               if (vehicle?.Battery?.status) {
                 html += `<li><a><i class="fa fa-battery-full" style="color:${vehicle.Battery.color} !important"></i><br/><span class="live-value" style="color:black !important">${vehicle.Battery.status}</span></a></li>`;
               }
-              html += `<li><a id="adminReplayId" title="Replay" style="cursor:pointer"><i class="fa fa-undo"></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>`;
-              html += `<li><a id="adminShareId" title="Share" style="cursor:pointer"><i class="fa fa-share-alt"></i><br/><span class="live-value" style="color:black !important">Share</span></a></li>`;
               return html;
             })()}
+          </ul>
+        </div>
+        <hr style="margin:5px 0"/>
+        <div class="icon-part">
+          <ul class="icon">
+            <li><a id="adminReplayId" title="Replay" style="cursor:pointer"><i class="fa fa-undo"></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>
+            <li><a id="adminShareId" title="Share" style="cursor:pointer"><i class="fa fa-share-alt"></i><br/><span class="live-value" style="color:black !important">Share</span></a></li>
           </ul>
         </div>
           </div>
@@ -1296,25 +1304,16 @@ export class VehicleOnMapV2Component {
 
   handleShareClick(event: MouseEvent, vehicle?: any) {
     event.preventDefault();
-    const validTill = new Date();
-    validTill.setHours(validTill.getHours() + 24);
-    const payload = {
-      DeviceId: vehicle?.Device?.Id,
-      validTill: validTill.toISOString()
-    };
-    this.userService.createShareUrl(payload).subscribe((res: any) => {
-      const path = res?.body?.data || res?.data;
-      if (path) {
-        const shareUrl = `${window.location.origin}${path}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          this.notificationService.showInfo('Share link copied! Valid for 24 hours.');
-        }).catch(() => {
-          prompt('Copy this tracking link:', shareUrl);
-        });
-      } else {
-        this.notificationService.showError('Failed to create share link');
+    const initialState: ModalOptions = {
+      initialState: {
+        deviceId: vehicle?.Device?.Id,
+        vehicleNo: vehicle?.Device?.VehicleNo
       }
-    });
+    };
+    this.modalService.show(
+      ShareLinkDialogComponent,
+      Object.assign(initialState, { class: 'modal-md modal-dialog-centered' })
+    );
   }
 
   checkvoltage(value: any) {

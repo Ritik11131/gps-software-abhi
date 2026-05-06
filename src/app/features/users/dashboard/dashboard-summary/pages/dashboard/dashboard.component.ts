@@ -41,6 +41,8 @@ import { DatePipe, Location } from '@angular/common';
 import { GeofanceService } from 'src/app/features/users/geofance/geofance-manage/services/geofance.service';
 import { RefreshCustomerService } from 'src/app/features/shared/services/refresh-customer.service';
 import { UserService } from 'src/app/features/shared/user/services/user.service';
+import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { ShareLinkDialogComponent } from 'src/app/features/shared/components/share-link-dialog/share-link-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -119,7 +121,8 @@ export class DashboardComponent {
     private dashboardService: DashboardService,
     private location: Location,
     private refreshCustomerService : RefreshCustomerService,
-    private userService: UserService
+    private userService: UserService,
+    private modalService: BsModalService
   ) {
     this.router.events
       .pipe(
@@ -664,7 +667,7 @@ export class DashboardComponent {
         'fa-thermometer-empty',
         'Temperature',
         vehicle?.Peripherial?.Temp
-      )}         
+      )}
          ${generateIcon(
         'fa-key',
         'Ignition',
@@ -680,6 +683,11 @@ export class DashboardComponent {
         ? `<li><a><i class="fa fa-battery-full" style="color:${vehicle.Battery.color} !important"></i><br/><span class="live-value" style="color:black !important">${vehicle.Battery.status}</span></a></li>`
         : ''
       }
+          </ul>
+        </div>
+        <hr style="margin:5px 0"/>
+        <div class="icon-part">
+          <ul class="icon">
             <li><a  id="geofanceId" title="Geofance" style="cursor:pointer"><i class="fa fa-map-o" ></i><br/><span class="live-value" style="color:black !important">Geofance</span></a></li>
             <li><a  id="playId" title="Live" style="cursor:pointer"><i class="fa fa-circle-play" ></i><br/><span class="live-value" style="color:black !important">Live</span></a></li>
             <li><a  id="replayId" title="Replay" style="cursor:pointer"><i class="fa fa-undo" ></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>
@@ -1329,6 +1337,11 @@ export class DashboardComponent {
         ? `<li><a><i class="fa fa-battery-full" style="color:${data.Battery.color} !important"></i><br/><span class="live-value" style="color:black !important">${data.Battery.status}</span></a></li>`
         : ''
       }
+          </ul>
+        </div>
+        <hr style="margin:5px 0"/>
+        <div class="icon-part">
+          <ul class="icon">
             <li><a  id="geofance" title="Geofance" style="cursor:pointer"><i class="fa fa-map-o" ></i><br/><span class="live-value" style="color:black !important">Geofance</span></a></li>
             <li><a  id="play" title="Live" style="cursor:pointer"><i class="fa fa-circle-play" ></i><br/><span class="live-value" style="color:black !important">Live</span></a></li>
             <li><a  id="replay" title="Replay" style="cursor:pointer"><i class="fa fa-undo" ></i><br/><span class="live-value" style="color:black !important">Replay</span></a></li>
@@ -1535,25 +1548,19 @@ export class DashboardComponent {
 
   handleShareClick(event: MouseEvent, vehicle?: any) {
     event.preventDefault();
-    const validTill = new Date();
-    validTill.setHours(validTill.getHours() + 24);
-    const payload = {
-      DeviceId: vehicle?.Device?.Id,
-      validTill: validTill.toISOString()
-    };
-    this.userService.createShareUrl(payload).subscribe((res: any) => {
-      const path = res?.body?.data || res?.data;
-      if (path) {
-        const shareUrl = `${window.location.origin}${path}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          this.NotificationService.showInfo('Share link copied! Valid for 24 hours.');
-        }).catch(() => {
-          prompt('Copy this tracking link:', shareUrl);
-        });
-      } else {
-        this.NotificationService.showError('Failed to create share link');
+    if (this.currentInfoWindow) {
+      this.currentInfoWindow.close();
+    }
+    const initialState: ModalOptions = {
+      initialState: {
+        deviceId: vehicle?.Device?.Id,
+        vehicleNo: vehicle?.Device?.VehicleNo
       }
-    });
+    };
+    this.modalService.show(
+      ShareLinkDialogComponent,
+      Object.assign(initialState, { class: 'modal-md modal-dialog-centered' })
+    );
   }
 
   createGeofance(

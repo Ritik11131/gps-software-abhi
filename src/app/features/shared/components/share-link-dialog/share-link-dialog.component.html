@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <h5 class="modal-title">Generate Device Tracking Link</h5>
+  <button type="button" class="close" (click)="cancel()">
+    <span>&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div class="vehicle-name" *ngIf="vehicleNo">
+    <strong>Vehicle:</strong> {{ vehicleNo }}
+  </div>
+
+  <div class="form-group">
+    <label>Enter Time in Hours</label>
+    <input type="number" class="form-control" [(ngModel)]="hours" min="1" placeholder="Enter hours">
+  </div>
+
+  <div class="form-group" *ngIf="shareLink">
+    <label>Sharing Link</label>
+    <input type="text" class="form-control link-input" [value]="shareLink" readonly>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-generate" (click)="generateLink()" [disabled]="isGenerating">
+    <span *ngIf="isGenerating">Generating...</span>
+    <span *ngIf="!isGenerating">Generate</span>
+  </button>
+  <button class="btn btn-cancel" (click)="cancel()">Cancel</button>
+  <button class="btn btn-copy" (click)="copyLink()" [disabled]="!shareLink">Copy Link</button>
+  <button class="btn btn-open" (click)="openLink()" [disabled]="!shareLink">Open Link</button>
+</div>

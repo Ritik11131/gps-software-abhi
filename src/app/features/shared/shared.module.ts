@@ -96,6 +96,7 @@ import { LogoutConfirmationDialogeComponent } from './components/logout-confirma
 import { LocationInMapComponent } from './components/location-in-map/location-in-map.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { UserSwitchBreadcrumbComponent } from './components/user-switch-breadcrumb/user-switch-breadcrumb.component';
+import { ShareLinkDialogComponent } from './components/share-link-dialog/share-link-dialog.component';
 @NgModule({
   declarations: [
     SkyLogoComponent,
@@ -155,8 +156,8 @@ import { UserSwitchBreadcrumbComponent } from './components/user-switch-breadcru
     LogoutConfirmationDialogeComponent,
     LocationInMapComponent,
     PageNotFoundComponent,
-    UserSwitchBreadcrumbComponent
-
+    UserSwitchBreadcrumbComponent,
+    ShareLinkDialogComponent
 
   ],
   imports: [
@@ -261,7 +262,8 @@ import { UserSwitchBreadcrumbComponent } from './components/user-switch-breadcru
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
     LocationInMapComponent,
-    UserSwitchBreadcrumbComponent
+    UserSwitchBreadcrumbComponent,
+    ShareLinkDialogComponent
   ],
 
   providers: [DatePipe]

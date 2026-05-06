@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { UserService } from 'src/app/features/shared/user/services/user.service';
 import { NotificationService } from 'src/app/features/http-services/notification.service';
+import { ShareLinkDialogComponent } from 'src/app/features/shared/components/share-link-dialog/share-link-dialog.component';
 
 @Component({
   selector: 'vehicle-list',
@@ -435,27 +436,16 @@ export class VehicleListComponent implements OnChanges {
   }
 
   createShareLink(vehicle: any) {
-    const validTill = new Date();
-    validTill.setHours(validTill.getHours() + 24);
-
-    const payload = {
-      DeviceId: vehicle?.Device?.Id,
-      validTill: validTill.toISOString()
-    };
-
-    this.userService.createShareUrl(payload).subscribe((res: any) => {
-      const path = res?.body?.data || res?.data;
-      if (path) {
-        const shareUrl = `${window.location.origin}${path}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          this.notificationService.showInfo('Share link copied to clipboard! Valid for 24 hours.');
-        }).catch(() => {
-          prompt('Copy this tracking link:', shareUrl);
-        });
-      } else {
-        this.notificationService.showError('Failed to create share link');
+    const initialState: ModalOptions = {
+      initialState: {
+        deviceId: vehicle?.Device?.Id,
+        vehicleNo: vehicle?.Device?.VehicleNo
       }
-    });
+    };
+    this.bsModalRef = this.modalService.show(
+      ShareLinkDialogComponent,
+      Object.assign(initialState, { class: 'modal-md modal-dialog-centered' })
+    );
   }
 
   opneDevice(selectvalue: any) {
