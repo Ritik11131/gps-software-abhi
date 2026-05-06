@@ -24,8 +24,10 @@
       <div class="main-content">
          <div class="vehicle-list" *ngIf="vehicleListshow">
             <vehicle-list [isPageSize]="isPageSize" [vehicleData]="vehicleData" [vehicleDatacount]="vehicleDatacount"
+               [counter]="counter" [isManualRefresh]="isManualRefresh"
                (showlabels)="labelshow($event)" (onAdress)="addressValue($event)"
-               (onConfirm)="confirm($event)" (selectVehicleConfirm)="selectVehiclesPlot($event)"></vehicle-list>
+               (onConfirm)="confirm($event)" (selectVehicleConfirm)="selectVehiclesPlot($event)"
+               (onManualRefresh)="manualRefresh()"></vehicle-list>
          </div>
          <!-- <div class="vehcle-location">
                <vehicle-status></vehicle-status>

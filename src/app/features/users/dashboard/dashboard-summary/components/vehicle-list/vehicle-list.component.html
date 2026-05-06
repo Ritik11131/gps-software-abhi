@@ -26,6 +26,13 @@
                 </div>
 
             </div>
+            <div class="refresh-bar mt-2" style="display:flex; align-items:center; justify-content:space-between; padding:0 5px; font-size:12px; color:#666;">
+                <span *ngIf="!isManualRefresh">Refresh in: <b>{{counter}}s</b></span>
+                <span *ngIf="isManualRefresh">Auto-refresh paused (100+ vehicles)</span>
+                <button (click)="onManualRefresh.emit()" style="border:1px solid #ccc; background:#f5f5f5; border-radius:4px; padding:2px 8px; cursor:pointer; font-size:12px;">
+                    <i class="fa fa-refresh"></i> Refresh
+                </button>
+            </div>
             <div class="swiper-data mt-3">
                 <swiper *ngIf="swiperList"   [vehicleStauts]="swiperList" (onConfirm)="confirm($event)"></swiper>
             </div>

@@ -207,7 +207,7 @@ export class NewVehicleOnMapComponent {
         const parts = res.StatusDuration.split(' ');
         return parts[0] !== 'Never';
       });
-    } else if (this.selectedStatus === 'Never Connected') {
+    } else if (this.selectedStatus === 'Never Connected' || this.selectedStatus === 'No Conn.') {
       this.vehicleData = data.filter((res: any) => {
         if (res?.Status != 0) return false;
         if (!res?.StatusDuration) return true;

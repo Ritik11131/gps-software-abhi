@@ -46,7 +46,7 @@ export class SwiperComponent {
   ngOnInit() { 
   }
 
-  ngOnChanges() {    
+  private computeCounts() {
     this.neverConnectedCount = this.vehicleStauts?.filter((res: any) => {
       if (res?.Status != 0) return false;
       if (!res?.StatusDuration) return true;
@@ -62,91 +62,45 @@ export class SwiperComponent {
     this.runningCount = this.vehicleStauts?.filter((res: any) => res?.Status == 1 && res?.SubStatus == 1);
     this.stopCount = this.vehicleStauts?.filter((res: any) => res?.Status == 1 && res?.SubStatus == 2);
     this.idleCount = this.vehicleStauts?.filter((res: any) => res?.Status == 1 && res?.SubStatus == 3);
-    this.expiredSoon = this.vehicleStauts?.filter((res: any) => res?.Status == 1 && res?.SubStatus == 4);    
-    // this.expiredCount = this.vehicleStauts?.filter((res: any) => res?.isexpired === 1);
+    this.expiredSoon = this.vehicleStauts?.filter((res: any) => res?.Status == 1 && res?.SubStatus == 4);
     this.expiredCount = this.vehicleStauts?.filter((res: any) => res?.Status == 2);
-    // this.expiredSoon = this.vehicleStauts?.filter((res: any) => res?.isexpiredsoon === 1);    
-    // this.expiredCount = this.vehicleStauts?.filter((res: any) =>res?.isexpired === 1);
-    // // this.expiredSoon = this.vehicleStauts?.filter((res: any) => {
-    // //   if (res?.PointValidity?.NextRechargeDue) {
-    // //     const dateToCheck: any = new Date(res?.PointValidity?.NextRechargeDue);
-    // //     const sevenDaysAgo = new Date();
-    // //     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    // //     return dateToCheck <= sevenDaysAgo;
-    // //   } else {
-    // //     return false;
-    // //   }
-    // // });
-    // this.expiredSoon = this.vehicleStauts?.filter((res: any) => res?.isexpiredsoon === 1);
+  }
 
+  ngOnChanges() {
+    this.computeCounts();
 
+    if (!this.status) {
+      this.status = [
+        { src: "/assets/icons/feather-alert-octagon.svg", label: 0, class: '#696969', color: 'rgb(0 0 0)', status: 'All', data: [] },
+        { src: "/assets/icons/awesome-gas-pump.svg", label: 0, class: 'green', color: 'rgb(25 173 0)', status: 'Running', data: [] },
+        { src: "/assets/icons/zocial-call.svg", label: 0, class: 'red', color: '#c00e0e', status: "Stop", data: [] },
+        { src: "/assets/icons/awesome-truck.svg", label: 0, class: 'orange', color: '#FFAF1D', status: 'Idle', data: [] },
+        { src: "/assets/icons/awesome-box.svg", label: 0, class: 'gray', color: '#414141', status: "Offline", data: [] },
+        { src: "/assets/icons/awesome-box.svg", label: 0, class: '#8B0000', color: '#8B0000', status: "No Conn.", data: [] },
+        { src: "/assets/icons/awesome-box.svg", label: 0, class: 'rgb(104 100 100)', color: '#414141', status: "Exp. Soon", data: [] },
+        { src: "/assets/icons/awesome-box.svg", label: 0, class: '#ADADAD', color: '#414141', status: "Expired", data: [] },
+      ];
+    }
 
-    this.status = [
-      {
-        src: "/assets/icons/feather-alert-octagon.svg",
-        label: this.vehicleStauts?.length,
-        class: '#696969',
-        color: 'rgb(0 0 0)',
-        status: 'All',
-        data: this.vehicleStauts
-      },
-      {
-        src: "/assets/icons/awesome-gas-pump.svg",
-        label: this.runningCount?.length,
-        class: 'green',
-        color: 'rgb(25 173 0)',
-        status: 'Running',
-        data: this.runningCount
-      },
-      {
-        src: "/assets/icons/zocial-call.svg",
-        label: this.stopCount.length,
-        class: 'red',
-        color: '#c00e0e',
-        status: "Stop",
-        data: this.stopCount
-      },
-      {
-        src: "/assets/icons/awesome-truck.svg",
-        label: this.idleCount.length,
-        class: 'orange',
-        color: '#FFAF1D',
-        status: 'Idle',
-        data: this.idleCount
-      },
-      {
-        src: "/assets/icons/awesome-box.svg",
-        label: this.offlineCount.length,
-        class: 'gray',
-        color: '#414141',
-        status: "Offline",
-        data: this.offlineCount
-      },
-      {
-        src: "/assets/icons/awesome-box.svg",
-        label: this.neverConnectedCount.length,
-        class: '#8B0000',
-        color: '#8B0000',
-        status: "Never Connected",
-        data: this.neverConnectedCount
-      },
-      {
-        src: "/assets/icons/awesome-box.svg",
-        label: this.expiredSoon.length,
-        class: 'rgb(104 100 100)',
-        color: '#414141',
-        status: "Exp. Soon",
-        data: this.expiredSoon
-      },
-      {
-        src: "/assets/icons/awesome-box.svg",
-        label: this.expiredCount.length,
-        class: '#ADADAD',
-        color: '#414141',
-        status: "Expired",
-        data: this.expiredCount
-      },
-    ];
+    // Update counts and data without rebuilding array (prevents carousel reset)
+    const dataMap: any = {
+      'All': { label: this.vehicleStauts?.length, data: this.vehicleStauts },
+      'Running': { label: this.runningCount?.length, data: this.runningCount },
+      'Stop': { label: this.stopCount?.length, data: this.stopCount },
+      'Idle': { label: this.idleCount?.length, data: this.idleCount },
+      'Offline': { label: this.offlineCount?.length, data: this.offlineCount },
+      'No Conn.': { label: this.neverConnectedCount?.length, data: this.neverConnectedCount },
+      'Exp. Soon': { label: this.expiredSoon?.length, data: this.expiredSoon },
+      'Expired': { label: this.expiredCount?.length, data: this.expiredCount },
+    };
+
+    this.status.forEach((item: any) => {
+      const update = dataMap[item.status];
+      if (update) {
+        item.label = update.label;
+        item.data = update.data;
+      }
+    });
   }
 
   filterData(data: any) {    

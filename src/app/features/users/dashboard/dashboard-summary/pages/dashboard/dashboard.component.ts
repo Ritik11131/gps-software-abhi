@@ -79,6 +79,7 @@ export class DashboardComponent {
   countdown: number | undefined;
   spinnerLoading: boolean = false;
   isPageSize: boolean = true;
+  isManualRefresh: boolean = false;
   liveData: any;
   livemap: any = [];
   selectedStatus: any;
@@ -201,8 +202,7 @@ export class DashboardComponent {
   getVehicleData() {
     this.spinnerLoading = true;
     this.unsubscribe();
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.unsubscribe$ = new Subject<void>();
     this.subscription = timer(0, 10000)
       .pipe(
         tap((value) => {
@@ -219,6 +219,12 @@ export class DashboardComponent {
           this.data = res?.body?.Result?.Data || [];
           this.vehicleDatacount = res?.body?.Result?.Data || [];
           this.sendFilteredData();
+          // If 100+ vehicles, switch to manual refresh
+          if (this.data.length >= 100 && !this.isManualRefresh) {
+            this.isManualRefresh = true;
+            this.unsubscribe();
+            clearInterval(this.counterInterval);
+          }
         }),
         switchMap(() => this.storageService.getItem('status')),
         tap((status: any) => {
@@ -237,6 +243,31 @@ export class DashboardComponent {
       );
   }
 
+  manualRefresh() {
+    this.spinnerLoading = true;
+    this.dashbaordService.vehicleListDetail().pipe(
+      switchMap((res: any) => {
+        this.spinnerLoading = false;
+        this.data = res?.body?.Result?.Data || [];
+        this.vehicleDatacount = res?.body?.Result?.Data || [];
+        this.sendFilteredData();
+        return this.storageService.getItem('status');
+      }),
+      tap((status: any) => {
+        this.selectedStatus = status;
+        this.filterout(this.data);
+        this.onConfirm.emit(true);
+        this.plotVehicleonMap();
+      })
+    ).subscribe(
+      () => { },
+      (error) => {
+        console.error('Error fetching vehicle data:', error);
+        this.spinnerLoading = false;
+      }
+    );
+  }
+
   filterout(data: any): Observable<any> {    
     if (this.selectedStatus === 'Offline') {
       this.vehicleData = data.filter((res: any) => {
@@ -245,7 +276,7 @@ export class DashboardComponent {
         const parts = res.StatusDuration.split(' ');
         return parts[0] !== 'Never';
       });
-    } else if (this.selectedStatus === 'Never Connected') {
+    } else if (this.selectedStatus === 'Never Connected' || this.selectedStatus === 'No Conn.') {
       this.vehicleData = data.filter((res: any) => {
         if (res?.Status != 0) return false;
         if (!res?.StatusDuration) return true;
@@ -282,6 +313,7 @@ export class DashboardComponent {
 
   unsubscribe() {
     this.unsubscribe$.next();
+    this.subscription?.unsubscribe();
   }
 
   clickedMarker: google.maps.Marker | null = null;

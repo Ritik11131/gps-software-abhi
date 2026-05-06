@@ -47,11 +47,14 @@ export class VehicleListComponent implements OnChanges {
   @Input() vehicleData: any;
   @Input() vehicleDatacount: any
   @Input() isPageSize: any
+  @Input() counter: number = 10;
+  @Input() isManualRefresh: boolean = false;
   @Output() onConfirm = new EventEmitter();
   @Output() onAdress = new EventEmitter()
   @Output() showlabels = new EventEmitter()
   @Output() groupingByStatus = new EventEmitter();
   @Output() selectVehicleConfirm = new EventEmitter();
+  @Output() onManualRefresh = new EventEmitter();
   searchLocation: boolean = false
   vehicleCount: any;
   loginUser: any;
